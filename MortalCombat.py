@@ -142,13 +142,15 @@ st.sidebar.markdown(
     "- **Binary features:** Select 'Yes' or 'No'.\n"
     "- **RF:** Choose between 2 or 3.\n"
     "- **Numeric features:** Use sliders to select values within the specified range.\n"
-    "- Click 'Calculate Survival Function' to see results."
+    "- Click 'Calculate Survival Function' to see results.\n"
+    "- When making predictions at the time of ICU admission, for pathologies such as DIC, IVH, and NEC, the option “YES” should be selected only if the condition has already been documented and confirmed. In cases where these pathologies develop later, the calculator can be used again to refine the prognosis."
     if lang_code == "en" else
     "- Данный калькулятор на основе нейросетевой модели рассчитывает индивидуальные риски недоношенных детей.\n"
     "- **Бинарные признаки:** Выбирайте 'Да' или 'Нет'.\n"
     "- **RF:** Выберите значение 2 или 3.\n"
     "- **Числовые признаки:** Используйте ползунки для выбора значений в заданном диапазоне.\n"
-    "- Нажмите 'Рассчитать функцию выживаемости' для получения результата."
+    "- Нажмите 'Рассчитать функцию выживаемости' для получения результата.\n"
+    "При прогнозировании в момент перевода в ОРИТ необходимо для таких патологий как ДВС-синдром, ВЖК и НЭК, следует выбирать опцию “ДА”, только в том случае, если таковая зарегистрирована и подтверждена. В случае формирования этих патологий в динамике, калькулятор можно использовать повторно для уточнения прогноза."
 )
 
 col1, col2 = st.columns([1, 2], gap="large")
