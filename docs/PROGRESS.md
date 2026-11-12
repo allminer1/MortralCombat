@@ -64,6 +64,40 @@ Last session: 2026-11-12.
   All three equal the scaler-order expectations. Only the English interface was
   checked; the calculation path is the same for Russian.
 
+### Server inventory (owner ran the commands on 2026-11-12; host name and SSH port left out on purpose)
+
+| Item | Finding |
+|---|---|
+| OS | Ubuntu, kernel 6.8.0-147, x86_64 |
+| Memory | 3.8 GiB total, about 1.9 GiB available, **no swap** |
+| Disk `/` | 48 GB, 30 GB free |
+| Docker | **not installed** |
+| Port 443 | Streamlit itself (TLS with the Let's Encrypt files, see `run.sh`) |
+| Port 80 | **nothing listening** — plain `http://` requests are not redirected |
+| Web servers | none (no nginx, Caddy or Apache) |
+| App service | `/etc/systemd/system/streamlit.service`, `User=root`, `ExecStart=sudo bash …/run.sh`, `Restart=on-failure` |
+| Certificates | `certbot.timer` active (runs daily), `/etc/cron.d/certbot` present |
+| Other | SSH on a non-standard port; three loopback-only listeners owned by a user process (not identified, not public) |
+
+What this means for Phase 5 (to be planned then, nothing changed now):
+
+- Docker has to be installed on the server before the compose stack can run. Memory
+  is enough for Caddy + API (ONNX, no torch); with no swap, add the `db` container
+  (Phase 6) only after checking headroom.
+- Nothing competes for port 80, and only Streamlit holds 443. For the staging
+  subdomain Caddy cannot share 443 with Streamlit on the same IP: either Caddy takes
+  80/443 and reverse-proxies the main domain to Streamlit moved to a local port
+  (`--server.port 8501`, no TLS flags), or staging runs on another port. The first is
+  the cleaner cutover and gives the http→https redirect the site lacks today.
+- Once Caddy handles TLS, certbot must be switched off for this domain so that two
+  ACME clients do not both renew it.
+- `TODO(owner)`: how does the renewed certificate reach Streamlit today? Streamlit
+  reads the files at start; unless a certbot deploy hook restarts the service, the
+  site would keep serving the old certificate until the next restart. To check:
+  `ls /etc/letsencrypt/renewal-hooks/deploy` and
+  `grep -i hook /etc/letsencrypt/renewal/neomortalsurv.net.conf`.
+- The app runs as root. The rebuild's containers run as non-root (spec Section 9).
+
 ### Open
 
 1. **Owner decides** on informing co-authors / journal and on any notice on the site
@@ -71,7 +105,6 @@ Last session: 2026-11-12.
 2. `legacy/` on `rebuild` still holds the GitHub copy of `MortalCombat.py`. Owner to
    decide whether it is replaced by the server copy (labels for spec 7.5 come from
    the server version either way).
-3. **Server inventory** (spec Section 9 commands), owner runs and pastes.
 4. `TODO(clinical-review)` / `TODO(owner)` items in `docs/ERRATUM_feature_order.md`:
    all wording, affected period, who is informed.
 
