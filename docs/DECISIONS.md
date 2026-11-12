@@ -13,8 +13,7 @@ without an explicit request.
 
 - `main`: untouched GitHub state (2 commits).
 - `rebuild`: all rebuild work. Legacy files moved to `legacy/` byte-identical.
-- `legacy-streamlit`: reserved for the production server copy (not created yet — the
-  server code has not been provided).
+- `legacy-streamlit`: production server copy as deployed, tag `legacy-server-2026-11`.
 
 ## 2026-11-12 — Phase 0 tooling
 
@@ -62,11 +61,16 @@ Not decided. The outcome (A / B / C) is written here only after the owner has ru
    and `baseline_hazard.csv` next to that script have the same sha256 as `legacy/`.
    Caveat: the script's modification date is later than the artifacts'.
 
-3. Scaler means and SHAP directions (spec 3.1, 3.2) fit the scaler order.
+3. **Server code read** (spec 3.4 step 1, branch `legacy-streamlit`): the production
+   app builds an unnamed array from
+   `FEATURES = ["BOH", "weight.g.", "Apgar5", "GDW", "RF", "HR", "Saturation", "IVH", "DIC", "NE", "RDS"]`
+   (line 86) and passes it to `scaler.transform` — app order, unchanged from GitHub.
+   Its three artifacts are byte-identical to `legacy/`.
+
+4. Scaler means and SHAP directions (spec 3.1, 3.2) fit the scaler order.
 
 All of this points to outcome **A**; none of it is the training run itself.
 
 ### Still required
 
 - Owner runs `tools/gate_cindex.py` and reports n, events and the two C-index values.
-- Server code: how the production app builds the input vector (spec 3.4 step 1).
