@@ -92,11 +92,12 @@ Last session: 2026-11-12.
   `legacy-streamlit`); the inventory should confirm what, if anything, holds port 80
   and how the certificate is renewed.
 - Remotes: `github` (canonical) and `origin` (`VLBWSurv`, unrelated one-commit
-  history). Nothing has been pushed: the owner chose to push everything to the
-  public `github` repository (2026-11-12), but GitHub refused the pushes (token
-  without write access) and the owner set it aside. `rebuild`, `legacy-streamlit`
-  and the tags `legacy-server-2026-11`, `legacy-hotfix-2026-11-12` exist only on
-  this workstation. Ask before pushing in a later session.
+  history). On 2026-11-12 the owner pushed `rebuild`, `legacy-streamlit` and the
+  tags `legacy-server-2026-11`, `legacy-hotfix-2026-11-12` to the public `github`
+  repository (owner's decision to publish everything, erratum draft included).
+  `legacy-streamlit` was also published to `origin` (`VLBWSurv`) by GitHub Desktop
+  by mistake; owner to decide whether to delete it there. Pushes need the owner's
+  token; this workstation has no stored GitHub login for command-line git.
 - Patient-level files live in `../PythonProject/` and `../kids.dta`, outside the
   repository. They were not opened.
 - Workstation lacks `node`/`npx`, `uv`, `docker`, `gh`. Needed from Phase 1 (`uv`),
