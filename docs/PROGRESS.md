@@ -48,14 +48,26 @@ Last session: 2026-11-12.
 - Hot-fix prepared on `legacy-streamlit`, commit `b1e65ea`: `preprocess_input` passes
   a named row ordered by `scaler.feature_names_in_`. Checked without starting
   Streamlit: the patched function gives +0.647 / −0.681 / +1.210 and the matching
-  survival values for the three gate cases. **Not deployed, not run in a browser.**
+  survival values for the three gate cases.
+- **Hot-fix deployed by the owner on 2026-11-12**, `streamlit.service` restarted at
+  15:04:16 UTC. Server `MortalCombat.py` sha256 `47350ccd…fd2e71d` (= commit
+  `b1e65ea`); previous file kept on the server as `MortalCombat.py.bak-2026-11-12`
+  (sha256 `4b447edd…31388c2` = tag `legacy-server-2026-11`).
+  Checked on https://neomortalsurv.net after the restart:
+
+  | case | live site after the fix |
+  |---|---|
+  | RDS = Yes only, defaults | 0.647 → 78.39 / 58.93 / 19.41 % |
+  | NEC = Yes only, defaults | −0.681 → 93.76 / 86.93 / 64.78 % |
+  | Article Figure 8 | 1.210 → 65.22 / 39.52 / 5.63 % |
+
+  All three equal the scaler-order expectations. Only the English interface was
+  checked; the calculation path is the same for Russian.
 
 ### Open
 
-1. **Owner decides** on deploying the hot-fix and on informing co-authors / journal.
-   Deploy = replace `MortalCombat.py` on the server with the `legacy-streamlit`
-   version and restart Streamlit; then repeat the two spec 3.2 cases on the live site
-   (expected after the fix: RDS only → +0.647, NEC only → −0.681).
+1. **Owner decides** on informing co-authors / journal and on any notice on the site
+   (`docs/ERRATUM_feature_order.md`). The site shows no notice about the change.
 2. `legacy/` on `rebuild` still holds the GitHub copy of `MortalCombat.py`. Owner to
    decide whether it is replaced by the server copy (labels for spec 7.5 come from
    the server version either way).

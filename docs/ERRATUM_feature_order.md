@@ -52,14 +52,14 @@ added here (it can be produced from synthetic inputs, without patient data).
 
 - From: `TODO(owner)` — date the calculator first went online. The earliest version in
   git (2025-07-08) already has the wrong order.
-- To: `TODO(owner)` — date the fix is deployed. As of 2026-11-12 the live site is
-  still affected.
+- To: 2026-11-12, 15:04 UTC — fix deployed by the owner and confirmed on the live site.
 
 ## Fix
 
 The calculator now passes inputs by name, in the order stored with the model. On-screen
-order and labels are unchanged. Prepared as commit `b1e65ea` on branch
-`legacy-streamlit`; **not deployed yet**.
+order and labels are unchanged. Commit `b1e65ea` on branch `legacy-streamlit`,
+deployed 2026-11-12. After the deploy the live site returns the correct values for
+both examples above and still reproduces Figure 8 of the article.
 
 ## Open questions for the owner and co-authors
 

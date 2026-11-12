@@ -51,8 +51,9 @@ Consequences:
 - The live Streamlit app (GitHub and server versions) sends IVH → RDS slot,
   DIC → IVH slot, NEC → DIC slot, RDS → NEC slot. Results are affected whenever the
   four diagnosis flags are not all equal. See `docs/ERRATUM_feature_order.md`.
-- A hot-fix is prepared on `legacy-streamlit` (commit `b1e65ea`, not deployed).
-  Deploying it and informing the co-authors is the owner's decision.
+- Hot-fix on `legacy-streamlit` (commit `b1e65ea`), deployed by the owner on
+  2026-11-12 15:04 UTC and confirmed on the live site. Informing the co-authors and
+  the journal remains the owner's decision.
 - The published performance metrics come from the training pipeline, which used the
   correct order; this check reproduces the C-index and gives no reason to doubt them.
 
