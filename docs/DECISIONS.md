@@ -24,12 +24,39 @@ Phases 1–3. `tools/legacy_model.py` builds positional arrays in two orderings 
 purpose — it is the gate's comparison harness, not inference code, and is to be
 removed or retired once `model/feature_spec.json` exists (Phase 1).
 
-## Feature-order gate (spec Section 3) — OUTCOME: **PENDING**
+## 2026-11-12 — Feature-order gate (spec Section 3) — OUTCOME: **A**
 
-Not decided. The outcome (A / B / C) is written here only after the owner has run
-`tools/gate_cindex.py` on the held-out test set.
+**The network was trained in the scaler's column order. The app order is wrong.**
 
-### Evidence collected so far
+```
+MODEL_ORDER = BOH, weight, Apgar5, GDW, RF, HR, Saturation, RDS, IVH, DIC, NE
+```
+
+Deciding evidence — `tools/gate_cindex.py`, run by the owner on the held-out test set
+(`MortalityKidsTest.csv`), output pasted on 2026-11-12:
+
+```
+n = 286   events = 83
+ordering    C (Antolini)  C (Harrell)
+scaler            0.8666       0.8642
+app               0.7205       0.7165
+```
+
+The scaler order reproduces the published test C-index (0.86, 95 % CI 0.81–0.90);
+the app order falls below that interval. n = 286 matches the published test set.
+
+Consequences:
+
+- The rebuild uses `MODEL_ORDER` above, through named fields only (spec 5.2).
+- The live Streamlit app (GitHub and server versions) sends IVH → RDS slot,
+  DIC → IVH slot, NEC → DIC slot, RDS → NEC slot. Results are affected whenever the
+  four diagnosis flags are not all equal. See `docs/ERRATUM_feature_order.md`.
+- A hot-fix is prepared on `legacy-streamlit` (commit `b1e65ea`, not deployed).
+  Deploying it and informing the co-authors is the owner's decision.
+- The published performance metrics come from the training pipeline, which used the
+  correct order; this check reproduces the C-index and gives no reason to doubt them.
+
+### Evidence
 
 1. **Regression cases** (`tools/gate_regression.py`, no patient data, all pass):
 
@@ -69,8 +96,4 @@ Not decided. The outcome (A / B / C) is written here only after the owner has ru
 
 4. Scaler means and SHAP directions (spec 3.1, 3.2) fit the scaler order.
 
-All of this points to outcome **A**; none of it is the training run itself.
-
-### Still required
-
-- Owner runs `tools/gate_cindex.py` and reports n, events and the two C-index values.
+Items 1–4 pointed to outcome A; the C-index check above decided it.

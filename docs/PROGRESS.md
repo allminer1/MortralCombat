@@ -1,6 +1,9 @@
 # Progress
 
-## Current phase: 0 — Freeze, inventory, gate (NOT finished)
+## Current phase: 0 — Freeze, inventory, gate
+
+**Gate resolved: outcome A** (`docs/DECISIONS.md`). The phase's "done when" is met.
+Still missing from the Phase 0 list: the server inventory (owner). Next: Phase 1.
 
 Last session: 2026-11-12.
 
@@ -39,21 +42,26 @@ Last session: 2026-11-12.
 - `tools/gate_regression.py`: 6 / 6 checks pass (two Section 3.2 cases and Figure 8,
   both orderings). Legacy nearest-row lookup and the step-function lookup give the
   same values at days 7, 28 and 100.
-- `tools/gate_cindex.py` written; smoke-tested on random synthetic data only.
-- Gate evidence written to `docs/DECISIONS.md`. Outcome still pending.
+- `tools/gate_cindex.py` run by the owner on the test set: n = 286, 83 events;
+  C-index 0.8666 (scaler order) vs 0.7205 (app order). **Outcome A.**
+- `docs/ERRATUM_feature_order.md` drafted (not published, not sent).
+- Hot-fix prepared on `legacy-streamlit`, commit `b1e65ea`: `preprocess_input` passes
+  a named row ordered by `scaler.feature_names_in_`. Checked without starting
+  Streamlit: the patched function gives +0.647 / −0.681 / +1.210 and the matching
+  survival values for the three gate cases. **Not deployed, not run in a browser.**
 
-### Open — blocks the end of Phase 0
+### Open
 
-1. **Owner runs the C-index check** and pastes the output:
-   `/opt/anaconda3/bin/python3 tools/gate_cindex.py`
-   (default input: `../PythonProject/MortalityKidsTest.csv`; expected n = 286).
+1. **Owner decides** on deploying the hot-fix and on informing co-authors / journal.
+   Deploy = replace `MortalCombat.py` on the server with the `legacy-streamlit`
+   version and restart Streamlit; then repeat the two spec 3.2 cases on the live site
+   (expected after the fix: RDS only → +0.647, NEC only → −0.681).
 2. `legacy/` on `rebuild` still holds the GitHub copy of `MortalCombat.py`. Owner to
    decide whether it is replaced by the server copy (labels for spec 7.5 come from
    the server version either way).
-3. **Gate outcome** A / B / C in `docs/DECISIONS.md`.
-4. If A: `docs/ERRATUM_feature_order.md` (draft, `TODO(clinical-review)`) and the
-   hot-fix patch for the Streamlit app (prepared on `legacy-streamlit`; owner deploys).
-5. **Server inventory** (spec Section 9 commands), owner runs and pastes.
+3. **Server inventory** (spec Section 9 commands), owner runs and pastes.
+4. `TODO(clinical-review)` / `TODO(owner)` items in `docs/ERRATUM_feature_order.md`:
+   all wording, affected period, who is informed.
 
 ### Open — owner items, defaults in force
 
