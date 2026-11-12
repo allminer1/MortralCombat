@@ -3,7 +3,8 @@
 ## Current phase: 0 — Freeze, inventory, gate
 
 **Gate resolved: outcome A** (`docs/DECISIONS.md`). The phase's "done when" is met.
-Still missing from the Phase 0 list: the server inventory (owner). Next: Phase 1.
+Server code, diff, hashes and inventory are recorded below. Phase 0 is complete apart
+from the owner decisions listed under "Open". Next: Phase 1, in a new session.
 
 Last session: 2026-11-12.
 
@@ -105,7 +106,7 @@ What this means for Phase 5 (to be planned then, nothing changed now):
 2. `legacy/` on `rebuild` still holds the GitHub copy of `MortalCombat.py`. Owner to
    decide whether it is replaced by the server copy (labels for spec 7.5 come from
    the server version either way).
-4. `TODO(clinical-review)` / `TODO(owner)` items in `docs/ERRATUM_feature_order.md`:
+3. `TODO(clinical-review)` / `TODO(owner)` items in `docs/ERRATUM_feature_order.md`:
    all wording, affected period, who is informed.
 
 ### Open — owner items, defaults in force
