@@ -116,10 +116,17 @@ LABELS = {
 }
 
 
+# FEATURES above is the on-screen order only. The model expects the column order the
+# scaler was fitted on (scaler.feature_names_in_): ..., Saturation, RDS, IVH, DIC, NE.
+# The scaler calls the weight column "weight".
+SCALER_NAMES = {"weight.g.": "weight"}
+
+
 def preprocess_input(input_dict):
-    # Ensure the features are in the correct order
-    arr = np.array([input_dict[feat] for feat in FEATURES]).reshape(1, -1)
-    arr_scaled = scaler.transform(arr)
+    # Build a named row and let the scaler's own column names decide the order.
+    row = {SCALER_NAMES.get(feat, feat): [input_dict[feat]] for feat in FEATURES}
+    df = pd.DataFrame(row)[list(scaler.feature_names_in_)]
+    arr_scaled = scaler.transform(df)
     return torch.tensor(arr_scaled, dtype=torch.float32)
 
 
