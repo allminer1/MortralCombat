@@ -1,0 +1,34 @@
+# OS / editors
+.DS_Store
+.idea/
+.vscode/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+requirements_freeze.txt
+
+# Node
+node_modules/
+dist/
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Patient-level data must never be committed (CLAUDE.md rule 9).
+# Tabular files are denied by default; the baseline hazard table is the only exception.
+*.csv
+!legacy/baseline_hazard.csv
+*.dta
+*.xlsx
+*.xls
+*.sav
+*.prism
+*.parquet
+*.feather
