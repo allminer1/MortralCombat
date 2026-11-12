@@ -88,7 +88,7 @@ FEATURES = [
 
 LABELS = {
     "en": {
-        "BOH": "Chorioamnionitis",
+        "BOH": "Bad obestric history",
         "weight.g.": "Weight (g)",
         "Apgar5": "Apgar Score (5 min)",
         "GDW": "Gestational Age (weeks)",
@@ -101,7 +101,7 @@ LABELS = {
         "RDS": "Respiratory Distress Syndrome"
     },
     "ru": {
-        "BOH": "Хориоамнионит",
+        "BOH": "Отягощенный акушерский анамнез",
         "weight.g.": "Вес (гр)",
         "Apgar5": "Оценка по Апгар (5-я мин)",
         "GDW": "Гестационный возраст (нед)",
@@ -116,10 +116,17 @@ LABELS = {
 }
 
 
+# FEATURES above is the on-screen order only. The model expects the column order the
+# scaler was fitted on (scaler.feature_names_in_): ..., Saturation, RDS, IVH, DIC, NE.
+# The scaler calls the weight column "weight".
+SCALER_NAMES = {"weight.g.": "weight"}
+
+
 def preprocess_input(input_dict):
-    # Ensure the features are in the correct order
-    arr = np.array([input_dict[feat] for feat in FEATURES]).reshape(1, -1)
-    arr_scaled = scaler.transform(arr)
+    # Build a named row and let the scaler's own column names decide the order.
+    row = {SCALER_NAMES.get(feat, feat): [input_dict[feat]] for feat in FEATURES}
+    df = pd.DataFrame(row)[list(scaler.feature_names_in_)]
+    arr_scaled = scaler.transform(df)
     return torch.tensor(arr_scaled, dtype=torch.float32)
 
 
@@ -138,21 +145,62 @@ st.info(
 
 st.sidebar.header("Instructions" if lang_code == "en" else "Инструкции")
 st.sidebar.markdown(
-    "- This neural network-based calculator estimates individual risks of preterm infants.\n"
-    "- **Binary features:** Select 'Yes' or 'No'.\n"
-    "- **RF:** Choose between 2 or 3.\n"
-    "- **Numeric features:** Use sliders to select values within the specified range.\n"
-    "- Click 'Calculate Survival Function' to see results.\n"
-    "- When making predictions at the time of ICU admission, for pathologies such as DIC, IVH, and NEC, the option “YES” should be selected only if the condition has already been documented and confirmed. In cases where these pathologies develop later, the calculator can be used again to refine the prognosis."
-    if lang_code == "en" else
-    "- Данный калькулятор на основе нейросетевой модели рассчитывает индивидуальные риски недоношенных детей.\n"
-    "- **Бинарные признаки:** Выбирайте 'Да' или 'Нет'.\n"
-    "- **RF:** Выберите значение 2 или 3.\n"
-    "- **Числовые признаки:** Используйте ползунки для выбора значений в заданном диапазоне.\n"
-    "- Нажмите 'Рассчитать функцию выживаемости' для получения результата.\n"
-    "При прогнозировании в момент перевода в ОРИТ необходимо для таких патологий как ДВС-синдром, ВЖК и НЭК, следует выбирать опцию “ДА”, только в том случае, если таковая зарегистрирована и подтверждена. В случае формирования этих патологий в динамике, калькулятор можно использовать повторно для уточнения прогноза."
-)
-
+ "This DeepSurv-based calculator estimates individual survival probability for very low birth weight (VLBW) preterm infants. "
+    "It supports both initial risk assessment at NICU admission and dynamic prognosis updates as clinical conditions evolve.\n\n"
+    
+    "**Evaluation modes:**\n"
+    "1. **Initial assessment (NICU admission):** Enter only baseline data reflecting the infant’s condition at birth and stabilization:\n"
+    "   - Gestational age and birth weight\n"
+    "   - Apgar score (5th minute)\n"
+    "   - Heart rate and SpO₂ on admission\n"
+    "   - Maternal obstetric history\n"
+    "   *Note: Complications (RDS, IVH, NEC, DIC) should be marked as 'No' unless already confirmed.*\n\n"
+    
+    "2. **Dynamic assessment (during treatment):** Update inputs when clinical status changes:\n"
+    "   - Include complications (RDS, IVH, NEC, DIC)\n"
+    "   - The model recalculates survival trajectory based on newly developed conditions\n\n"
+    
+    "**Input rules:**\n"
+    "- **Numeric features:** Use sliders to select exact values\n"
+    "- **Binary features (Yes/No):** Indicate presence or absence of conditions\n"
+    "- **Respiratory failure (RF):** Select severity grade (2 or 3)\n\n"
+    
+    "**Interpretation and safe use:**\n"
+    "1. The model is dynamic and should be updated as the patient’s condition evolves for real-time monitoring\n"
+    "2. Results represent probabilistic estimates, not guaranteed outcomes\n"
+    "3. Use as a clinical decision support tool alongside standard assessment methods\n"
+    "4. Key evaluation timepoints: 7 and 28 days\n\n"
+    
+    "- Click **'Calculate Survival Function'** to generate results"
+        if lang_code == "en" else
+  "Калькулятор на основе DeepSurv оценивает индивидуальную вероятность выживаемости недоношенных детей с очень низкой массой тела (VLBW). "
+        "Поддерживает первичную оценку при поступлении в ОРИТН и динамическое обновление прогноза.\n\n"
+        
+        "**Режимы оценки:**\n"
+        "1. **Первичная оценка (при поступлении в ОРИТН):** Вводятся только исходные данные:\n"
+        "   - Гестационный возраст и масса тела при рождении\n"
+        "   - Апгар (5-я минута)\n"
+        "   - ЧСС и SpO₂ при поступлении\n"
+        "   - Акушерский анамнез матери\n"
+        "   *Примечание: Осложнения (РДС, ВЖК, НЭК, ДВС) отмечаются как «Нет», если не подтверждены.*\n\n"
+        
+        "2. **Динамическая оценка (в процессе лечения):** Обновляйте данные при изменении состояния:\n"
+        "   - Добавляются осложнения (РДС, ВЖК, НЭК, ДВС)\n"
+        "   - Модель пересчитывает прогноз\n\n"
+        
+        "**Правила заполнения:**\n"
+        "- **Числовые параметры:** Используйте ползунки\n"
+        "- **Бинарные признаки (Да/Нет):** Укажите наличие или отсутствие\n"
+        "- **Дыхательная недостаточность (ДН):** Степень 2 или 3\n\n"
+        
+        "**Интерпретация и использование:**\n"
+        "1. Модель динамическая — обновляйте данные при изменении состояния\n"
+        "2. Результат — вероятность, а не гарантированный исход\n"
+        "3. Использовать вместе с клинической оценкой\n"
+        "4. Контрольные точки: 7 и 28 сутки\n\n"
+        
+        "- Нажмите **'Рассчитать функцию выживаемости'**"
+    )
 col1, col2 = st.columns([1, 2], gap="large")
 
 with col1:

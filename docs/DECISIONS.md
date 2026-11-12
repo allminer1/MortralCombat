@@ -24,6 +24,17 @@ Phases 1–3. `tools/legacy_model.py` builds positional arrays in two orderings 
 purpose — it is the gate's comparison harness, not inference code, and is to be
 removed or retired once `model/feature_spec.json` exists (Phase 1).
 
+## 2026-11-12 — `legacy/` holds the deployed app
+
+With the owner's approval, `legacy/MortalCombat.py` was replaced by the version that
+runs in production after the hot-fix (tag `legacy-hotfix-2026-11-12`, sha256
+`47350ccd…fd2e71d`), and the server's `run.sh` was added. This is the one sanctioned
+change to `legacy/`; the three model artifacts were not touched (hashes unchanged).
+The GitHub copy it replaces remains on `main`; the pre-fix server copy is tag
+`legacy-server-2026-11`. Labels for spec 7.5 are taken from this file ("Bad obestric
+history" is the server's typo, to be corrected in the rebuild's i18n files).
+`APP_ORDER` in `tools/legacy_model.py` documents the pre-fix order and stays as is.
+
 ## 2026-11-12 — Feature-order gate (spec Section 3) — OUTCOME: **A**
 
 **The network was trained in the scaler's column order. The app order is wrong.**

@@ -65,6 +65,10 @@ Last session: 2026-11-12.
   All three equal the scaler-order expectations. Only the English interface was
   checked; the calculation path is the same for Russian.
 
+- `legacy/` now holds the app as deployed after the hot-fix, plus `run.sh` (owner
+  approved; see `docs/DECISIONS.md`). Model artifacts unchanged; gate regression
+  still 6 / 6.
+
 ### Server inventory (owner ran the commands on 2026-11-12; host name and SSH port left out on purpose)
 
 | Item | Finding |
@@ -103,10 +107,7 @@ What this means for Phase 5 (to be planned then, nothing changed now):
 
 1. **Owner decides** on informing co-authors / journal and on any notice on the site
    (`docs/ERRATUM_feature_order.md`). The site shows no notice about the change.
-2. `legacy/` on `rebuild` still holds the GitHub copy of `MortalCombat.py`. Owner to
-   decide whether it is replaced by the server copy (labels for spec 7.5 come from
-   the server version either way).
-3. `TODO(clinical-review)` / `TODO(owner)` items in `docs/ERRATUM_feature_order.md`:
+2. `TODO(clinical-review)` / `TODO(owner)` items in `docs/ERRATUM_feature_order.md`:
    all wording, affected period, who is informed.
 
 ### Open — owner items, defaults in force
