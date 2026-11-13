@@ -4,9 +4,13 @@ version = "0.1.0"
 description = "NeoMortalSurv API backend. Runtime has no torch, pycox, scikit-learn or pandas."
 requires-python = ">=3.12"
 dependencies = [
+    "alembic>=1.20.1",
+    "argon2-cffi>=25.1.0",
     "fastapi>=0.162.5",
     "numpy>=2.5.4",
     "onnxruntime>=1.31.1",
+    "psycopg[binary]>=3.3.9",
+    "sqlalchemy>=2.1.8",
     "swagger-ui-bundle>=1.1.0",
     "uvicorn>=0.54.0",
 ]

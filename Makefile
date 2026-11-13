@@ -1,6 +1,6 @@
 UV := uv run --project backend
 
-.PHONY: dev dev-api dev-web test lint e2e e2e-local build export-model sweep-report
+.PHONY: dev dev-api dev-web test test-accounts lint e2e e2e-local build export-model sweep-report
 
 # API on http://127.0.0.1:8000 (docs: /api/docs) and the frontend on http://127.0.0.1:5173,
 # both with reload. uvicorn's own access log is off: it would print query strings. The
@@ -18,6 +18,16 @@ dev-web:
 test:
 	cd backend && uv run pytest -q
 	cd frontend && npm test
+
+# Accounts tests against a throwaway PostgreSQL in Docker (synthetic data only).
+TEST_DB := postgresql://test:test@127.0.0.1:54329/test
+test-accounts:
+	-docker rm -f nms-test-db >/dev/null 2>&1
+	docker run -d --name nms-test-db -e POSTGRES_USER=test -e POSTGRES_PASSWORD=test -e POSTGRES_DB=test \
+		-p 127.0.0.1:54329:5432 postgres:17-alpine >/dev/null
+	until docker exec nms-test-db pg_isready -U test -q; do sleep 1; done; sleep 1
+	cd backend && TEST_DATABASE_URL=$(TEST_DB) uv run pytest -q; status=$$?; \
+		docker rm -f nms-test-db >/dev/null; exit $$status
 
 lint:
 	$(UV) ruff check .

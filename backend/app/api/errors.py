@@ -24,6 +24,10 @@ CODES = {
     "json_invalid": "invalid_json",
     "model_attributes_type": "invalid_body",
     "dict_type": "invalid_body",
+    "string_type": "not_text",
+    "string_too_short": "too_short",
+    "string_too_long": "too_long",
+    "string_pattern_mismatch": "bad_format",
 }
 
 
@@ -38,7 +42,8 @@ def make_validation_handler(spec: FeatureSpec):
         items = []
         for err in exc.errors():
             loc = err.get("loc", ())
-            name = loc[1] if len(loc) > 1 and loc[0] == "body" and isinstance(loc[1], str) else None
+            # ("body", "field") for /predict, ("body", "inputs", "field") for saved calculations.
+            name = loc[-1] if len(loc) > 1 and loc[0] == "body" and isinstance(loc[-1], str) else None
             code = CODES.get(err.get("type", ""), "invalid")
             item: dict = {"field": name, "code": code}
             feature = by_field.get(name)

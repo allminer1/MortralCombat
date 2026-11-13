@@ -16,7 +16,13 @@ from app.core.config import Settings
 from app.core.logging import AccessLogMiddleware, configure_logging
 from app.inference import Predictor, default_model_dir
 
-HTTP_ERROR_CODES = {404: "not_found", 405: "method_not_allowed", 429: "rate_limited"}
+HTTP_ERROR_CODES = {
+    401: "not_signed_in",
+    403: "forbidden",
+    404: "not_found",
+    405: "method_not_allowed",
+    429: "rate_limited",
+}
 DOCS_ASSETS = "/api/docs/assets"
 
 
@@ -42,7 +48,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     @app.exception_handler(HTTPException)
     async def http_error(request: Request, exc: HTTPException) -> JSONResponse:
-        code = HTTP_ERROR_CODES.get(exc.status_code, "error")
+        # Our own handlers pass a code as `detail`; anything else gets the generic code.
+        known = getattr(request.state, "error_codes", None)
+        code = known[0] if known else HTTP_ERROR_CODES.get(exc.status_code, "error")
         return JSONResponse(
             status_code=exc.status_code,
             content=error_body({"field": None, "code": code}),
@@ -50,6 +58,22 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         )
 
     app.include_router(build_router(predictor, settings, model_dir))
+
+    # Accounts and saved history: nothing below exists unless the flag is on.
+    if settings.enable_accounts:
+        if not settings.database_url:
+            raise RuntimeError("ENABLE_ACCOUNTS is on but DATABASE_URL is not set")
+        from app.api.accounts import build_accounts_router
+        from app.db.engine import make_engine, make_session_factory
+
+        engine = make_engine(settings.database_url)
+        app.state.db_engine = engine
+        app.include_router(build_accounts_router(predictor, settings, make_session_factory(engine)))
+
+    @app.get("/api/v1/features", tags=["meta"], summary="Which optional features this server has switched on")
+    def features() -> dict[str, bool]:
+        return {"accounts": settings.enable_accounts}
+
     app.mount(DOCS_ASSETS, StaticFiles(directory=str(swagger_ui_path)), name="docs-assets")
 
     @app.get("/api/docs", include_in_schema=False)
