@@ -1,10 +1,14 @@
 import { defineConfig, devices } from '@playwright/test'
 
-// Starts the API and the production build of the frontend itself. Switching the target
-// to the Docker Compose stack is a Phase 5 task (no Docker on the workstation yet).
+// Two modes:
+//   E2E_BASE_URL set (make e2e): test the running Docker Compose stack at that address.
+//   not set (make e2e-local):    start the API and two builds of the frontend here; the
+//                                second build has the Kazakh flag on (project "kk-flag").
+const STACK_URL = process.env.E2E_BASE_URL
 const API_PORT = 8010
 const WEB_PORT = 4173
-const KK_PORT = 4174 // second build with the Kazakh flag on
+const KK_PORT = 4174
+const WEB_URL = STACK_URL ?? `http://127.0.0.1:${WEB_PORT}`
 
 export default defineConfig({
   testDir: './e2e',
@@ -14,10 +18,10 @@ export default defineConfig({
   outputDir: './test-results',
   use: { ...devices['Desktop Chrome'], locale: 'en-GB' },
   projects: [
-    { name: 'default', testIgnore: /kk\.spec\.ts/, use: { baseURL: `http://127.0.0.1:${WEB_PORT}` } },
-    { name: 'kk-flag', testMatch: /kk\.spec\.ts/, use: { baseURL: `http://127.0.0.1:${KK_PORT}` } },
+    { name: 'default', testIgnore: /kk\.spec\.ts/, use: { baseURL: WEB_URL } },
+    ...(STACK_URL ? [] : [{ name: 'kk-flag', testMatch: /kk\.spec\.ts/, use: { baseURL: `http://127.0.0.1:${KK_PORT}` } }]),
   ],
-  webServer: [
+  webServer: STACK_URL ? [] : [
     {
       command: `uv run uvicorn app.main:app --host 127.0.0.1 --port ${API_PORT} --no-access-log`,
       cwd: '../backend',

@@ -1,0 +1,11 @@
+# Adds the old Streamlit app as a second site behind the same Caddy (docs/CUTOVER.md).
+# Used when LEGACY=on in deploy/.env.
+services:
+  caddy:
+    environment:
+      SITE_LEGACY: ${SITE_LEGACY:?set SITE_LEGACY in deploy/.env}
+      LEGACY_UPSTREAM: ${LEGACY_UPSTREAM:-host.docker.internal:8501}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./legacy.caddy:/etc/caddy/legacy/legacy.caddy:ro

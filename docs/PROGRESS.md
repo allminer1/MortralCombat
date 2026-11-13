@@ -1,10 +1,66 @@
 # Progress
 
-## Current phase: 4 — Report, About page, Kazakh — complete, wording awaits review
+## Current phase: 5 — Deploy and cutover — part A (local) done, part B (server) not started
 
-Last session: 2026-11-13 (same session as Phases 1–3, at the owner's request). Next:
-Phase 5 (deploy and cutover), in a new session. It needs Docker on the workstation,
-the owner for every step on the server, and the open items below.
+Last session: 2026-11-13 (same session as Phases 1–4, at the owner's request).
+**Phase 5 is not complete.** Its "done" criteria (staging over HTTPS, owner sign-off of
+the case comparison, main domain switched, legacy subdomain live, rollback rehearsed)
+all happen on the server and are the owner's steps in `docs/CUTOVER.md`.
+
+### Done in Phase 5, part A (workstation only)
+
+- Colima 0.10 + Docker 29.5 + compose 5.7 installed with Homebrew (`colima start`
+  before `make e2e`; `colima stop` frees the memory).
+- **API image built for the first time; closes the open Phase 2 check.** 22 packages,
+  no torch / scikit-learn / pandas / pycox; runs as uid 10001; 422 MB.
+- `deploy/web.Dockerfile`: Caddy 2 with the built frontend, uid 10002.
+- `deploy/Caddyfile`: site address from `.env`; HSTS, `X-Content-Type-Options`,
+  `Referrer-Policy`, `X-Frame-Options`, strict CSP (`default-src 'self'`, no inline
+  anything, `frame-ancestors 'none'`) with a separate same-origin policy for
+  `/api/docs`; gzip / zstd; single-page fallback; long cache for hashed files; access
+  log without query strings, client addresses or headers.
+- `deploy/docker-compose.yml` (`caddy`, `api`; both read-only root file system, all
+  capabilities dropped except port binding for Caddy, memory limits, health check,
+  `TRUSTED_PROXY=true`), `docker-compose.legacy.yml` + `legacy.caddy` (old Streamlit
+  app as a second site), `docker-compose.e2e.yml` (local test on 127.0.0.1:8080),
+  `.env.example`, `deploy.sh` (asks for confirmation; owner runs it).
+- `make e2e` now builds the images, starts the compose stack and runs the browser
+  tests against it: 35 pass. `make e2e-local` is the previous mode and the only one
+  that covers the Kazakh flag: 40 pass. `make build` builds both images.
+- New browser checks: no console errors or CSP violations anywhere in the app; the API
+  docs page loads only its own files. Found and fixed through them: zod probed
+  `new Function`, which the CSP reports (now `jitless`); fonts are never inlined as
+  `data:` URLs.
+- Checked by hand on the local stack: a request body and a query string sent through
+  Caddy appear in neither container's log; the legacy override proxies to a process on
+  the host.
+- `.github/workflows/ci.yml` written. **It has never run** — it starts with the first
+  push that contains it.
+- `docs/CUTOVER.md`: step-by-step runbook for part B with rollback and the case list.
+
+### Not done / not verified
+
+1. **Everything on the server** (`docs/CUTOVER.md`): DNS, Docker, moving Streamlit to a
+   local port, certbot, staging, comparison, cutover, rollback rehearsal.
+2. Never tested: real certificates, Streamlit behind Caddy (only a dummy upstream was
+   proxied), Streamlit bound to the Docker bridge address, image builds on the server.
+3. CI workflow unverified until pushed. Nothing has been pushed since Phase 0; 15
+   commits are local on `rebuild`.
+4. `TODO(owner)`: certificate-hook question (runbook step 0), seven realistic
+   comparison cases (step 6), uptime check, erratum notice, ACME contact e-mail.
+5. Carried over: `docs/MODEL_BEHAVIOUR.md` to the co-authors; training ranges;
+   clinical review of all wording; Kazakh review.
+
+### Notes for the next session
+
+- Part B needs the owner at the server. Claude can help read command output and adjust
+  the files, but runs nothing against production unless asked in that session.
+- Phase 6 (accounts) stays off in production until the institutional sign-off
+  (spec Section 8).
+
+## Phase 4 — Report, About page, Kazakh — complete, wording awaits review
+
+Session of 2026-11-13.
 
 ### Done in Phase 4
 
@@ -173,7 +229,7 @@ Session of 2026-11-13.
 | Golden tests pass through the HTTP layer | pass — 527 cases, max log-risk diff 4.4e-6, max S(t) diff 1.0e-6 |
 | 422 cases tested for every field | pass — missing, null, wrong type for all 11; below / above range for the 5 integer fields; disallowed values for the grade; unknown field |
 | A test proves request bodies do not reach the logs | pass — valid, invalid and malformed requests, all loggers and stdout / stderr captured |
-| Image has no torch | **partly** — `uv.lock` (what the image installs) is tested to contain no torch, pycox, scikit-learn, pandas, joblib; the image itself has not been built |
+| Image has no torch | pass — lock file tested, and the image itself built and inspected in Phase 5 (22 packages, no torch) |
 
 ### Open after Phase 2
 

@@ -1,5 +1,9 @@
 import { z } from 'zod'
 
+// zod normally probes whether it may compile validators with `new Function`. The site's
+// Content-Security-Policy forbids that, and the probe alone is reported as a violation.
+z.config({ jitless: true })
+
 /** Shapes of GET /api/v1/model. Names, types, ranges and units come from the server;
  *  nothing here retypes them. */
 export type Feature =

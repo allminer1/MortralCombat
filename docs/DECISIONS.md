@@ -292,3 +292,46 @@ Numbers in Kazakh always use the Russian formatting rules (decimal comma, space 
 %), because some browsers claim Kazakh support and print English forms (seen in
 Playwright's Chromium). Dates use Kazakh month names when the browser really has them,
 else Russian.
+
+## 2026-11-13 — Phase 5 part A run in the same session
+
+At the owner's request. Only the workstation part was approved and done; the server
+part is the owner's (`docs/CUTOVER.md`).
+
+## 2026-11-13 — Phase 5: local container runtime
+
+Colima with the Docker CLI instead of Docker Desktop: command-line only, no licence
+terms to accept, no admin password.
+
+## 2026-11-13 — Phase 5: how Caddy and Streamlit share the server
+
+Caddy takes ports 80 / 443 and serves two sites from one `.env`: `SITE_NEW` (the new
+stack) and `SITE_LEGACY` (reverse proxy to Streamlit on a local port). Staging,
+cutover and rollback are all the same operation: change which name is on which line
+and run `deploy/deploy.sh`. No DNS change at cutover or rollback, so both are immediate.
+Streamlit listens on the Docker bridge address (`172.17.0.1:8501`) rather than
+`127.0.0.1`, because a container cannot reach the host's loopback; the alternative,
+running Caddy with host networking, would take it out of the compose network.
+This follows the option recorded in the Phase 0 inventory.
+
+## 2026-11-13 — Phase 5: images are built on the server
+
+`deploy.sh` builds from the checkout instead of pulling from a registry: one fewer
+account and secret. Cost: the build needs memory, hence the swap step in the runbook.
+A registry can replace this later without changing the compose file's shape.
+
+## 2026-11-13 — Phase 5: security headers
+
+- Application: `default-src 'self'` with nothing inline. Consequences kept in code:
+  zod runs `jitless`, Vite never inlines assets as `data:` URLs.
+- `/api/docs` only: inline script and style allowed, because Swagger UI's page needs
+  them; still same-origin only.
+- HSTS one year, without `includeSubDomains` or preload.
+- Caddy's access log drops query strings, client addresses and all headers, matching
+  the API's own logging rule; the admin API is off.
+
+## 2026-11-13 — Phase 5: e2e targets
+
+`make e2e` tests the compose stack (spec Section 9). `make e2e-local` keeps the
+Docker-free mode because it is the only one that builds with the Kazakh flag. CI runs
+both.

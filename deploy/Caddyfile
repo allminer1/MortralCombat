@@ -1,0 +1,68 @@
+# NeoMortalSurv. Site addresses come from deploy/.env (see .env.example).
+#
+#   SITE_NEW      address served by the new stack (staging name first, main name at cutover)
+#   ACME_EMAIL    contact for Let's Encrypt
+#
+# The old Streamlit app is proxied by an optional file mounted into /etc/caddy/legacy/
+# (deploy/legacy.caddy, enabled through docker-compose.legacy.yml).
+{
+	email {$ACME_EMAIL:admin@invalid.example}
+	# Admin API off: nothing reloads Caddy at run time; changes go through a restart.
+	admin off
+}
+
+{$SITE_NEW} {
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "no-referrer"
+		X-Frame-Options "DENY"
+		Permissions-Policy "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+		-Server
+	}
+
+	# Strict policy for the application: everything from our own origin, nothing inline.
+	@app not path /api/docs /api/docs/*
+	header @app Content-Security-Policy "default-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+
+	# The API documentation page (Swagger UI) starts with an inline script and uses inline
+	# styles. It gets its own, still same-origin-only, policy.
+	@docs path /api/docs /api/docs/*
+	header @docs Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'"
+
+	handle /api/* {
+		reverse_proxy api:8000
+	}
+
+	handle {
+		root * /srv
+		# Hashed build files never change; the page itself must always be fresh.
+		@assets path /assets/*
+		header @assets Cache-Control "public, max-age=31536000, immutable"
+		@page not path /assets/*
+		header @page Cache-Control "no-cache"
+		# Single-page app: /about and /report are answered with index.html.
+		try_files {path} /index.html
+		file_server
+	}
+
+	# Access log without query strings and without client addresses or headers.
+	log {
+		output stdout
+		format filter {
+			wrap json
+			fields {
+				request>uri regexp \?.* ""
+				request>remote_ip delete
+				request>client_ip delete
+				request>remote_port delete
+				request>headers delete
+				resp_headers delete
+			}
+		}
+	}
+}
+
+import legacy/*.caddy

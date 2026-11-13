@@ -1,7 +1,15 @@
-# Allow-list: only what the API image needs.
+# Allow-list: only what the images need.
 *
 !backend/pyproject.toml
 !backend/uv.lock
 !backend/app/
 !model/
+!frontend/
+frontend/node_modules
+frontend/dist
+frontend/dist-kk
+frontend/e2e
+frontend/screenshots
+frontend/test-results
+!deploy/Caddyfile
 **/__pycache__/

@@ -1,6 +1,6 @@
 UV := uv run --project backend
 
-.PHONY: dev dev-api dev-web test lint e2e export-model sweep-report
+.PHONY: dev dev-api dev-web test lint e2e e2e-local build export-model sweep-report
 
 # API on http://127.0.0.1:8000 (docs: /api/docs) and the frontend on http://127.0.0.1:5173,
 # both with reload. uvicorn's own access log is off: it would print query strings. The
@@ -24,10 +24,23 @@ lint:
 	$(UV) ruff format --check .
 	cd frontend && npm run lint && npm run typecheck
 
-# Playwright starts the API and the built frontend itself (ports 8010 and 4173).
-# Running it against the Docker Compose stack is a Phase 5 task.
+COMPOSE_E2E := SITE_NEW=:8080 docker compose -f deploy/docker-compose.yml -f deploy/docker-compose.e2e.yml
+
+# Browser tests against the Docker Compose stack (same images as production, plain HTTP
+# on 127.0.0.1:8080). Needs a running Docker (on this workstation: `colima start`).
 e2e:
+	$(COMPOSE_E2E) up -d --build --wait
+	cd frontend && E2E_BASE_URL=http://127.0.0.1:8080 npm run e2e; status=$$?; \
+		cd .. && $(COMPOSE_E2E) down; exit $$status
+
+# Browser tests without Docker: Playwright starts the API and two builds of the frontend
+# itself (ports 8010, 4173, 4174). The only run that covers the Kazakh flag.
+e2e-local:
 	cd frontend && npm run e2e
+
+# Build both production images.
+build:
+	$(COMPOSE_E2E) build
 
 # Regenerates model/ from legacy/. Output is byte-identical on every run.
 export-model:

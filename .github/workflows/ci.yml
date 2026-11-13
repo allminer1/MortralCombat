@@ -1,0 +1,73 @@
+# Runs on every push and pull request. NOT YET RUN: written on 2026-11-13, takes effect
+# with the first push that contains it (docs/PROGRESS.md).
+name: ci
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - name: Lint (ruff)
+        run: |
+          uv run --project backend ruff check .
+          uv run --project backend ruff format --check .
+      - name: Tests (golden tests included)
+        working-directory: backend
+        run: uv run pytest -q
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 26
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - working-directory: frontend
+        run: |
+          npm ci
+          npm run lint
+          npm run typecheck
+          npm test
+
+  e2e:
+    runs-on: ubuntu-latest
+    needs: [backend, frontend]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 26
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install frontend and browser
+        working-directory: frontend
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+      - name: Build images and test the compose stack
+        run: make e2e
+      - name: API image has no training libraries
+        run: |
+          docker run --rm --entrypoint python neomortalsurv-api -c "
+          import importlib.util as u, sys
+          bad = [n for n in ('torch', 'sklearn', 'pandas', 'pycox') if u.find_spec(n)]
+          sys.exit(f'found in image: {bad}' if bad else 0)"
+      - name: Browser tests without Docker (covers the Kazakh flag)
+        run: make e2e-local
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-results
+          path: frontend/test-results
+          retention-days: 7

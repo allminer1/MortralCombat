@@ -3,8 +3,7 @@
 #     docker build -f backend/Dockerfile -t neomortalsurv-api .
 #
 # Runtime dependencies only (uv.lock, --no-dev): no torch, scikit-learn or pandas.
-# NOT YET BUILT: the workstation has no Docker (docs/PROGRESS.md). First build is due in
-# Phase 5 / CI, where `pip list` in the image must show no torch.
+# Built and checked on 2026-11-13: 22 packages, no torch (docs/PROGRESS.md).
 FROM python:3.12-slim AS build
 COPY --from=ghcr.io/astral-sh/uv:0.13.7 /uv /usr/local/bin/uv
 ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy UV_PYTHON_DOWNLOADS=never

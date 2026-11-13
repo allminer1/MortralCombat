@@ -1,0 +1,66 @@
+# NeoMortalSurv production stack: caddy (TLS, static files) + api. The database joins in
+# Phase 6 under the "accounts" profile. Run through deploy/deploy.sh on the server, or
+# `make e2e` locally (with docker-compose.e2e.yml).
+name: neomortalsurv
+
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: backend/Dockerfile
+    image: neomortalsurv-api
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      # Caddy is the only client; the caller's address is the entry Caddy puts in
+      # X-Forwarded-For. Without this every user would share one rate-limit bucket.
+      TRUSTED_PROXY: "true"
+      RATE_LIMIT_PER_MINUTE: ${RATE_LIMIT_PER_MINUTE:-60}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/api/v1/health', timeout=3).status == 200 else 1)"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    mem_limit: 512m
+    expose:
+      - "8000"
+
+  caddy:
+    build:
+      context: ..
+      dockerfile: deploy/web.Dockerfile
+      args:
+        VITE_ENABLE_KK: ${VITE_ENABLE_KK:-false}
+    image: neomortalsurv-web
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    read_only: true
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+    environment:
+      SITE_NEW: ${SITE_NEW:?set SITE_NEW in deploy/.env}
+      ACME_EMAIL: ${ACME_EMAIL:-admin@invalid.example}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+    mem_limit: 256m
+
+volumes:
+  caddy_data:
+  caddy_config:

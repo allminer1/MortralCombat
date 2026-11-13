@@ -1,0 +1,13 @@
+# The old Streamlit app, proxied while both run side by side (docs/CUTOVER.md).
+#
+#   SITE_LEGACY      before cutover: the main domain; after cutover: the legacy. subdomain
+#   LEGACY_UPSTREAM  where Streamlit listens on the host, e.g. host.docker.internal:8501
+{$SITE_LEGACY} {
+	encode zstd gzip
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options "nosniff"
+		-Server
+	}
+	reverse_proxy {$LEGACY_UPSTREAM}
+}

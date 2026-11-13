@@ -10,5 +10,8 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: { host: '127.0.0.1', port: 5173, strictPort: true, proxy },
   preview: { host: '127.0.0.1', port: 4173, strictPort: true, proxy },
+  // No data: URLs: every font and image is a real file, so the strict
+  // Content-Security-Policy (deploy/Caddyfile) needs no exceptions.
+  build: { assetsInlineLimit: 0 },
   test: { include: ['src/**/*.test.ts'], environment: 'node' },
 })

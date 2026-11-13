@@ -1,0 +1,10 @@
+# Local / CI test of the same images over plain HTTP on 127.0.0.1:8080 (`make e2e`).
+services:
+  api:
+    environment:
+      RATE_LIMIT_PER_MINUTE: "0" # the browser tests send many requests from one address
+  caddy:
+    environment:
+      SITE_NEW: ":8080"
+    ports: !override
+      - "127.0.0.1:8080:8080"

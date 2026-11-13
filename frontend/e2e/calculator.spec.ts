@@ -122,16 +122,46 @@ test('first visit follows the browser language', async ({ browser }) => {
   await context.close()
 })
 
-test('the page makes no third-party requests', async ({ page }) => {
+test('no third-party requests, no console errors, no Content-Security-Policy violations', async ({ page, baseURL }) => {
+  const own = new URL(baseURL!).host
   const foreign: string[] = []
+  const problems: string[] = []
   page.on('request', (r) => {
-    if (new URL(r.url()).host !== '127.0.0.1:4173' && !r.url().startsWith('data:')) foreign.push(r.url())
+    if (new URL(r.url()).host !== own && !r.url().startsWith('data:')) foreign.push(r.url())
   })
+  page.on('console', (m) => {
+    if (m.type() === 'error') problems.push(m.text())
+  })
+  page.on('pageerror', (e) => problems.push(String(e)))
   await page.goto('/?lang=ru')
   await fillFigure8(page)
   await calculate(page).click()
   await expect(page.getByTestId('result')).toBeVisible()
+  await page.locator('a[href="/report"]').click()
+  await page.getByTestId('report-sheet').waitFor()
+  await page.locator('a[href="/about"]').click()
+  await page.getByTestId('about-total').waitFor()
+  // Direct visits to the app's own routes are answered with the app (single-page fallback).
+  await page.goto('/about')
+  await page.getByTestId('about-total').waitFor()
   expect(foreign).toEqual([])
+  expect(problems).toEqual([])
+})
+
+test('API documentation page loads its own files only', async ({ page, baseURL }) => {
+  const own = new URL(baseURL!).host
+  const foreign: string[] = []
+  const problems: string[] = []
+  page.on('request', (r) => {
+    if (new URL(r.url()).host !== own && !r.url().startsWith('data:')) foreign.push(r.url())
+  })
+  page.on('console', (m) => {
+    if (m.type() === 'error') problems.push(m.text())
+  })
+  await page.goto('/api/docs')
+  await expect(page.getByText('/api/v1/predict')).toBeVisible()
+  expect(foreign).toEqual([])
+  expect(problems).toEqual([])
 })
 
 for (const lang of ['en', 'ru']) {
