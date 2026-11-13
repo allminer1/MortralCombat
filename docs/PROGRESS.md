@@ -38,6 +38,10 @@ Still open after the review:
   compose default and `.env.example` are now `VITE_ENABLE_KK=true`; `make e2e` runs the
   Kazakh tests against the stack. On the server the owner sets the same line in
   `deploy/.env` and deploys. `TODO(owner)`: reviewer's name and date.
+  **Deployed by the owner on 2026-11-13 (commit `6279ec8`).** Checked in a browser on
+  the live site: "Қазақша" is in the language switch, `?lang=kk` shows the Kazakh
+  interface, the Kazakh-specific letters come from the bundled font; Figure 8 through
+  the API unchanged; accounts off; old app up.
 - Accounts: stay off (no institutional sign-off).
 
 ### After the phases: uptime check (2026-11-13) — registered, first scheduled run not yet seen
