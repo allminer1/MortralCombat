@@ -10,6 +10,7 @@ import { useSession } from '../lib/session'
 import { ChoiceField } from './ChoiceField'
 import { NumberField } from './NumberField'
 import { ResultPanel } from './ResultPanel'
+import { SaveCalculation } from './SaveCalculation'
 
 export function Calculator({ model }: { model: ModelInfo }) {
   const { t } = useTranslation()
@@ -127,6 +128,7 @@ export function Calculator({ model }: { model: ModelInfo }) {
         prediction={last?.prediction ?? null}
         stale={stale}
         headingRef={resultHeading}
+        extra={last && <SaveCalculation key={last.at.getTime()} inputs={toRequest(features, last.values)} />}
       />
     </div>
   )

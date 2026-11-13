@@ -18,7 +18,12 @@ export default defineConfig({
   outputDir: './test-results',
   use: { ...devices['Desktop Chrome'], locale: 'en-GB' },
   projects: [
-    { name: 'default', testIgnore: /kk\.spec\.ts/, use: { baseURL: WEB_URL } },
+    // accounts.spec.ts needs the stack with the database (make e2e-accounts sets E2E_ACCOUNTS).
+    {
+      name: 'default',
+      testIgnore: process.env.E2E_ACCOUNTS ? /kk\.spec\.ts/ : /(kk|accounts)\.spec\.ts/,
+      use: { baseURL: WEB_URL },
+    },
     ...(STACK_URL ? [] : [{ name: 'kk-flag', testMatch: /kk\.spec\.ts/, use: { baseURL: `http://127.0.0.1:${KK_PORT}` } }]),
   ],
   webServer: STACK_URL ? [] : [

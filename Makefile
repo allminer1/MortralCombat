@@ -1,6 +1,6 @@
 UV := uv run --project backend
 
-.PHONY: dev dev-api dev-web test test-accounts lint e2e e2e-local build export-model sweep-report
+.PHONY: dev dev-api dev-web test test-accounts lint e2e e2e-accounts e2e-local build export-model sweep-report
 
 # API on http://127.0.0.1:8000 (docs: /api/docs) and the frontend on http://127.0.0.1:5173,
 # both with reload. uvicorn's own access log is off: it would print query strings. The
@@ -42,6 +42,23 @@ e2e:
 	$(COMPOSE_E2E) up -d --build --wait
 	cd frontend && E2E_BASE_URL=http://127.0.0.1:8080 npm run e2e; status=$$?; \
 		cd .. && $(COMPOSE_E2E) down; exit $$status
+
+# Browser tests of accounts and history: the compose stack with PostgreSQL and the
+# feature switched on, two throwaway users with random passwords, synthetic data only.
+COMPOSE_ACC := SITE_NEW=:8080 POSTGRES_PASSWORD=e2e-only-$$PPID docker compose -p neomortalsurv-acc \
+	-f deploy/docker-compose.yml -f deploy/docker-compose.accounts.yml \
+	-f deploy/docker-compose.e2e.yml -f deploy/docker-compose.e2e-accounts.yml
+e2e-accounts:
+	$(COMPOSE_ACC) down -v >/dev/null 2>&1 || true
+	$(COMPOSE_ACC) build
+	$(COMPOSE_ACC) up -d --wait db
+	$(COMPOSE_ACC) run --rm api python -m app.cli migrate
+	$(COMPOSE_ACC) up -d --wait
+	export E2E_PASSWORD_A=$$(openssl rand -hex 12) E2E_PASSWORD_B=$$(openssl rand -hex 12); \
+		printf '%s\n' "$$E2E_PASSWORD_A" | $(COMPOSE_ACC) exec -T api python -m app.cli create-user a@example.test --password-stdin && \
+		printf '%s\n' "$$E2E_PASSWORD_B" | $(COMPOSE_ACC) exec -T api python -m app.cli create-user b@example.test --password-stdin && \
+		cd frontend && E2E_BASE_URL=http://127.0.0.1:8080 E2E_ACCOUNTS=1 npx playwright test accounts; status=$$?; \
+		cd .. && $(COMPOSE_ACC) down -v; exit $$status
 
 # Browser tests without Docker: Playwright starts the API and two builds of the frontend
 # itself (ports 8010, 4173, 4174). The only run that covers the Kazakh flag.

@@ -16,6 +16,9 @@ RUN useradd --system --uid 10001 --no-create-home api
 WORKDIR /srv/backend
 COPY --from=build /srv/backend/.venv ./.venv
 COPY backend/app ./app
+# Database migrations, used only when accounts are enabled (python -m app.cli migrate).
+COPY backend/alembic ./alembic
+COPY backend/alembic.ini ./alembic.ini
 COPY model /srv/model
 ENV PATH="/srv/backend/.venv/bin:$PATH" \
     MODEL_DIR=/srv/model \

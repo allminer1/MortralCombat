@@ -5,8 +5,11 @@ import { About } from './components/About'
 import { Calculator } from './components/Calculator'
 import { Footer } from './components/Footer'
 import { Header } from './components/Header'
+import { History, HistoryItem } from './components/History'
+import { Login } from './components/Login'
 import { Report } from './components/Report'
 import { getModel } from './lib/api'
+import { AuthProvider, useAuth } from './lib/auth'
 import { layoutMatches } from './lib/fields'
 import { SessionProvider } from './lib/session'
 import type { ModelInfo } from './lib/spec'
@@ -34,6 +37,7 @@ export default function App() {
 
   return (
     <BrowserRouter>
+      <AuthProvider>
       <SessionProvider>
         <div className="flex min-h-screen flex-col print:min-h-0">
           <Header />
@@ -61,17 +65,38 @@ export default function App() {
               </p>
             )}
             {model !== null && usable && (
-              <Routes>
-                <Route path="/" element={<Calculator model={model} />} />
-                <Route path="/about" element={<About model={model} />} />
-                <Route path="/report" element={<Report model={model} />} />
-                <Route path="*" element={<Navigate to="/" replace />} />
-              </Routes>
+              <Pages model={model} />
             )}
           </main>
           <Footer model={model} />
         </div>
       </SessionProvider>
+      </AuthProvider>
     </BrowserRouter>
+  )
+}
+
+/** Account pages exist only when the server has the feature on; history needs a session. */
+function Pages({ model }: { model: ModelInfo }) {
+  const auth = useAuth()
+  const signedIn = auth.enabled === true && auth.user !== null
+  return (
+    <Routes>
+      <Route path="/" element={<Calculator model={model} />} />
+      <Route path="/about" element={<About model={model} />} />
+      <Route path="/report" element={<Report model={model} />} />
+      {auth.enabled === true && <Route path="/login" element={<Login />} />}
+      {auth.enabled === true && (
+        <Route path="/history" element={signedIn ? <History /> : <Navigate to="/login" replace />} />
+      )}
+      {auth.enabled === true && (
+        <Route
+          path="/history/:id"
+          element={signedIn ? <HistoryItem model={model} /> : <Navigate to="/login" replace />}
+        />
+      )}
+      {/* While the feature state is loading, do not redirect account links away. */}
+      {auth.enabled !== null && <Route path="*" element={<Navigate to="/" replace />} />}
+    </Routes>
   )
 }

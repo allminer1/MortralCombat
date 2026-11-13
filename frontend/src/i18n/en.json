@@ -1,5 +1,5 @@
 {
-  "_todo_clinical_review": "TODO(clinical-review): every text under groups, fields, result, limitations, warnings, report, about and footer.intendedUse is a draft and needs clinical review.",
+  "_todo_clinical_review": "TODO(clinical-review): every text under groups, fields, result, limitations, warnings, report, about, save, history and footer.intendedUse is a draft and needs clinical review.",
   "app": {
     "name": "NeoMortalSurv",
     "tagline": "Survival estimate for very-low-birth-weight infants in the NICU",
@@ -106,7 +106,8 @@
   "nav": {
     "calculator": "Calculator",
     "about": "About the model",
-    "main": "Main"
+    "main": "Main",
+    "history": "History"
   },
   "report": {
     "title": "Survival estimate report",
@@ -148,5 +149,45 @@
       "title": "Intended use",
       "body": "The estimate is intended at NICU admission and again whenever the status of RDS, IVH, NEC or DIC changes. A diagnosis is entered as Yes only when it is confirmed."
     }
+  },
+  "auth": {
+    "title": "Sign in",
+    "signIn": "Sign in",
+    "signingIn": "Signing in…",
+    "signOut": "Sign out",
+    "email": "E-mail",
+    "password": "Password",
+    "inviteOnly": "Accounts are created by the administrator. There is no self-registration. The calculator works without an account.",
+    "invalid_credentials": "E-mail or password is not correct.",
+    "signedInAs": "Signed in as {{email}}",
+    "sessionEnded": "Your session has ended. Sign in again."
+  },
+  "save": {
+    "title": "Save this calculation",
+    "caseCode": "Case code (optional)",
+    "caseCodeHelp": "A code you choose yourself, to find this infant's calculations again. Do not enter a name, a national ID number or a medical record number.",
+    "format": "Up to 32 letters, digits, hyphens or underscores; no spaces.",
+    "button": "Save",
+    "saving": "Saving…",
+    "saved": "Saved.",
+    "viewHistory": "Open history",
+    "failed": "Could not save. Try again."
+  },
+  "history": {
+    "title": "Saved calculations",
+    "intro": "Only you can see these. Calculations with the same case code are shown together, newest first.",
+    "empty": "Nothing saved yet.",
+    "noCode": "Without a case code",
+    "caseCode": "Case code {{code}}",
+    "when": "Date and time",
+    "open": "Open",
+    "delete": "Delete",
+    "deleteLabel": "Delete the calculation of {{when}}",
+    "confirmDelete": "Delete this saved calculation? This cannot be undone.",
+    "export": "Export all as CSV",
+    "loading": "Loading…",
+    "failed": "Could not load the saved calculations.",
+    "back": "Back to history",
+    "notFound": "This saved calculation does not exist."
   }
 }

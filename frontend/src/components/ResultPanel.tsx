@@ -1,4 +1,4 @@
-import type { RefObject } from 'react'
+import type { ReactNode, RefObject } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { fixed3, percent0, percent1 } from '../lib/format'
@@ -11,10 +11,13 @@ export function ResultPanel({
   prediction,
   stale,
   headingRef,
+  extra,
 }: {
   prediction: Prediction | null
   stale: boolean
   headingRef: RefObject<HTMLHeadingElement | null>
+  /** Shown under an up-to-date result (the Save box when signed in). */
+  extra?: ReactNode
 }) {
   const { t, i18n } = useTranslation()
   const lang = i18n.resolvedLanguage ?? 'en'
@@ -109,6 +112,8 @@ export function ResultPanel({
                 </Link>
               </p>
             )}
+
+            {!stale && extra}
 
             <section aria-labelledby="limitations-title" className="mt-6 rounded-md border border-field bg-page px-4 py-3.5">
               <h3 id="limitations-title" className="font-semibold">

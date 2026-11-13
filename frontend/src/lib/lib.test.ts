@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { dayAt, stepPath, xOf, yOf, type Frame } from './curve'
 import { layoutMatches } from './fields'
 import { fixed3, monthRange, percent0, percent1 } from './format'
-import { emptyValues, fieldError, isComplete, toRequest, type Feature } from './spec'
+import { CASE_CODE_RE, emptyValues, fieldError, fromStored, isComplete, toRequest, type Feature } from './spec'
 
 const weight: Feature = { api_field: 'w', type: 'int', min: 400, max: 2000, unit: 'g' }
 const flag: Feature = { api_field: 'b', type: 'bool' }
@@ -37,6 +37,19 @@ describe('field validation', () => {
     expect(isComplete(features, values)).toBe(true)
     expect(toRequest(features, values)).toEqual({ w: 900, b: true, g: 3 })
     expect(toRequest(features, { ...values, b: 'no' }).b).toBe(false)
+  })
+})
+
+describe('saved calculations', () => {
+  it('round-trips stored inputs into form values', () => {
+    const stored = toRequest(features, { w: '900', b: 'no', g: '3' })
+    expect(fromStored(features, stored)).toEqual({ w: '900', b: 'no', g: '3' })
+  })
+  it('accepts codes and refuses names, spaces and formulas', () => {
+    for (const ok of ['A', 'CASE-7', 'nicu_2026-001', 'x'.repeat(32)]) expect(CASE_CODE_RE.test(ok)).toBe(true)
+    for (const bad of ['', 'x'.repeat(33), 'Ivan Petrov', 'Иванов', '=1+1', '-7', 'a,b', 'a.b']) {
+      expect(CASE_CODE_RE.test(bad)).toBe(false)
+    }
   })
 })
 

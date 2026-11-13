@@ -23,8 +23,10 @@ Keep these Makefile targets working and add new ones here when you create them.
 
 - `make dev` — backend (127.0.0.1:8000) + frontend (127.0.0.1:5173) with reload
 - `make test` — backend tests, including golden tests, and frontend unit tests
+- `make test-accounts` — all backend tests incl. accounts, with a throwaway PostgreSQL (Docker)
 - `make lint` — ruff + frontend lint + type-check
 - `make e2e` — Playwright against the compose stack (needs Docker: `colima start`)
+- `make e2e-accounts` — Playwright for accounts/history against the stack with PostgreSQL
 - `make e2e-local` — Playwright without Docker; the only run covering the Kazakh flag
 - `make build` — build both production images
 - `make export-model` — regenerate `model/` from `legacy/` (needs `tools/` env)

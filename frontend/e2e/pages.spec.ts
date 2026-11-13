@@ -131,3 +131,16 @@ test('printed report as an image, for review', async ({ page }) => {
   await page.setViewportSize({ width: 703, height: 1032 }) // A4 minus 12 mm margins at 96 dpi
   await page.screenshot({ path: 'screenshots/ru-print.png', fullPage: true })
 })
+
+test('accounts are hidden when the server has them switched off', async ({ page, request }) => {
+  expect(await (await request.get('/api/v1/features')).json()).toEqual({ accounts: false })
+  await page.goto('/?lang=en')
+  await page.locator('button[type=submit]').waitFor()
+  await expect(page.getByRole('link', { name: 'Sign in' })).toHaveCount(0)
+  await expect(page.getByRole('link', { name: 'History' })).toHaveCount(0)
+  for (const path of ['/login', '/history']) {
+    await page.goto(path)
+    await expect(page).toHaveURL(/\/$/) // unknown here: back to the calculator
+  }
+  expect((await request.get('/api/v1/auth/me')).status()).toBe(404)
+})

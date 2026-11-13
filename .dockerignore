@@ -3,6 +3,8 @@
 !backend/pyproject.toml
 !backend/uv.lock
 !backend/app/
+!backend/alembic/
+!backend/alembic.ini
 !model/
 !frontend/
 frontend/node_modules

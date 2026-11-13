@@ -21,13 +21,28 @@ if [[ "${LEGACY:-off}" == "on" ]]; then
   files+=(-f docker-compose.legacy.yml)
 fi
 
+accounts=off
+if [[ "${ENABLE_ACCOUNTS:-false}" == "true" ]]; then
+  accounts=on
+  files+=(-f docker-compose.accounts.yml)
+  if [[ -z "${POSTGRES_PASSWORD:-}" ]]; then
+    echo "ENABLE_ACCOUNTS=true needs POSTGRES_PASSWORD in deploy/.env." >&2
+    exit 1
+  fi
+fi
+
 echo "Commit:   $(git rev-parse --short HEAD) ($(git status --porcelain | wc -l | tr -d ' ') uncommitted changes)"
 echo "New site: ${SITE_NEW}"
 echo "Legacy:   ${LEGACY:-off} ${SITE_LEGACY:-}"
+echo "Accounts: ${accounts}   (stored clinical data; needs the sign-off in docs/DECISIONS.md)"
 read -r -p "Deploy this? [y/N] " answer
 [[ "$answer" == "y" || "$answer" == "Y" ]] || { echo "Cancelled."; exit 1; }
 
 docker compose "${files[@]}" build
+if [[ "$accounts" == "on" ]]; then
+  docker compose "${files[@]}" up -d --wait db
+  docker compose "${files[@]}" run --rm api python -m app.cli migrate
+fi
 docker compose "${files[@]}" up -d --wait --remove-orphans
 docker compose "${files[@]}" ps
 

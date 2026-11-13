@@ -374,3 +374,57 @@ switching the main domain. Basis on record: cases 1–3 agree on both sites; bot
 run the same model artifacts (hashes equal). The old app stays reachable on
 `https://neomortalsurv.net:8444`, and rollback is the two-line swap in
 `docs/CUTOVER.md` step 8. The open items above remain open after the cutover.
+
+## 2026-11-13 — Phase 6 run in the same session
+
+At the owner's request. Plan approved before implementation. Nothing deployed.
+
+## 2026-11-13 — Phase 6: case code is a restricted code, not free text
+
+Spec Section 8 wants an optional pseudonym up to 32 characters; `CLAUDE.md` rule 5
+forbids free-text fields. The case code accepts only Latin letters, digits, hyphen and
+underscore, starts with a letter or digit, and has no spaces. A sentence or a full name
+cannot be entered; a bare surname in Latin letters still can, which the on-screen
+warning addresses. The same pattern is enforced in the form, the API and a database
+check constraint. Starting with a letter or digit also keeps spreadsheet formulas out
+of the CSV export. This is a typed field, unlike the handwritten line on the anonymous
+print report (Phase 4), because a saved timeline needs a key.
+
+## 2026-11-13 — Phase 6: sessions and CSRF
+
+- Session token: 256 random bits in an `HttpOnly`, `Secure`, `SameSite=Lax` cookie with
+  the `__Host-` prefix; the database holds only its SHA-256.
+- CSRF: per-session token returned by login and `/auth/me`, sent back in
+  `X-CSRF-Token`, plus refusal of a foreign `Origin`. The frontend keeps the token in
+  memory only.
+- Idle limit 30 minutes, absolute limit 12 hours (shared ward PCs); both configurable.
+- Passwords: argon2id with the library defaults, minimum 12 characters, no composition
+  rules.
+- Login rate limit: 10 attempts per 15 minutes per client address and e-mail, in
+  process memory like the `/predict` limit.
+
+## 2026-11-13 — Phase 6: outputs are computed by the server
+
+`POST /calculations` accepts inputs and an optional case code only. The stored outputs
+come from the model at save time, so a stored record cannot contain numbers the model
+did not produce. The full curve is stored with it; a saved record therefore shows what
+the user saw even if a later model version computes differently (`model_version` is
+stored per record).
+
+## 2026-11-13 — Phase 6: no admin read access
+
+`admin` exists as a role (spec) but the API gives it nothing beyond `user`. Account
+management is the command line on the server. Fewer ways to read other people's
+clinical data; can be revisited with the institution's requirements.
+
+## 2026-11-13 — Phase 6: flag means absent, not hidden
+
+With `ENABLE_ACCOUNTS` off the account routes are not registered and SQLAlchemy,
+psycopg, Alembic and argon2 are not imported (tested). The compose file for the
+database is a separate override that `deploy.sh` adds only when the flag is on.
+
+## 2026-11-13 — Phase 6: tests need a real PostgreSQL
+
+JSONB, the check constraint and the migration itself are PostgreSQL-specific, so the
+accounts tests run against a throwaway container (`make test-accounts`) and are
+skipped by plain `make test`. All test data is synthetic.

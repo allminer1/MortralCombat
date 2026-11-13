@@ -1,6 +1,57 @@
 # Progress
 
-## Current phase: 5 — Deploy and cutover — done on 2026-11-13, with two recorded deviations
+## Current phase: 6 — Accounts and history — built and tested; OFF in production
+
+Last session: 2026-11-13 (same session as Phases 1–5, at the owner's request).
+Nothing of this phase is deployed: the server runs commit `65dc7c3` with
+`ENABLE_ACCOUNTS` unset (off). The live site is unchanged by this phase.
+
+### Done in Phase 6
+
+- Backend (`backend/app/api/accounts.py`, `app/accounts/`, `app/db/`, `app/cli.py`,
+  `backend/alembic/`): PostgreSQL through SQLAlchemy 2 / psycopg 3, one Alembic
+  migration (`users`, `sessions`, `calculations`), argon2id passwords, server-side
+  sessions, CSRF token + same-origin check, idle and absolute session limits, login
+  rate limit, saved calculations (server recomputes the outputs), list / open / delete
+  / CSV export, admin command line. `GET /api/v1/features` tells the frontend whether
+  accounts are on.
+- Frontend: `/login`, `/history`, `/history/:id` (same sheet as the print report),
+  "Save this calculation" with the optional case code under an up-to-date result,
+  sign in / out and History in the header. All of it is absent when the server says
+  the feature is off. EN, RU and the hidden KK draft.
+- Deployment files: `deploy/docker-compose.accounts.yml` (database not published, used
+  only when `ENABLE_ACCOUNTS=true`), `deploy/backup.sh` (dump, verify, 14 days, and
+  `--restore`), `deploy.sh` runs the migration when accounts are on.
+- `docs/ACCOUNTS.md`: what exists, security properties, how to enable, backup / restore.
+- Make targets: `test-accounts` (backend tests with a throwaway PostgreSQL),
+  `e2e-accounts` (browser tests against the stack with the database). CI runs both.
+
+### Phase 6 acceptance
+
+| Check | Result |
+|---|---|
+| Isolation tests pass | pass — backend: another user's item cannot be read, deleted, listed, filtered or exported, a foreign id and a missing id answer identically, `admin` sees nothing extra; browser: second user sees an empty history, "does not exist" at the first user's address, header-only export |
+| Backup and restore rehearsed once | done **locally** with synthetic data on 2026-11-13 (`docs/ACCOUNTS.md`); not on the server |
+| Feature stays off in production until the owner records the sign-off | off; `deploy/.env.example` ships `ENABLE_ACCOUNTS=false`; no sign-off recorded |
+
+Test counts: `make test` 70 backend (43 database tests skipped without a database) +
+21 frontend unit; `make test-accounts` 113 backend; `make e2e` 36; `make e2e-accounts`
+13 (7 behaviour + 6 screenshot / layout checks at 375, 768, 1366 px in EN and RU);
+`make e2e-local` 41. Screenshots of the new pages reviewed by Claude; found and fixed
+there: header and history table too wide on a phone. `make lint` passes.
+
+### Open after Phase 6
+
+1. **Institutional sign-off** (spec Section 8, `TODO(owner)`): blocks enabling.
+2. Before enabling on the server: deploy the newer commit there (`git pull`,
+   `deploy/deploy.sh`), check memory headroom for the database container, set up the
+   backup cron line, decide on the off-server copy, rehearse a restore there.
+3. Owner decisions listed at the end of `docs/ACCOUNTS.md` (retention, invite-only).
+4. `TODO(clinical-review)`: the new texts under `auth`, `save`, `history` in
+   `frontend/src/i18n/*.json`, in particular the case-code warning.
+5. Everything still open from Phases 1–5 (below).
+
+## Phase 5 — Deploy and cutover — done on 2026-11-13, with two recorded deviations
 
 The new calculator is live on https://neomortalsurv.net. Last session: 2026-11-13.
 

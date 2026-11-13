@@ -1,8 +1,9 @@
+import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { GROUPS } from '../lib/fields'
 import { dateTime, fixed3, percent1 } from '../lib/format'
-import { useSession } from '../lib/session'
+import { useSession, type LastCalculation } from '../lib/session'
 import { displayValue, type ModelInfo } from '../lib/spec'
 import { SurvivalCurve } from './SurvivalCurve'
 
@@ -10,15 +11,13 @@ const LIMITATIONS = ['cohort', 'validation', 'calibration', 'judgement'] as cons
 
 /** Print view of the last calculation: one A4 page through print CSS (spec 7.4). */
 export function Report({ model }: { model: ModelInfo }) {
-  const { t, i18n } = useTranslation()
-  const lang = i18n.resolvedLanguage ?? 'en'
+  const { t } = useTranslation()
   const { last } = useSession()
   const back = (
     <Link to="/" className="text-accent underline underline-offset-2 hover:text-accent-strong">
       {t('report.back')}
     </Link>
   )
-
   if (!last) {
     return (
       <div className="max-w-xl pt-10">
@@ -28,8 +27,23 @@ export function Report({ model }: { model: ModelInfo }) {
       </div>
     )
   }
+  return <ReportView model={model} calculation={last} back={back} />
+}
 
-  const { prediction, values, at } = last
+/** The sheet itself; also used to show a saved calculation from the history. */
+export function ReportView({
+  model,
+  calculation,
+  back,
+}: {
+  model: ModelInfo
+  calculation: LastCalculation
+  back: ReactNode
+}) {
+  const { t, i18n } = useTranslation()
+  const lang = i18n.resolvedLanguage ?? 'en'
+  const { prediction, values, at } = calculation
+
   const byName = new Map(model.feature_spec.features.map((f) => [f.api_field, f]))
   const c = model.citation
   const s = prediction.survival

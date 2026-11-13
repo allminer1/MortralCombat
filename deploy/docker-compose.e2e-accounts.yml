@@ -1,0 +1,7 @@
+# Local / CI test of the accounts feature over plain HTTP (`make e2e-accounts`).
+# Used on top of docker-compose.yml, docker-compose.accounts.yml and docker-compose.e2e.yml.
+services:
+  api:
+    environment:
+      COOKIE_SECURE: "false" # plain HTTP on 127.0.0.1
+      LOGIN_ATTEMPTS_PER_15_MIN: "0"

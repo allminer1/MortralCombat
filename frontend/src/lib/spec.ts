@@ -102,3 +102,16 @@ export function displayValue(feature: Feature, raw: string): { key: string } | {
   if (feature.type === 'enum') return { key: `choices.grade_${raw}` }
   return { text: raw.trim() }
 }
+
+/** Same rule as the server and the database: no spaces, no punctuation. */
+export const CASE_CODE_RE = /^[A-Za-z0-9][A-Za-z0-9_-]{0,31}$/
+
+/** Stored inputs (JSON types) back into form strings, for showing a saved calculation. */
+export function fromStored(features: Feature[], inputs: Record<string, number | boolean>): FormValues {
+  return Object.fromEntries(
+    features.map((f) => {
+      const value = inputs[f.api_field]
+      return [f.api_field, f.type === 'bool' ? (value ? 'yes' : 'no') : String(value)]
+    }),
+  )
+}
