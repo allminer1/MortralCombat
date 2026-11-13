@@ -30,6 +30,17 @@ Still open after the review:
 - Erratum decision; server restart; Cloudflare access; uptime check; retiring the old
   app after 2026-12-13; institutional sign-off before accounts can be enabled.
 
+### After the phases: server restart (2026-11-13)
+
+The server had been reporting "System restart required" (kernel 6.8.0-149, security
+updates) since Phase 5. Before: `streamlit` and `docker` both `enabled`, swap file in
+`/etc/fstab`, uptime 27 days. The owner ran `sudo reboot`. Seen from outside: the new
+site did not answer and the old app returned 502 for a short while, then within about
+a minute both were back without any manual step — API health ok, Figure 8 = 1.210 →
+65.22 / 39.52 / 5.63 %, `http://` redirect, accounts off, old app 200 on `:8444`.
+This is the first time the stack was shown to survive a reboot. Not checked from the
+server itself: the running kernel version (`uname -r`) and that swap is active.
+
 ### After the phases: typo fix for the old app (2026-11-13) — applied by the owner
 
 Spec 7.5 asks for the label "Bad obestric history" on the old Streamlit app to be
