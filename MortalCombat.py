@@ -88,7 +88,7 @@ FEATURES = [
 
 LABELS = {
     "en": {
-        "BOH": "Bad obestric history",
+        "BOH": "Bad obstetric history",
         "weight.g.": "Weight (g)",
         "Apgar5": "Apgar Score (5 min)",
         "GDW": "Gestational Age (weeks)",
