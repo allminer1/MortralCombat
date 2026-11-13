@@ -1,5 +1,5 @@
 {
-  "_todo_clinical_review": "TODO(clinical-review): every text under groups, fields, result, limitations, warnings, report, about, save, history and footer.intendedUse is a draft and needs clinical review.",
+  "_clinical_review": "Reviewed by the clinical co-authors and approved without corrections (reported by the owner on 2026-11-13; reviewer name not recorded). Any new or changed clinical text is a draft again until reviewed: mark it TODO(clinical-review).",
   "app": {
     "name": "NeoMortalSurv",
     "tagline": "Survival estimate for very-low-birth-weight infants in the NICU",

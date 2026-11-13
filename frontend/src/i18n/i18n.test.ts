@@ -15,8 +15,14 @@ describe('translations', () => {
     expect(textKeys(ru)).toEqual(textKeys(en))
     expect(textKeys(kk)).toEqual(textKeys(en))
   })
-  it('carry the clinical-review marker', () => {
-    for (const file of [en, ru, kk]) expect(file._todo_clinical_review).toContain('TODO(clinical-review)')
+  it('record the review state of each language', () => {
+    // English and Russian: reviewed and approved on 2026-11-13 (docs/DECISIONS.md).
+    for (const file of [en, ru]) {
+      expect(file._clinical_review).toContain('2026-11-13')
+      expect(JSON.stringify(file)).not.toContain('"_todo_clinical_review"')
+    }
+    // Kazakh: still an unreviewed draft, and still behind its build flag.
+    expect(kk._todo_clinical_review).toContain('TODO(clinical-review)')
   })
   it('mark every Kazakh field label as a clinical term to review', () => {
     const marked = Object.keys(kk._clinical_terms)

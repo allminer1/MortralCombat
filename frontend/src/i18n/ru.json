@@ -1,5 +1,5 @@
 {
-  "_todo_clinical_review": "TODO(clinical-review): все тексты в разделах groups, fields, result, limitations, warnings, report, about, save, history и footer.intendedUse — черновик, требуется проверка клиницистом.",
+  "_clinical_review": "Проверено клиническими соавторами и одобрено без исправлений (со слов владельца проекта, 2026-11-13; имя рецензента не записано). Любой новый или изменённый клинический текст снова считается черновиком до проверки: помечайте его TODO(clinical-review).",
   "app": {
     "name": "NeoMortalSurv",
     "tagline": "Оценка выживаемости детей с очень низкой массой тела при рождении в ОРИТН",
