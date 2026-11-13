@@ -16,7 +16,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 
-LEGACY = Path(__file__).resolve().parent.parent / "legacy"
+LEGACY = Path(__file__).resolve().parents[2] / "legacy"
 
 # Order of the columns the StandardScaler was fitted on (scaler1.pkl feature_names_in_).
 SCALER_ORDER = ["BOH", "weight", "Apgar5", "GDW", "RF", "HR", "Saturation", "RDS", "IVH", "DIC", "NE"]

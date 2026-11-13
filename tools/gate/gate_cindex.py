@@ -9,7 +9,7 @@ model when the four diagnosis columns are fed in
 
 No rows and no per-patient values are printed or written anywhere.
 
-    python tools/gate_cindex.py --test-csv /path/to/MortalityKidsTest.csv
+    python tools/gate/gate_cindex.py --test-csv /path/to/MortalityKidsTest.csv
 
 Expected: about 0.86 for the ordering the network was trained on, clearly lower
 for the other one.
@@ -28,7 +28,7 @@ from legacy_model import SCALER_ORDER, LegacyModel
 
 TIME_COL = "Days"
 EVENT_COL = "Survival"  # 1 = death (event), 0 = censored, as in the training script
-DEFAULT_CSV = Path(__file__).resolve().parents[2] / "PythonProject" / "MortalityKidsTest.csv"
+DEFAULT_CSV = Path(__file__).resolve().parents[3] / "PythonProject" / "MortalityKidsTest.csv"
 
 
 def harrell_c(time: np.ndarray, event: np.ndarray, risk: np.ndarray) -> float:

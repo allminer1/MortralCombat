@@ -26,7 +26,7 @@ backend and a React frontend. The model itself is frozen and is not changed.
 | Path | Content |
 |---|---|
 | `legacy/` | original Streamlit app and model artifacts — frozen, read-only |
-| `tools/` | one-off scripts (own Python environment, see `tools/requirements.txt`) |
+| `tools/` | one-off scripts (own `uv` environment, see `tools/pyproject.toml`) |
 | `docs/` | specification, progress, decisions |
 
 ## Data

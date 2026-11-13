@@ -1,8 +1,0 @@
-# Environment for the one-off scripts in tools/ (never installed in the backend image).
-# Phase 0 gate scripts were run with the versions noted in docs/PROGRESS.md.
-torch
-numpy
-pandas
-scikit-learn
-joblib
-pycox

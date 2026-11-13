@@ -4,7 +4,7 @@ Scores three fixed, synthetic input cases with the frozen legacy artifacts under
 both feature orderings and checks them against the recorded numbers. Uses no
 patient data.
 
-    python tools/gate_regression.py
+    python tools/gate/gate_regression.py
 
 Exit code 0 when every check passes.
 """
