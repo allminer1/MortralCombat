@@ -115,9 +115,17 @@ def feature_spec() -> dict:
     if set(names) != set(FEATURE_META):
         raise SystemExit("FEATURE_META does not cover exactly the scaler's columns; stop.")
     features = []
-    for position, (name, mean, scale) in enumerate(zip(names, scaler.mean_, scaler.scale_), start=1):
+    for position, (name, mean, scale) in enumerate(
+        zip(names, scaler.mean_, scaler.scale_, strict=True), start=1
+    ):
         features.append(
-            {"position": position, "scaler_name": name, **FEATURE_META[name], "mean": float(mean), "scale": float(scale)}
+            {
+                "position": position,
+                "scaler_name": name,
+                **FEATURE_META[name],
+                "mean": float(mean),
+                "scale": float(scale),
+            }
         )
     return {
         "model_version": MODEL_VERSION,

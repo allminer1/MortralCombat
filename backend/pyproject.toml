@@ -15,13 +15,6 @@ package = false
 testpaths = ["tests"]
 pythonpath = ["."]
 
-[tool.ruff]
-line-length = 110
-target-version = "py312"
-
-[tool.ruff.lint]
-select = ["E", "F", "W", "I", "B", "UP"]
-
 [dependency-groups]
 dev = [
     "pytest>=9.2.0",

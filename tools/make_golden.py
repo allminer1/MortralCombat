@@ -71,8 +71,17 @@ def build_cases(spec: dict) -> list[dict]:
         {
             "id": "anchor_figure_8",
             "inputs": dict(
-                bad_obstetric_history=1, birth_weight_g=900, apgar_5min=3, gestational_age_weeks=27,
-                respiratory_failure_grade=3, heart_rate_bpm=80, spo2_percent=55, rds=1, ivh=1, dic=1, nec=1,
+                bad_obstetric_history=1,
+                birth_weight_g=900,
+                apgar_5min=3,
+                gestational_age_weeks=27,
+                respiratory_failure_grade=3,
+                heart_rate_bpm=80,
+                spo2_percent=55,
+                rds=1,
+                ivh=1,
+                dic=1,
+                nec=1,
             ),
         },  # fmt: skip
         {"id": "anchor_rds_only", "inputs": {**all_min, "rds": 1}},
@@ -87,7 +96,9 @@ def build_cases(spec: dict) -> list[dict]:
 
     rng = np.random.default_rng(SEED)
     for i in range(N_RANDOM):
-        cases.append({"id": f"random_{i:03d}", "inputs": {f["api_field"]: random_value(f, rng) for f in feats}})
+        cases.append(
+            {"id": f"random_{i:03d}", "inputs": {f["api_field"]: random_value(f, rng) for f in feats}}
+        )
 
     for case in cases:
         if set(case["inputs"]) != {f["api_field"] for f in feats}:
@@ -116,7 +127,9 @@ def check_anchors(cases: list[dict], g: np.ndarray, survival: np.ndarray) -> Non
     for name, (exp_g, exp_s) in ANCHOR_EXPECTED.items():
         i = index[name]
         got_s = [100 * survival[i, d] for d in (7, 28, 100)]
-        ok = abs(float(g[i]) - exp_g) <= 5e-4 and all(abs(a - b) <= 5e-3 for a, b in zip(got_s, exp_s))
+        ok = abs(float(g[i]) - exp_g) <= 5e-4 and all(
+            abs(a - b) <= 5e-3 for a, b in zip(got_s, exp_s, strict=True)
+        )
         shown = " / ".join(f"{v:.2f}" for v in got_s)
         print(f"{'PASS' if ok else 'FAIL'}  {name:16s} log-risk {g[i]:+.3f}  S(7/28/100) {shown} %")
         if not ok:

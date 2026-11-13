@@ -1,0 +1,10 @@
+line-length = 110
+target-version = "py312"
+# tools/gate is the archived Phase 0 record; legacy/ is frozen.
+extend-exclude = ["legacy", "tools/gate", "*.md"]
+
+[lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+
+[lint.isort]
+known-first-party = ["app", "legacy_artifacts", "make_golden"]
