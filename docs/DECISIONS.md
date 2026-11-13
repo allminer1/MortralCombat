@@ -516,3 +516,10 @@ late by several minutes, so only outages of about 20 minutes or more are reliabl
 reported; schedules pause after 60 days without repository activity; and scheduled
 workflows run only from the default branch (see `docs/PROGRESS.md` for the open step).
 The check reads `/api/v1/health` and the start page; it sends no data.
+
+## 2026-11-13 — `rebuild` is the default branch on GitHub
+
+Owner's decision, so that the scheduled uptime workflow runs and the repository's front
+page shows the current project. `main` is unchanged (the original two commits) and is
+no longer the default. Merging `rebuild` into `main` was the alternative and was not
+chosen.
