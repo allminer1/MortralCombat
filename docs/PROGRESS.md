@@ -30,6 +30,20 @@ Still open after the review:
 - Erratum decision; server restart; Cloudflare access; uptime check; retiring the old
   app after 2026-12-13; institutional sign-off before accounts can be enabled.
 
+### After the phases: typo fix for the old app (2026-11-13) — prepared, not deployed
+
+Spec 7.5 asks for the label "Bad obestric history" on the old Streamlit app to be
+fixed. Prepared on branch `legacy-streamlit` (commit `c9428af`, tag
+`legacy-typo-fix-2026-11-13`): one label changed, nothing else; the file compiles.
+The old app now lives on `https://neomortalsurv.net:8444` and is due to be retired
+after 2026-12-13, so this is cosmetic. To apply on the server (owner):
+
+    sudo sed -i 's/"BOH": "Bad obestric history"/"BOH": "Bad obstetric history"/' /home/AuE/MortralCombat/MortalCombat.py
+    sudo systemctl restart streamlit
+
+The server file then has sha256 `fdaa47b9…82c6c780` if it was identical to the hot-fix
+version before. `legacy/` on the `rebuild` branch is frozen and is not changed.
+
 ### After the phases: training-range script (2026-11-13)
 
 `tools/training_ranges.py` is ready for the owner to run on the training file (spec
