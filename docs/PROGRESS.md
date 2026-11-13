@@ -1,11 +1,21 @@
 # Progress
 
-## Current phase: 5 — Deploy and cutover — part A (local) done, part B (server) not started
+## Current phase: 5 — Deploy and cutover — done on 2026-11-13, with two recorded deviations
 
-Last session: 2026-11-13 (same session as Phases 1–4, at the owner's request).
-**Phase 5 is not complete.** Its "done" criteria (staging over HTTPS, owner sign-off of
-the case comparison, main domain switched, legacy subdomain live, rollback rehearsed)
-all happen on the server and are the owner's steps in `docs/CUTOVER.md`.
+The new calculator is live on https://neomortalsurv.net. Last session: 2026-11-13.
+
+### Phase 5 acceptance
+
+| Spec condition | Result |
+|---|---|
+| Staging subdomain serves the new stack over HTTPS | met in substance — staging ran on `https://neomortalsurv.net:8443`, a port instead of a subdomain (no DNS access; `docs/DECISIONS.md`) |
+| Owner signs off the case comparison | **deviation** — cases 1–3 matched on both sites; the owner decided to cut over without the clinical co-author's comparison (`docs/DECISIONS.md`). Cases 4–10 and the co-author's review are still open |
+| Main domain switched | done 2026-11-13, verified from outside the server |
+| Legacy subdomain live | met in substance — old app on `https://neomortalsurv.net:8444` until at least 2026-12-13 |
+| Rollback rehearsed once | done 2026-11-13: main address back to the old app, verified, then cut over again, verified |
+
+Next: nothing is scheduled. Phase 6 (accounts) needs a new session, a plan, and stays
+off in production until the institutional sign-off (spec Section 8).
 
 ### Done in Phase 5, part A (workstation only)
 
@@ -100,8 +110,13 @@ all happen on the server and are the owner's steps in `docs/CUTOVER.md`.
   the API = 1.210 → 65.22 / 39.52 / 5.63 %); the old Streamlit app answers on
   `https://neomortalsurv.net:8444`; port 8443 no longer answers. Settings before the
   switch are kept on the server as `deploy/.env.before-cutover`.
-- Not yet done: step 8 (rollback rehearsal), step 9 (retire the old app after 30
-  days, i.e. not before 2026-12-13). Open after cutover: co-author's cases 4–10,
+- 2026-11-13, step 8: rollback rehearsed by the owner. After the swap back the main
+  address showed the Streamlit app and `:8443` the new API; after the second cutover
+  the main address shows the new calculator and `:8444` the old app (confirmed from
+  outside the server). On the server: `deploy/.env.before-cutover` and
+  `deploy/.env.after-cutover`; the active `.env` is the after-cutover one.
+- Not yet done: step 9 (retire the old app after 30 days, i.e. not before 2026-12-13;
+  includes deleting certbot's old certificate and closing ports 8443 / 8444). Open after cutover: co-author's cases 4–10,
   phone / ward PC / hospital network, printed output, clinical review of all wording.
 
 ### Notes for the next session
