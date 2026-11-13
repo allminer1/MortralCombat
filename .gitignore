@@ -32,3 +32,6 @@ dist/
 *.prism
 *.parquet
 *.feather
+
+# Generated documents for sharing (Word / HTML); the Markdown source is committed
+docs/out/

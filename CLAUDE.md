@@ -30,6 +30,7 @@ Keep these Makefile targets working and add new ones here when you create them.
 - `make e2e-local` — Playwright without Docker; the only run covering the Kazakh flag
 - `make build` — build both production images
 - `make export-model` — regenerate `model/` from `legacy/` (needs `tools/` env)
+- `make review-packet` — regenerate `docs/CLINICAL_REVIEW.md` and a Word copy in `docs/out/`
 - `make sweep-report` — regenerate `docs/MODEL_BEHAVIOUR.md` (needs `tools/` env)
 
 ## Rules that are not negotiable

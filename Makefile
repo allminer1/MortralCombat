@@ -1,6 +1,6 @@
 UV := uv run --project backend
 
-.PHONY: dev dev-api dev-web test test-accounts lint e2e e2e-accounts e2e-local build export-model sweep-report
+.PHONY: dev dev-api dev-web test test-accounts lint e2e e2e-accounts e2e-local build export-model sweep-report review-packet
 
 # API on http://127.0.0.1:8000 (docs: /api/docs) and the frontend on http://127.0.0.1:5173,
 # both with reload. uvicorn's own access log is off: it would print query strings. The
@@ -72,6 +72,11 @@ build:
 # Regenerates model/ from legacy/. Output is byte-identical on every run.
 export-model:
 	cd tools && uv run python export_model.py
+
+# Regenerates docs/CLINICAL_REVIEW.md (all interface text side by side, for the clinical
+# reviewer) and a Word copy in docs/out/.
+review-packet:
+	python3 tools/review_packet.py --word
 
 # Regenerates docs/MODEL_BEHAVIOUR.md.
 sweep-report:

@@ -6,6 +6,16 @@ Last session: 2026-11-13 (same session as Phases 1–5, at the owner's request).
 Nothing of this phase is deployed: the server runs commit `65dc7c3` with
 `ENABLE_ACCOUNTS` unset (off). The live site is unchanged by this phase.
 
+### After the phases: clinical review packet (2026-11-13)
+
+`make review-packet` writes `docs/CLINICAL_REVIEW.md` from the translation files: all
+144 interface texts in EN / RU / KK side by side with a correction column, nine
+questions for the reviewer, the 19 Kazakh clinical terms, and the model-behaviour
+tables. A Word and an HTML copy go to `docs/out/` (not committed) for a reviewer who
+works in Word or on paper. Handed to the owner on 2026-11-13; **not yet sent to or
+returned by a clinician.** When corrections come back they are entered into
+`frontend/src/i18n/*.json`, the packet is regenerated, and the site redeployed.
+
 ### Done in Phase 6
 
 - Backend (`backend/app/api/accounts.py`, `app/accounts/`, `app/db/`, `app/cli.py`,

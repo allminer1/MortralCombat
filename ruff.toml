@@ -12,3 +12,7 @@ known-first-party = ["app", "legacy_artifacts", "make_golden"]
 [lint.flake8-bugbear]
 # FastAPI's dependency markers are meant to be used as argument defaults.
 extend-immutable-calls = ["fastapi.Depends"]
+
+[lint.per-file-ignores]
+# Mostly prose for the reviewer; wrapping sentences at 110 columns helps nobody.
+"tools/review_packet.py" = ["E501"]
