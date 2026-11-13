@@ -117,16 +117,18 @@ websocket through Caddy).
     # put the saved run.sh back, remove the two lines from the unit file
     sudo systemctl daemon-reload && sudo systemctl restart streamlit
 
-## 5. Switch certbot off for this domain
+## 5. Switch certbot's schedule off (done 2026-11-13)
 
-Caddy now renews the certificates. Two ACME clients for one name must not both run.
+Caddy now renews the certificate. Two ACME clients for one name must not both run, so
+certbot's schedule is off; its certificate files are **kept** until step 9, because the
+full undo of step 3 (Streamlit alone on port 443) needs them. They are valid until
+2027-02-05.
 
-    sudo certbot certificates                 # confirm what exists
-    sudo certbot delete --cert-name neomortalsurv.net
+    sudo systemctl disable --now certbot.timer
+    sudo mv /etc/cron.d/certbot /etc/cron.d/certbot.disabled
 
-If certbot manages no other certificate on
-this server: `sudo systemctl disable --now certbot.timer` and remove
-`/etc/cron.d/certbot`.
+To switch it back on: `sudo mv /etc/cron.d/certbot.disabled /etc/cron.d/certbot` and
+`sudo systemctl enable --now certbot.timer`.
 
 ## 6. Compare cases on the staging address
 
@@ -140,6 +142,7 @@ log-risk and percentages must agree: old site two decimals, new site one decimal
 | 1 | Article Figure 8: BOH yes, 900 g, Apgar 3, GA 27, RF III, HR 80, SpO2 55, all four diagnoses yes | 1.210 | 65.22 / 39.52 / 5.63 |
 | 2 | 400 g, Apgar 0, GA 20, HR 60, SpO2 40, BOH no, RF II, **RDS yes only** | 0.647 | 78.39 / 58.93 / 19.41 |
 | 3 | same as 2, but **NEC yes only** | −0.681 | 93.76 / 86.93 / 64.78 |
+| | *Cases 1–3 on the new calculator were checked through its API on staging on 2026-11-13 and match; the old app gave the same numbers on 2026-11-12 after the hot-fix. They still need entering by hand on both sites for the sign-off.* | | |
 | 4–10 | `TODO(owner)` / `TODO(clinical-review)`: seven realistic cases chosen by the clinical co-author; write the old site's numbers here and compare | | |
 
 Also check on the staging address: both languages, the printed report, a phone, the
@@ -173,7 +176,8 @@ the rehearsal in `docs/PROGRESS.md`.
 ## 9. After 30 days
 
 Set `LEGACY=off` in `deploy/.env`, run `deploy/deploy.sh`, stop and disable
-`streamlit.service`. Close ports 8443 and 8444 in the firewall again. Keep the old directory or
+`streamlit.service`. Close ports 8443 and 8444 in the firewall again. Then remove certbot's
+old certificate: `sudo certbot delete --cert-name neomortalsurv.net`. Keep the old directory or
 archive it; the code is in git (`legacy-streamlit` branch).
 
 ## Later deploys

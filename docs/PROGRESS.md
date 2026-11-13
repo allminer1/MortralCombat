@@ -81,9 +81,12 @@ all happen on the server and are the owner's steps in `docs/CUTOVER.md`.
     `https://neomortalsurv.net:8443` → new calculator, health ok, artifact hashes equal
     to the repository's, Figure 8 through the API = 1.210 → 65.22 / 39.52 / 5.63 %.
     Ports 8443 is reachable from outside (no panel firewall in the way).
+- 2026-11-13, step 5: certbot's timer disabled and its cron file renamed; the old
+  certificate files are kept as the fallback for a full undo (deleted in step 9).
 - **State now: staging is live.** Old app on the main address, new calculator on
-  `:8443`. Not yet done: step 5 (certbot off), step 6 (case comparison and sign-off),
-  step 7 (cutover), step 8 (rollback rehearsal).
+  `:8443`. The three reference cases give the expected numbers through the staging
+  API. Not yet done: step 6 (case comparison by the owner and a clinical co-author,
+  sign-off in `docs/DECISIONS.md`), step 7 (cutover), step 8 (rollback rehearsal).
 - The server still reports "System restart required" (kernel, security updates).
 
 ### Notes for the next session
