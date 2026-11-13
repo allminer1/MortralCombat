@@ -1,5 +1,4 @@
-# Runs on every push and pull request. NOT YET RUN: written on 2026-11-13, takes effect
-# with the first push that contains it (docs/PROGRESS.md).
+# Runs on every push and pull request.
 name: ci
 
 on:

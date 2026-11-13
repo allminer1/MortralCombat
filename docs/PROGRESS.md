@@ -34,8 +34,7 @@ all happen on the server and are the owner's steps in `docs/CUTOVER.md`.
 - Checked by hand on the local stack: a request body and a query string sent through
   Caddy appear in neither container's log; the legacy override proxies to a process on
   the host.
-- `.github/workflows/ci.yml` written. **It has never run** — it starts with the first
-  push that contains it.
+- `.github/workflows/ci.yml` written; first run on 2026-11-13 passed (see below).
 - `docs/CUTOVER.md`: step-by-step runbook for part B with rollback and the case list.
 
 ### Not done / not verified
@@ -44,8 +43,10 @@ all happen on the server and are the owner's steps in `docs/CUTOVER.md`.
    local port, certbot, staging, comparison, cutover, rollback rehearsal.
 2. Never tested: real certificates, Streamlit behind Caddy (only a dummy upstream was
    proxied), Streamlit bound to the Docker bridge address, image builds on the server.
-3. CI workflow unverified until pushed. Nothing has been pushed since Phase 0; the commits of
-   Phases 1–5 are local on `rebuild`.
+3. (Closed 2026-11-13.) The owner pushed `rebuild` (`97d8de2`) to `github`; the CI
+   workflow ran for the first time and all three jobs passed (backend, frontend, e2e
+   including the compose stack and the image check). The push needed a token with the
+   `workflow` permission.
 4. `TODO(owner)`: certificate-hook question (runbook step 0), seven realistic
    comparison cases (step 6), uptime check, erratum notice, ACME contact e-mail.
 5. Carried over: `docs/MODEL_BEHAVIOUR.md` to the co-authors; training ranges;
