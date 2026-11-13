@@ -19,8 +19,10 @@ describe('translations', () => {
     // All three languages were reported reviewed on 2026-11-13 (docs/DECISIONS.md).
     for (const file of [en, ru, kk]) {
       expect(file._clinical_review).toContain('2026-11-13')
-      // The only draft marker left names the search texts awaiting the owner's approval.
-      expect(file._todo_clinical_review).toMatch(/^TODO\(owner\): the seo\.\* texts/)
+      // No draft marker is left; new text must bring one back.
+      expect(Object.keys(file)).not.toContain('_todo_clinical_review')
+      // Text the owner accepted without a clinical review is named as such.
+      expect(file._owner_accepted).toContain('seo.*')
     }
     // Text added after the EN / RU review was accepted by the owner, and says so.
     for (const file of [en, ru]) expect(file._owner_accepted).toContain('warnings.OUTSIDE_TRAINING_RANGE')

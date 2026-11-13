@@ -1,5 +1,6 @@
 {
   "_clinical_review": "Reviewed by a native-speaking clinician and accepted (reported by the owner on 2026-11-13; reviewer name not recorded). The text was drafted by an AI system. Any new or changed text is a draft again until reviewed: mark it TODO(clinical-review).",
+  "_owner_accepted": "The page titles and descriptions for search engines (seo.*) were added after the Kazakh review and approved by the owner on 2026-11-13; that approval is an owner decision, not a clinical review.",
   "_clinical_terms": {
     "fields.gestational_age_weeks": "Гестациялық жас",
     "fields.birth_weight_g": "Салмақ",
@@ -21,7 +22,6 @@
     "retrospective cohort": "ретроспективті когорта",
     "severe congenital malformations": "ауыр туа біткен даму ақаулары"
   },
-  "_todo_clinical_review": "TODO(owner): the seo.* texts (page titles and descriptions shown in Google) were drafted on 2026-11-13 and await the owner's approval.",
   "app": {
     "name": "NeoMortalSurv",
     "tagline": "Қарқынды терапия бөлімшесіндегі өте төмен салмақпен туған нәрестелердің өмір сүру болжамы",

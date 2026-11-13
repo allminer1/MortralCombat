@@ -26,7 +26,7 @@ rate from 36 bpm and SpO2 from 35 %; no tooltip for bad obstetric history.
 
 Everything below is the history, newest first.
 
-### After the phases: search visibility (2026-11-13) — built, NOT DEPLOYED, wording awaits the owner
+### After the phases: search visibility (2026-11-13) — built, wording approved by the owner, NOT DEPLOYED
 
 Asked for by the owner: make the calculator easier to find in Google. No analytics,
 no third-party scripts, nothing sent from the site.
@@ -49,8 +49,9 @@ no third-party scripts, nothing sent from the site.
   `make test` 78 + 27, `make e2e` 45, `make e2e-accounts` 13, `make e2e-local` 46.
 
 Open:
-- `TODO(owner)`: approve the `seo.*` wording (both translation files and `kk.json`
-  carry the marker). The Kazakh `seo.*` lines were written after the Kazakh review.
+- (Done 2026-11-13.) The owner approved the `seo.*` wording in all three languages;
+  the files record it under `_owner_accepted`. The Kazakh lines were written after
+  the Kazakh review, so for them this is an owner decision, not a clinical review.
 - Deploy (usual one-line command).
 - `TODO(owner)`: Google Search Console — add the site, verify it with the HTML-file
   method (the DNS method needs Cloudflare), submit `https://neomortalsurv.net/sitemap.xml`.

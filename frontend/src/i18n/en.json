@@ -1,7 +1,6 @@
 {
   "_clinical_review": "Reviewed by the clinical co-authors and approved without corrections (reported by the owner on 2026-11-13; reviewer name not recorded). Any new or changed clinical text is a draft again until reviewed: mark it TODO(clinical-review).",
-  "_owner_accepted": "The out-of-range warning (warnings.OUTSIDE_TRAINING_RANGE, warnings.rangeItem) was added after that review and accepted by the owner on 2026-11-13; that acceptance is an owner decision, not a clinical review.",
-  "_todo_clinical_review": "TODO(owner): the seo.* texts (page titles and descriptions shown in Google) were drafted on 2026-11-13 and await the owner's approval.",
+  "_owner_accepted": "The out-of-range warning (warnings.OUTSIDE_TRAINING_RANGE, warnings.rangeItem) was added after that review and accepted by the owner on 2026-11-13; that acceptance is an owner decision, not a clinical review. The page titles and descriptions for search engines (seo.*) were drafted and approved by the owner on 2026-11-13.",
   "app": {
     "name": "NeoMortalSurv",
     "tagline": "Survival estimate for very-low-birth-weight infants in the NICU",
