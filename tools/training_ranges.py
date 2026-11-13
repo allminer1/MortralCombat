@@ -57,7 +57,7 @@ def main() -> int:
         print(f"Not the training set: column means differ from the scaler's for {off}.")
         return 1
 
-    print(f"Training set confirmed: {expected_rows} rows; all {len(features)} column means equal the scaler's.")
+    print(f"Training set confirmed: {expected_rows} rows; all {len(features)} column means match the scaler.")
     print()
     print(f"{'input':<24}{'n':>5}{'min':>9}{'p1':>9}{'p99':>9}{'max':>9}   form accepts")
     for f in features:
