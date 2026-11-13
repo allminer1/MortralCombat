@@ -1,0 +1,29 @@
+[project]
+name = "neomortalsurv-backend"
+version = "0.1.0"
+description = "NeoMortalSurv API backend. Runtime has no torch, pycox, scikit-learn or pandas."
+requires-python = ">=3.12"
+dependencies = [
+    "numpy>=2.5.4",
+    "onnxruntime>=1.31.1",
+]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 110
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+    "ruff>=0.17.5",
+]
