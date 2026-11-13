@@ -21,6 +21,7 @@
     "retrospective cohort": "ретроспективті когорта",
     "severe congenital malformations": "ауыр туа біткен даму ақаулары"
   },
+  "_todo_clinical_review": "TODO(owner): the seo.* texts (page titles and descriptions shown in Google) were drafted on 2026-11-13 and await the owner's approval.",
   "app": {
     "name": "NeoMortalSurv",
     "tagline": "Қарқынды терапия бөлімшесіндегі өте төмен салмақпен туған нәрестелердің өмір сүру болжамы",
@@ -212,5 +213,24 @@
     "failed": "Сақталған есептеулерді жүктеу мүмкін болмады.",
     "back": "Тарихқа оралу",
     "notFound": "Мұндай сақталған есептеу жоқ."
+  },
+  "seo": {
+    "home": {
+      "title": "NeoMortalSurv – өте төмен салмақпен туған нәрестелердің өмір сүру калькуляторы",
+      "description": "Тегін зерттеу онлайн-калькуляторы: жарияланған DeepSurv терең оқыту моделі бойынша қарқынды терапия бөлімшесіндегі өте төмен салмақпен туған шала туған нәрестелердің 7, 28 және 100-күнге дейінгі өмір сүру болжамы."
+    },
+    "about": {
+      "title": "Модель туралы – NeoMortalSurv өмір сүру калькуляторы",
+      "description": "NeoMortalSurv негізіндегі DeepSurv моделі қалай әзірленген: өте төмен салмақпен туған нәрестелер когортасы, жарияланған көрсеткіштер, шектеулер және мақалаға қалай сілтеме жасау керек."
+    },
+    "report": {
+      "title": "Есеп – NeoMortalSurv"
+    },
+    "login": {
+      "title": "Кіру – NeoMortalSurv"
+    },
+    "history": {
+      "title": "Сақталған есептеулер – NeoMortalSurv"
+    }
   }
 }

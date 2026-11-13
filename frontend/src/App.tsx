@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router'
 import { About } from './components/About'
 import { Calculator } from './components/Calculator'
+import { DocumentHead } from './components/DocumentHead'
 import { Footer } from './components/Footer'
 import { Header } from './components/Header'
 import { History, HistoryItem } from './components/History'
@@ -39,6 +40,7 @@ export default function App() {
     <BrowserRouter>
       <AuthProvider>
       <SessionProvider>
+        <DocumentHead />
         <div className="flex min-h-screen flex-col print:min-h-0">
           <Header />
           <main className="mx-auto w-full max-w-[76rem] flex-1 px-4 pb-16 sm:px-8 print:max-w-none print:p-0">

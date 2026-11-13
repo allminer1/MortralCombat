@@ -146,3 +146,76 @@ test('accounts are hidden when the server has them switched off', async ({ page,
   }
   expect((await request.get('/api/v1/auth/me')).status()).toBe(404)
 })
+
+// ---- What a search engine sees -------------------------------------------------------
+
+const head = (page: import('@playwright/test').Page) =>
+  page.evaluate(() => ({
+    title: document.title,
+    description: document.querySelector('meta[name="description"]')?.getAttribute('content') ?? null,
+    canonical: document.querySelector('link[rel="canonical"]')?.getAttribute('href') ?? null,
+    robots: document.querySelector('meta[name="robots"]')?.getAttribute('content') ?? null,
+    ogTitle: document.querySelector('meta[property="og:title"]')?.getAttribute('content') ?? null,
+    alternates: [...document.querySelectorAll('link[rel="alternate"][hreflang]')].map(
+      (n) => `${n.getAttribute('hreflang')} ${n.getAttribute('href')}`,
+    ),
+  }))
+
+test('search: title, description, canonical and language links follow the page and language', async ({ page }) => {
+  await page.goto('/?lang=en')
+  await page.locator('button[type=submit]').waitFor()
+  const en = await head(page)
+  expect(en.title).toContain('survival calculator for very-low-birth-weight')
+  expect(en.description).toContain('DeepSurv')
+  expect(en.ogTitle).toBe(en.title)
+  expect(en.canonical).toBe('https://neomortalsurv.net/')
+  expect(en.robots).toBeNull()
+  expect(en.alternates).toContain('en https://neomortalsurv.net/?lang=en')
+  expect(en.alternates).toContain('ru https://neomortalsurv.net/?lang=ru')
+  expect(en.alternates).toContain('x-default https://neomortalsurv.net/')
+
+  await page.getByRole('button', { name: 'Русский' }).click()
+  await expect(page).toHaveTitle(/калькулятор выживаемости/)
+  const ru = await head(page)
+  expect(ru.description).toContain('DeepSurv')
+  expect(ru.description).not.toBe(en.description)
+  expect(ru.canonical).toBe('https://neomortalsurv.net/?lang=ru')
+
+  await page.locator('a[href="/about"]').click()
+  await expect(page).toHaveTitle(/О модели/)
+  const about = await head(page)
+  expect(about.canonical).toBe('https://neomortalsurv.net/about?lang=ru')
+  expect(about.alternates).toContain('en https://neomortalsurv.net/about?lang=en')
+})
+
+test('search: the report page is marked noindex and the mark goes away again', async ({ page }) => {
+  await openReport(page, 'en')
+  const report = await head(page)
+  expect(report.robots).toBe('noindex')
+  expect(report.canonical).toBeNull()
+  expect(report.alternates).toEqual([])
+  await page.getByRole('link', { name: 'Back to the calculator' }).click()
+  await page.locator('button[type=submit]').waitFor()
+  expect((await head(page)).robots).toBeNull()
+})
+
+test('search: the page says what it is before any script runs', async ({ request }) => {
+  const html = await (await request.get('/')).text()
+  expect(html).toContain('<title>NeoMortalSurv – survival calculator for very-low-birth-weight (VLBW) infants</title>')
+  expect(html).toContain('very-low-birth-weight (VLBW)')
+  expect(html).toContain('doi:10.3389/fped.2026.1801840')
+  expect(html).toContain('application/ld+json')
+  expect(html).not.toContain('%VITE_SITE_URL%')
+})
+
+test('search: robots.txt, sitemap.xml and the preview image are served', async ({ request }) => {
+  const robots = await request.get('/robots.txt')
+  expect(robots.status()).toBe(200)
+  expect(await robots.text()).toContain('Sitemap: https://neomortalsurv.net/sitemap.xml')
+  const sitemap = await request.get('/sitemap.xml')
+  expect(sitemap.status()).toBe(200)
+  expect(await sitemap.text()).toContain('<loc>https://neomortalsurv.net/about?lang=kk</loc>')
+  const image = await request.get('/og.png')
+  expect(image.status()).toBe(200)
+  expect(image.headers()['content-type']).toContain('image/png')
+})

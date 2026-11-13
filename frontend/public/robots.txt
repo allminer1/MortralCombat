@@ -1,0 +1,5 @@
+# The calculator needs /api/v1/model to draw its form, so the API is not blocked.
+User-agent: *
+Allow: /
+
+Sitemap: https://neomortalsurv.net/sitemap.xml

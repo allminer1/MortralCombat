@@ -1,6 +1,7 @@
 {
   "_clinical_review": "Reviewed by the clinical co-authors and approved without corrections (reported by the owner on 2026-11-13; reviewer name not recorded). Any new or changed clinical text is a draft again until reviewed: mark it TODO(clinical-review).",
   "_owner_accepted": "The out-of-range warning (warnings.OUTSIDE_TRAINING_RANGE, warnings.rangeItem) was added after that review and accepted by the owner on 2026-11-13; that acceptance is an owner decision, not a clinical review.",
+  "_todo_clinical_review": "TODO(owner): the seo.* texts (page titles and descriptions shown in Google) were drafted on 2026-11-13 and await the owner's approval.",
   "app": {
     "name": "NeoMortalSurv",
     "tagline": "Survival estimate for very-low-birth-weight infants in the NICU",
@@ -192,5 +193,24 @@
     "failed": "Could not load the saved calculations.",
     "back": "Back to history",
     "notFound": "This saved calculation does not exist."
+  },
+  "seo": {
+    "home": {
+      "title": "NeoMortalSurv – survival calculator for very-low-birth-weight (VLBW) infants",
+      "description": "Free online research calculator that estimates the survival of very-low-birth-weight (VLBW) preterm infants in the NICU at days 7, 28 and 100, using a published DeepSurv deep-learning model."
+    },
+    "about": {
+      "title": "About the model – NeoMortalSurv VLBW survival calculator",
+      "description": "How the DeepSurv model behind NeoMortalSurv was developed: the cohort of very-low-birth-weight neonates, reported performance, limitations and how to cite the article."
+    },
+    "report": {
+      "title": "Report – NeoMortalSurv"
+    },
+    "login": {
+      "title": "Sign in – NeoMortalSurv"
+    },
+    "history": {
+      "title": "Saved calculations – NeoMortalSurv"
+    }
   }
 }

@@ -26,6 +26,38 @@ rate from 36 bpm and SpO2 from 35 %; no tooltip for bad obstetric history.
 
 Everything below is the history, newest first.
 
+### After the phases: search visibility (2026-11-13) — built, NOT DEPLOYED, wording awaits the owner
+
+Asked for by the owner: make the calculator easier to find in Google. No analytics,
+no third-party scripts, nothing sent from the site.
+
+- Titles and meta descriptions for the calculator and the About page in EN / RU / KK
+  (`seo.*` in `frontend/src/i18n/*.json`), kept current for the page and language on
+  screen by `frontend/src/components/DocumentHead.tsx`, together with the canonical
+  link, the language alternates (`?lang=`), Open Graph tags and `noindex` on the
+  report, sign-in and history pages.
+- `frontend/index.html`: English defaults of the above, a short readable description
+  with the citation that shows until the app loads (and without scripts), and a
+  JSON-LD description of the tool (`WebApplication`, health category) citing the
+  article. No inline styles or executable inline script, so the CSP is unchanged.
+- `frontend/public/robots.txt` (does not block `/api`, which the page needs to draw
+  its form), `sitemap.xml` (calculator and About page, three languages), `og.png`
+  (link-preview image, generated locally, self-hosted).
+- The site address lives in `frontend/vite.config.ts` (`VITE_SITE_URL`).
+- Tests: 6 unit tests (static head equals the translation file, structured data cites
+  the article as the model card does, sitemap contents) and 4 browser tests. Totals:
+  `make test` 78 + 27, `make e2e` 45, `make e2e-accounts` 13, `make e2e-local` 46.
+
+Open:
+- `TODO(owner)`: approve the `seo.*` wording (both translation files and `kk.json`
+  carry the marker). The Kazakh `seo.*` lines were written after the Kazakh review.
+- Deploy (usual one-line command).
+- `TODO(owner)`: Google Search Console — add the site, verify it with the HTML-file
+  method (the DNS method needs Cloudflare), submit `https://neomortalsurv.net/sitemap.xml`.
+  Claude adds the verification file to `frontend/public/` when given its name.
+- Links from other sites (university, perinatal centres, author profiles) are the
+  owner's to arrange and matter more than the on-page work.
+
 ## Current phase: 6 — Accounts and history — built and tested; OFF in production
 
 Last session: 2026-11-13 (same session as Phases 1–5, at the owner's request).

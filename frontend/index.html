@@ -4,10 +4,68 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>NeoMortalSurv</title>
+    <!-- Title, description and links below are the English defaults. The app replaces
+         them for the page and language shown (src/components/DocumentHead.tsx); a unit
+         test keeps them equal to src/i18n/en.json. -->
+    <title>NeoMortalSurv – survival calculator for very-low-birth-weight (VLBW) infants</title>
+    <meta name="description" content="Free online research calculator that estimates the survival of very-low-birth-weight (VLBW) preterm infants in the NICU at days 7, 28 and 100, using a published DeepSurv deep-learning model." />
+    <link rel="canonical" href="%VITE_SITE_URL%/" />
+    <link rel="alternate" hreflang="en" href="%VITE_SITE_URL%/?lang=en" />
+    <link rel="alternate" hreflang="ru" href="%VITE_SITE_URL%/?lang=ru" />
+    <link rel="alternate" hreflang="x-default" href="%VITE_SITE_URL%/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="NeoMortalSurv" />
+    <meta property="og:title" content="NeoMortalSurv – survival calculator for very-low-birth-weight (VLBW) infants" />
+    <meta property="og:description" content="Free online research calculator that estimates the survival of very-low-birth-weight (VLBW) preterm infants in the NICU at days 7, 28 and 100, using a published DeepSurv deep-learning model." />
+    <meta property="og:url" content="%VITE_SITE_URL%/" />
+    <meta property="og:image" content="%VITE_SITE_URL%/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <!-- Machine-readable description of the tool and the article. A data block, not a script. -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "NeoMortalSurv",
+        "url": "%VITE_SITE_URL%/",
+        "applicationCategory": "HealthApplication",
+        "operatingSystem": "Any",
+        "isAccessibleForFree": true,
+        "inLanguage": ["en", "ru", "kk"],
+        "description": "Free online research calculator that estimates the survival of very-low-birth-weight (VLBW) preterm infants in the NICU at days 7, 28 and 100, using a published DeepSurv deep-learning model.",
+        "audience": { "@type": "MedicalAudience", "audienceType": "Clinician" },
+        "citation": {
+          "@type": "ScholarlyArticle",
+          "headline": "A deep-learning approach to predict mortality in very-low-birth-weight infants treated in the intensive care units using DeepSurv.",
+          "isPartOf": { "@type": "Periodical", "name": "Front. Pediatr." },
+          "datePublished": "2026",
+          "identifier": "doi:10.3389/fped.2026.1801840",
+          "sameAs": "https://doi.org/10.3389/fped.2026.1801840"
+        }
+      }
+    </script>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Shown until the app has loaded, and readable without scripts. -->
+      <main class="mx-auto w-full max-w-[76rem] px-4 py-10 sm:px-8">
+        <h1 class="text-2xl font-semibold tracking-tight text-accent-strong">NeoMortalSurv</h1>
+        <p class="mt-2 max-w-[70ch]">
+          Research calculator that estimates the probability of survival of very-low-birth-weight (VLBW)
+          infants treated in the neonatal intensive care unit, at days 7, 28 and 100, with a published
+          DeepSurv model. Available in English, Russian and Kazakh.
+        </p>
+        <p class="mt-2 max-w-[70ch] text-muted">
+          Bozhbanbayeva N, Abilbayeva A, Tarabayeva A, Isgandarov I, Tolykbayev T, Adilbekova I,
+          Yelyubayeva D. A deep-learning approach to predict mortality in very-low-birth-weight infants
+          treated in the intensive care units using DeepSurv. Front. Pediatr. 2026;14:1801840.
+          <a href="https://doi.org/10.3389/fped.2026.1801840">doi:10.3389/fped.2026.1801840</a>
+        </p>
+        <p class="mt-2 max-w-[70ch] text-muted">For research use. Not a substitute for clinical judgement.</p>
+        <noscript><p class="mt-4 font-medium">The calculator needs JavaScript to be switched on.</p></noscript>
+      </main>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

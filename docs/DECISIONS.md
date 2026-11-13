@@ -557,3 +557,17 @@ Given by the owner in the session of 2026-11-13, each as an explicit choice.
   the repository is public, so the draft itself is readable there.
 - **The old Streamlit app stays on port 8444 until 2026-12-13**, then is retired with
   `docs/CUTOVER.md` step 9.
+
+## 2026-11-13 — Search visibility without analytics
+
+- Only on-page measures and files the site serves itself; no tracking, no third-party
+  script, no search-engine widget. Google Search Console is a tool the owner uses on
+  Google's side; the site only serves a verification file.
+- Languages stay on `?lang=` URLs (declared to search engines with `hreflang` and in
+  the sitemap) instead of moving to `/ru/`-style paths, which would change every
+  address after the article and the cutover. English is the default and canonical
+  form of each page.
+- The report, sign-in and history pages are `noindex`: they are empty or personal.
+- `robots.txt` blocks nothing: the page needs `/api/v1/model` to render, and a
+  blocked API would make search engines see a page stuck on "loading".
+- The description says "research calculator" and makes no claim about accuracy.
