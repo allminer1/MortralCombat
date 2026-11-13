@@ -3,8 +3,9 @@
 ## Current phase: 6 — Accounts and history — built and tested; OFF in production
 
 Last session: 2026-11-13 (same session as Phases 1–5, at the owner's request).
-Nothing of this phase is deployed: the server runs commit `65dc7c3` with
-`ENABLE_ACCOUNTS` unset (off). The live site is unchanged by this phase.
+The Phase 6 code reached the server on 2026-11-13 with the warning deploy (commit
+`587f959`), with `ENABLE_ACCOUNTS` unset: accounts are **off** and their endpoints do
+not exist on the live site (checked).
 
 ### After the phases: clinical review packet (2026-11-13)
 
@@ -61,8 +62,16 @@ What the numbers show (facts, no interpretation of their clinical meaning):
   excluded. `TODO(owner)`: check with the co-authors; the site's weight warning and the
   About page repeat the article's statement.
 
-**`OUTSIDE_TRAINING_RANGE` warning built on 2026-11-13; NOT YET DEPLOYED.** Owner's
-decision: warn outside min–max.
+**`OUTSIDE_TRAINING_RANGE` warning built and deployed on 2026-11-13.** Owner's
+decisions: warn outside min–max; deploy before the co-authors review the new wording.
+
+Deployed by the owner (`git pull`, `deploy/deploy.sh`) at commit `587f959`, which also
+brought the Phase 6 code (switched off) and the phone layout fixes to the server.
+Checked from outside right after: health ok with unchanged model hashes; `/model`
+serves the five training ranges; gestational age 40 returns `OUTSIDE_TRAINING_RANGE`
+for that input; Figure 8 still gives 1.210 → 65.22 / 39.52 / 5.63 % with no warning;
+`/features` says accounts off and `/auth/me` does not exist (404); the old app still
+answers on `:8444`.
 
 - Ranges live in `backend/app/data/training_ranges.json` (not in the frozen `model/`;
   see `docs/DECISIONS.md`) and are served by `GET /api/v1/model` as `training_ranges`.
@@ -76,7 +85,6 @@ decision: warn outside min–max.
   `make e2e-accounts` 13; `make e2e-local` 42. `make lint` passes.
 
 Open:
-- **Deploy** (owner): `cd ~/neomortalsurv && git pull && sudo deploy/deploy.sh`.
 - `TODO(clinical-review)`: the two new texts `warnings.OUTSIDE_TRAINING_RANGE` and
   `warnings.rangeItem` (EN, RU; KK draft). They were written after the co-authors'
   review; both translation files say so, and the review packet lists them as unreviewed.
