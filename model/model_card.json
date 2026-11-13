@@ -1,0 +1,76 @@
+{
+  "model_version": "deepsurv-vlbw-1.0.0",
+  "model_type": "DeepSurv (Cox proportional hazards with a neural-network log-risk)",
+  "intended_use": "research",
+  "output": "S(t) = exp(-H0(t) * exp(g(z))), t in days",
+  "artifacts": {
+    "deepsurv.onnx": {
+      "sha256": "0673cc55b19029b5fa9d7febb1f86a3abbc80127d8fac048a8cc02cee136af9f"
+    },
+    "feature_spec.json": {
+      "sha256": "fd9081e51659161ff80bd0e5389193218c6099da72ad948b3a13aa6f369a6dad"
+    },
+    "baseline_hazard.json": {
+      "sha256": "96dd4de5312f99c913ce49445c40f0e7dae38c8e51a384724060aec7316e769a"
+    }
+  },
+  "source_artifacts": {
+    "legacy/survival_model.pth": {
+      "sha256": "257272b6e17f6870d15c23ff5104437ee8a9421584b66b6dd8415ed2edd41fd2"
+    },
+    "legacy/scaler1.pkl": {
+      "sha256": "8d2555e654183f7afdfb87b07b271362fcaddd221a528679f1ba9709926d1918"
+    },
+    "legacy/baseline_hazard.csv": {
+      "sha256": "3f06ba6cf50709de656755ba88168852d8c63befb6b44fd8d80b97ee6d019f35"
+    }
+  },
+  "export": {
+    "tool": "tools/export_model.py",
+    "onnx_opset": 17,
+    "torch": "2.7.1",
+    "onnx": "1.23.2"
+  },
+  "citation": {
+    "authors": "Bozhbanbayeva N, Abilbayeva A, Tarabayeva A, Isgandarov I, Tolykbayev T, Adilbekova I, Yelyubayeva D.",
+    "title": "A deep-learning approach to predict mortality in very-low-birth-weight infants treated in the intensive care units using DeepSurv.",
+    "journal": "Front. Pediatr.",
+    "year": 2026,
+    "volume": "14",
+    "article": "1801840",
+    "doi": "10.3389/fped.2026.1801840"
+  },
+  "cohort": {
+    "n_total": 958,
+    "n_train": 672,
+    "n_test": 286,
+    "centres": 4,
+    "country": "Kazakhstan",
+    "period": "2021-01 to 2025-05",
+    "population": "very-low-birth-weight neonates treated in the NICU",
+    "exclusions": [
+      "birth weight above 1500 g",
+      "severe congenital malformations"
+    ],
+    "feature_selection": "Boruta, 11 predictors"
+  },
+  "reported_performance": {
+    "dataset": "held-out test set, n = 286",
+    "c_index": {
+      "value": 0.86,
+      "ci95": [
+        0.81,
+        0.9
+      ]
+    },
+    "auc_overall": {
+      "value": 0.95,
+      "ci95": [
+        0.91,
+        0.98
+      ]
+    },
+    "integrated_brier_score": 0.071,
+    "external_validation": false
+  }
+}
