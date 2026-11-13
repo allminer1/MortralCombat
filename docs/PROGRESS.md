@@ -66,7 +66,25 @@ all happen on the server and are the owner's steps in `docs/CUTOVER.md`.
 - 2026-11-13: the owner cannot log in to Cloudflare (DNS), so staging and legacy use
   ports 8443 / 8444 instead of subdomains (`docs/DECISIONS.md`, `docs/CUTOVER.md`).
   Recovering the Cloudflare account is an open owner item.
-- Next: runbook step 1 (ports), step 2 (Docker, swap, clone).
+- 2026-11-13, runbook steps 1–4 done by the owner (Claude read the terminal panel and
+  typed nothing on the server):
+  - ufw inactive; Docker 29.9.3 + compose 5.7.1 installed; `docker0` = 172.17.0.1;
+    2 GB swap added; repository cloned to `~/neomortalsurv` at `65dc7c3`; images
+    built on the server in about 70 s.
+  - Streamlit moved to `172.17.0.1:8501` (plain HTTP, CORS and XSRF checks off),
+    service now starts after Docker. Backups on the server:
+    `run.sh.bak-2026-11-13`, `streamlit.service.bak-2026-11-13`.
+  - Stack started with `deploy/deploy.sh`. Checked from outside the server:
+    `https://neomortalsurv.net` → old app through Caddy, one calculation run by the
+    owner (live connection works); `http://` redirects to `https://`; new certificate
+    from Let's Encrypt, valid to 2027-02-11;
+    `https://neomortalsurv.net:8443` → new calculator, health ok, artifact hashes equal
+    to the repository's, Figure 8 through the API = 1.210 → 65.22 / 39.52 / 5.63 %.
+    Ports 8443 is reachable from outside (no panel firewall in the way).
+- **State now: staging is live.** Old app on the main address, new calculator on
+  `:8443`. Not yet done: step 5 (certbot off), step 6 (case comparison and sign-off),
+  step 7 (cutover), step 8 (rollback rehearsal).
+- The server still reports "System restart required" (kernel, security updates).
 
 ### Notes for the next session
 
