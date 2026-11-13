@@ -35,8 +35,35 @@ Still open after the review:
 Section 11 item 3). It first confirms the file is the training set (672 rows, column
 means equal the scaler's) and then prints only n, minimum, 1st and 99th percentile and
 maximum of the five continuous inputs. Tested on random synthetic data, including the
-three refusal cases; **not yet run on the real file, so no ranges are known and the
-`OUTSIDE_TRAINING_RANGE` warning is still not built.**
+three refusal cases.
+
+**Run by the owner on 2026-11-13 on `MortalityKidsTrain.csv`** (outside the repository;
+Claude did not open it). The script confirmed the file: 672 rows, all 11 column means
+match the scaler. Output, summary numbers only:
+
+| input | n | min | 1st pct | 99th pct | max | form accepts |
+|---|---|---|---|---|---|---|
+| `birth_weight_g` | 672 | 430 | 509.71 | 1498 | 1803 | 400–2000 |
+| `apgar_5min` | 672 | 2 | 2 | 8 | 9 | 0–10 |
+| `gestational_age_weeks` | 672 | 22 | 23 | 36 | 38 | 20–42 |
+| `heart_rate_bpm` | 672 | 36 | 56 | 177 | 188 | 60–200 |
+| `spo2_percent` | 672 | 35 | 45 | 96 | 98 | 40–100 |
+
+What the numbers show (facts, no interpretation of their clinical meaning):
+- The form accepts values the model never saw: Apgar 0, 1 and 10; gestational age
+  20–21 and 39–42 weeks; weight below 430 g and above 1,803 g; heart rate above 188;
+  SpO2 above 98. The implausible outputs in `docs/MODEL_BEHAVIOUR.md` (for example
+  survival near 0 % at 39–42 weeks) are in these never-seen regions.
+- The form **refuses** values that did occur in training: heart rate 36–59 and SpO2
+  35–39 (the form's minimums are the old sliders' 60 and 40).
+- The training set contains birth weights above 1,500 g (maximum 1,803 g; the 99th
+  percentile is 1,498 g), although the article states that infants above 1,500 g were
+  excluded. `TODO(owner)`: check with the co-authors; the site's weight warning and the
+  About page repeat the article's statement.
+
+**The `OUTSIDE_TRAINING_RANGE` warning is still not built.** `TODO(owner)`: where to
+warn (outside min–max, or outside the 1st–99th percentile), and whether the form's
+lower limits for heart rate and SpO2 should be lowered to what occurred in training.
 
     cd tools && uv run python training_ranges.py --train-csv /path/to/training-file.csv
 
