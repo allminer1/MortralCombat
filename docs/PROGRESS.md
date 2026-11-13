@@ -3,7 +3,7 @@
 ## State on 2026-11-13, end of session
 
 All six phases of `docs/REBUILD_SPEC.md` are built and tested. Live on
-https://neomortalsurv.net at commit `6279ec8`: calculator, report, About page, in
+https://neomortalsurv.net at commit `8245f3c`: calculator, report, About page, in
 English, Russian and Kazakh, with the out-of-range warning. Accounts and saved history
 are built and **off**. The old Streamlit app is on port 8444 as a fallback.
 
@@ -26,7 +26,15 @@ rate from 36 bpm and SpO2 from 35 %; no tooltip for bad obstetric history.
 
 Everything below is the history, newest first.
 
-### After the phases: search visibility (2026-11-13) — built, wording approved by the owner, NOT DEPLOYED
+### After the phases: search visibility (2026-11-13) — deployed
+
+Deployed by the owner on 2026-11-13 (`8245f3c`). Checked from outside afterwards: new
+title, meta description, canonical link and JSON-LD in the page; `robots.txt`
+(text/plain), `sitemap.xml` (XML) and `og.png` (image/png) served; health ok with the
+same artifact hashes; Figure 8 case 1.210 → 65.22 / 39.52 / 5.63 %; accounts off; old
+app answers on port 8444. Still the owner's: add the site to Google Search Console
+(URL-prefix property, HTML-file verification — the file goes into `frontend/public/`)
+and submit `sitemap.xml` there.
 
 Asked for by the owner: make the calculator easier to find in Google. No analytics,
 no third-party scripts, nothing sent from the site.
