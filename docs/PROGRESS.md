@@ -107,7 +107,9 @@ Open:
 - `TODO(clinical-review)`: the two new texts `warnings.OUTSIDE_TRAINING_RANGE` and
   `warnings.rangeItem` (EN, RU; KK draft). They were written after the co-authors'
   review; both translation files say so, and the review packet lists them as unreviewed.
-- (Decided 2026-11-13, built, **not yet deployed**.) The form and API accept heart rate
+- (Decided, built and **deployed 2026-11-13**, commit `b479ec2`; checked from outside:
+  36 bpm and 35 % accepted, 35 bpm and 34 % refused with the new limits in the error,
+  Figure 8 unchanged, accounts off, old app up.) The form and API accept heart rate
   from 36 bpm and SpO2 from 35 %, the smallest values in training; two numbers in
   `model/feature_spec.json` changed with the owner's go-ahead, network and hazard
   files byte-identical (`docs/DECISIONS.md`). All suites pass: `make test` 78 + 21,
