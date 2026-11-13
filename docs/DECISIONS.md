@@ -477,3 +477,32 @@ values.
   A warning about inputs the model has no data for should be read before the number,
   and it says nothing about the size of the estimate, so it is not a risk category.
 - The warning text is new and unreviewed (`TODO(clinical-review)`).
+
+## 2026-11-13 — Lower limits for heart rate and SpO2 follow the training data
+
+Owner's decision (session of 2026-11-13), after seeing the training ranges: the form
+and API accept heart rate from **36** bpm (was 60) and SpO2 from **35** % (was 40), the
+smallest values in the training set. Upper limits and all other ranges are unchanged.
+
+This is a sanctioned change to `model/`, made with the owner's explicit go-ahead
+because `CLAUDE.md` rule 1 freezes that directory:
+
+- Only two numbers in `model/feature_spec.json` changed (`heart_rate_bpm.min`,
+  `spo2_percent.min`), through `tools/export_model.py`, and with them the hash of the
+  spec recorded in `model/model_card.json`. New sha256: `feature_spec.json`
+  `4af968e1…9f89728b`, `model_card.json` `19684c76…30e49f5e`.
+- `deepsurv.onnx` (`0673cc55…`) and `baseline_hazard.json` (`96dd4de5…`) are
+  byte-identical; the export is still reproducible; the golden file was not
+  regenerated and all golden tests pass. The model computes exactly what it did.
+- `model_version` stays `deepsurv-vlbw-1.0.0`: the network is the same; only the
+  accepted input range is wider, and only into values the model was trained on.
+- Spec 5.1 ("hard ranges are the legacy slider limits") no longer holds for these two
+  limits. `docs/MODEL_BEHAVIOUR.md` and the review packet were regenerated.
+
+## 2026-11-13 — Gestational age: warn, do not refuse
+
+Owner's decision after trying the live site (40 weeks gives 0 % with the warning shown):
+the behaviour is acceptable as it is. Values outside the training range stay allowed and
+are warned about; nothing is refused beyond the form's hard limits. The decrease of
+estimated survival with higher gestational age inside the training range is the model's
+behaviour and is left for the co-authors (Part B of the review packet).

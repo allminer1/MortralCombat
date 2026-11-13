@@ -94,27 +94,27 @@ These tables describe what the model computes. They are not clinical statements,
 
 | heart_rate_bpm | A | B | C |
 |---:|---:|---:|---:|
-| 60 | 33.9 | 98.8 | 26.7 |
-| 78 | 39.0 | 98.8 | 30.5 |
-| 95 | 48.9 | 99.0 | 41.4 |
-| 112 | 84.3 | 99.3 | 75.3 |
-| 130 | 98.2 | 99.5 | 93.6 |
-| 148 | 99.7 | 99.7 | 97.5 |
-| 165 | 99.9 | 99.8 | 99.2 |
-| 182 | 100.0 | 99.9 | 99.7 |
+| 36 | 30.9 | 99.0 | 26.4 |
+| 56 | 32.7 | 98.8 | 26.3 |
+| 77 | 38.7 | 98.8 | 30.3 |
+| 98 | 53.0 | 99.1 | 44.4 |
+| 118 | 92.1 | 99.4 | 86.6 |
+| 138 | 99.3 | 99.6 | 95.6 |
+| 159 | 99.9 | 99.8 | 98.8 |
+| 180 | 100.0 | 99.9 | 99.7 |
 | 200 | 100.0 | 100.0 | 99.9 |
 
 ### `spo2_percent` (%)
 
 | spo2_percent | A | B | C |
 |---:|---:|---:|---:|
-| 40 | 30.8 | 99.9 | 99.8 |
-| 48 | 36.1 | 99.9 | 99.4 |
-| 55 | 39.5 | 99.7 | 98.9 |
-| 62 | 39.9 | 99.6 | 97.5 |
-| 70 | 38.4 | 99.4 | 89.3 |
-| 78 | 34.0 | 99.3 | 75.4 |
-| 85 | 27.1 | 99.3 | 65.0 |
+| 35 | 27.6 | 100.0 | 99.9 |
+| 43 | 32.6 | 99.9 | 99.7 |
+| 51 | 37.9 | 99.8 | 99.2 |
+| 59 | 40.4 | 99.6 | 98.3 |
+| 68 | 38.6 | 99.5 | 93.3 |
+| 76 | 35.4 | 99.3 | 78.9 |
+| 84 | 27.8 | 99.3 | 66.3 |
 | 92 | 24.5 | 99.2 | 64.9 |
 | 100 | 33.1 | 98.6 | 60.2 |
 
@@ -157,8 +157,8 @@ Direction of day-28 survival as the input goes up (No → Yes, II → III, or a 
 | `apgar_5min` | not monotonic | not monotonic | not monotonic | 87.8 | 78.8 | 80.7 |
 | `gestational_age_weeks` | not monotonic | not monotonic | not monotonic | 60.1 | 99.4 | 87.9 |
 | `respiratory_failure_grade` | rises | falls | falls | 1.2 | 0.6 | 43.3 |
-| `heart_rate_bpm` | rises | not monotonic | rises | 66.1 | 1.2 | 73.2 |
-| `spo2_percent` | not monotonic | falls | falls | 15.4 | 1.3 | 39.6 |
+| `heart_rate_bpm` | rises | not monotonic | not monotonic | 69.1 | 1.2 | 73.6 |
+| `spo2_percent` | not monotonic | falls | falls | 15.9 | 1.3 | 39.7 |
 | `rds` | rises | rises | rises | 34.7 | 0.3 | 56.2 |
 | `ivh` | falls | rises | falls | 15.4 | 0.3 | 11.9 |
 | `dic` | rises | falls | falls | 1.4 | 19.3 | 19.3 |

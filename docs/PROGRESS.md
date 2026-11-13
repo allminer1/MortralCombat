@@ -107,8 +107,15 @@ Open:
 - `TODO(clinical-review)`: the two new texts `warnings.OUTSIDE_TRAINING_RANGE` and
   `warnings.rangeItem` (EN, RU; KK draft). They were written after the co-authors'
   review; both translation files say so, and the review packet lists them as unreviewed.
-- `TODO(owner)`: lower the form's minimums for heart rate and SpO2 to what occurred in
-  training (36 and 35)? Today the form refuses 36–59 bpm and 35–39 %.
+- (Decided 2026-11-13, built, **not yet deployed**.) The form and API accept heart rate
+  from 36 bpm and SpO2 from 35 %, the smallest values in training; two numbers in
+  `model/feature_spec.json` changed with the owner's go-ahead, network and hazard
+  files byte-identical (`docs/DECISIONS.md`). All suites pass: `make test` 78 + 21,
+  `make test-accounts` 121, `make e2e` 37, `make e2e-accounts` 13, `make e2e-local` 42.
+  Deploy: `cd ~/neomortalsurv && git pull && sudo deploy/deploy.sh`; `/health` will
+  then report the new `feature_spec.json` hash `4af968e1…`.
+- (Decided 2026-11-13.) Gestational age outside the training range: keep warning, do
+  not refuse.
 - `TODO(owner)`: the 1,500 g exclusion statement versus the training maximum of 1,803 g.
 
     cd tools && uv run python training_ranges.py --train-csv /path/to/training-file.csv

@@ -33,15 +33,18 @@ OPSET = 17
 # tools/make_golden.py checks the gate's anchor cases against the result.
 
 # Per-feature metadata, keyed by the scaler's column name (spec 5.1). Hard ranges
-# are the legacy slider limits. This dict is keyed by name; its order is irrelevant.
+# are the legacy slider limits, except the two lower limits the owner changed on
+# 2026-11-13 to the smallest values in the training set: heart rate 60 -> 36 and
+# SpO2 40 -> 35 (docs/DECISIONS.md). The network, scaler and hazard are untouched.
+# This dict is keyed by name; its order is irrelevant.
 FEATURE_META = {
     "BOH": {"api_field": "bad_obstetric_history", "type": "bool"},
     "weight": {"api_field": "birth_weight_g", "type": "int", "min": 400, "max": 2000, "unit": "g"},
     "Apgar5": {"api_field": "apgar_5min", "type": "int", "min": 0, "max": 10},
     "GDW": {"api_field": "gestational_age_weeks", "type": "int", "min": 20, "max": 42, "unit": "weeks"},
     "RF": {"api_field": "respiratory_failure_grade", "type": "enum", "values": [2, 3]},
-    "HR": {"api_field": "heart_rate_bpm", "type": "int", "min": 60, "max": 200, "unit": "bpm"},
-    "Saturation": {"api_field": "spo2_percent", "type": "int", "min": 40, "max": 100, "unit": "%"},
+    "HR": {"api_field": "heart_rate_bpm", "type": "int", "min": 36, "max": 200, "unit": "bpm"},
+    "Saturation": {"api_field": "spo2_percent", "type": "int", "min": 35, "max": 100, "unit": "%"},
     "RDS": {"api_field": "rds", "type": "bool"},
     "IVH": {"api_field": "ivh", "type": "bool"},
     "DIC": {"api_field": "dic", "type": "bool"},
