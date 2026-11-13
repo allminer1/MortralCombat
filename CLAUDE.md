@@ -21,11 +21,12 @@ https://neomortalsurv.net. We are rebuilding it from Streamlit into FastAPI + Re
 
 Keep these Makefile targets working and add new ones here when you create them.
 
-- `make dev` — backend + frontend with reload
+- `make dev` — backend + frontend with reload (stub until Phases 2–3)
 - `make test` — backend tests, including golden tests
 - `make lint` — ruff + frontend lint + type-check
-- `make e2e` — Playwright against the compose stack
+- `make e2e` — Playwright against the compose stack (stub until Phase 3)
 - `make export-model` — regenerate `model/` from `legacy/` (needs `tools/` env)
+- `make sweep-report` — regenerate `docs/MODEL_BEHAVIOUR.md` (needs `tools/` env)
 
 ## Rules that are not negotiable
 

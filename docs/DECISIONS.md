@@ -109,3 +109,55 @@ Consequences:
 4. Scaler means and SHAP directions (spec 3.1, 3.2) fit the scaler order.
 
 Items 1–4 pointed to outcome A; the C-index check above decided it.
+
+## 2026-11-13 — Phase 1: tools environment
+
+`tools/` is a `uv` project pinned to the versions in `legacy/requirements.txt`
+(torch 2.7.1, scikit-learn 1.7.0, numpy 2.2.6, pandas 2.3.1, joblib 1.5.1; Python 3.12),
+i.e. the environment the production app runs with, plus `onnx` and `onnxruntime`
+(locked in `tools/uv.lock`). This replaces the unpinned `tools/requirements.txt`. The
+Phase 0 gate was run with the Anaconda versions listed above; it gives the same 6 / 6
+result in the new environment.
+
+## 2026-11-13 — Phase 1: gate scripts archived, not deleted
+
+`tools/legacy_model.py`, `gate_regression.py` and `gate_cindex.py` moved to
+`tools/gate/` (only their paths were edited). They are the record of the gate and
+build positional arrays on purpose; nothing else may import them. They are excluded
+from linting.
+
+## 2026-11-13 — Phase 1: where the order comes from
+
+`tools/export_model.py` reads the order from the scaler's `feature_names_in_` and
+writes it to `model/feature_spec.json`. It is typed nowhere else in the rebuild: not
+in the export script, the golden script, the backend or the tests. Protection against
+a wrong order is the golden set (anchors of spec 3.2 in the confirmed order), not a
+second copy of the list. Per-feature metadata in the export script (API name, type,
+hard range from spec 5.1) is a dictionary keyed by scaler name.
+
+## 2026-11-13 — Phase 1: export details
+
+- ONNX opset 17, TorchScript exporter (`dynamo=False`), input `z` (scaled, float32,
+  shape batch × 11), output `log_risk`. Scaling is done in the backend in float64 and is
+  not part of the ONNX graph (spec 5.2).
+- Model version `deepsurv-vlbw-1.0.0` (spec Section 6 example).
+- Generated JSON carries no timestamps, so `make export-model` is byte-reproducible.
+  `model_card.json` records sha256 of the three legacy sources and the three exported
+  files; the backend refuses to start if an exported file does not match the card.
+- `baseline_hazard.json` stores the 65 event times as integers and the cumulative
+  hazard values exactly as written in the CSV.
+
+## 2026-11-13 — Phase 1: golden set
+
+Reference path: named DataFrame → the original `StandardScaler` object → PyTorch
+network → survival from `legacy/baseline_hazard.csv`. It shares no code with the
+backend. Booleans are stored as 0 / 1. Random cases draw every field uniformly over
+its hard range (so they include weights above 1,500 g and implausible combinations;
+the purpose is numerical agreement, not realism). The file is committed and is not
+regenerated; `make_golden.py` refuses to overwrite it without `--force`.
+
+## 2026-11-13 — Phase 1: sweep report reference patients
+
+A = article Figure 8; B / C = each input at its training mean rounded to a valid
+value (taken from `feature_spec.json`), with the four diagnoses all No / all Yes.
+No patient data. Continuous inputs are varied on at most 9 evenly spaced values.
