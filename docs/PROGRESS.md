@@ -93,6 +93,17 @@ all happen on the server and are the owner's steps in `docs/CUTOVER.md`.
   (rollback rehearsal).
 - The server still reports "System restart required" (kernel, security updates).
 
+- **2026-11-13, step 7: CUTOVER DONE** by the owner, on the owner's decision recorded
+  in `docs/DECISIONS.md` (without the co-author's sign-off). Checked from outside the
+  server right after: `https://neomortalsurv.net` serves the new calculator (health
+  ok, security headers, `/about` opens directly, `http://` redirects, Figure 8 through
+  the API = 1.210 → 65.22 / 39.52 / 5.63 %); the old Streamlit app answers on
+  `https://neomortalsurv.net:8444`; port 8443 no longer answers. Settings before the
+  switch are kept on the server as `deploy/.env.before-cutover`.
+- Not yet done: step 8 (rollback rehearsal), step 9 (retire the old app after 30
+  days, i.e. not before 2026-12-13). Open after cutover: co-author's cases 4–10,
+  phone / ward PC / hospital network, printed output, clinical review of all wording.
+
 ### Notes for the next session
 
 - Part B needs the owner at the server. Claude can help read command output and adjust
