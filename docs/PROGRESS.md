@@ -30,7 +30,7 @@ Still open after the review:
 - Erratum decision; server restart; Cloudflare access; uptime check; retiring the old
   app after 2026-12-13; institutional sign-off before accounts can be enabled.
 
-### After the phases: typo fix for the old app (2026-11-13) — prepared, not deployed
+### After the phases: typo fix for the old app (2026-11-13) — applied by the owner
 
 Spec 7.5 asks for the label "Bad obestric history" on the old Streamlit app to be
 fixed. Prepared on branch `legacy-streamlit` (commit `c9428af`, tag
@@ -40,6 +40,11 @@ after 2026-12-13, so this is cosmetic. To apply on the server (owner):
 
     sudo sed -i 's/"BOH": "Bad obestric history"/"BOH": "Bad obstetric history"/' /home/AuE/MortralCombat/MortalCombat.py
     sudo systemctl restart streamlit
+
+Applied by the owner on the server on 2026-11-13 and Streamlit restarted. Checked in
+a browser afterwards: `https://neomortalsurv.net:8444` shows "Bad obstetric history"
+and the misspelling is gone; the main site was not affected. This closes the
+"fix the typo on the live site" item of spec 7.5.
 
 The server file then has sha256 `fdaa47b9…82c6c780` if it was identical to the hot-fix
 version before. `legacy/` on the `rebuild` branch is frozen and is not changed.
