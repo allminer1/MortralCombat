@@ -44,8 +44,8 @@ all happen on the server and are the owner's steps in `docs/CUTOVER.md`.
    local port, certbot, staging, comparison, cutover, rollback rehearsal.
 2. Never tested: real certificates, Streamlit behind Caddy (only a dummy upstream was
    proxied), Streamlit bound to the Docker bridge address, image builds on the server.
-3. CI workflow unverified until pushed. Nothing has been pushed since Phase 0; 15
-   commits are local on `rebuild`.
+3. CI workflow unverified until pushed. Nothing has been pushed since Phase 0; the commits of
+   Phases 1–5 are local on `rebuild`.
 4. `TODO(owner)`: certificate-hook question (runbook step 0), seven realistic
    comparison cases (step 6), uptime check, erratum notice, ACME contact e-mail.
 5. Carried over: `docs/MODEL_BEHAVIOUR.md` to the co-authors; training ranges;
