@@ -61,9 +61,28 @@ What the numbers show (facts, no interpretation of their clinical meaning):
   excluded. `TODO(owner)`: check with the co-authors; the site's weight warning and the
   About page repeat the article's statement.
 
-**The `OUTSIDE_TRAINING_RANGE` warning is still not built.** `TODO(owner)`: where to
-warn (outside min–max, or outside the 1st–99th percentile), and whether the form's
-lower limits for heart rate and SpO2 should be lowered to what occurred in training.
+**`OUTSIDE_TRAINING_RANGE` warning built on 2026-11-13; NOT YET DEPLOYED.** Owner's
+decision: warn outside min–max.
+
+- Ranges live in `backend/app/data/training_ranges.json` (not in the frozen `model/`;
+  see `docs/DECISIONS.md`) and are served by `GET /api/v1/model` as `training_ranges`.
+- `/predict` and saved calculations return the code `OUTSIDE_TRAINING_RANGE` once, plus
+  `outside_training_range`: the names of the inputs concerned. The estimate itself is
+  unchanged; a warning is never a refusal.
+- Result panel: every warning (this one and the weight one) is now also shown in a
+  notice above the headline numbers, not only under "Details"; the report shows them
+  too. The sentence names each input with its study range.
+- Tests: `make test` 78 backend + 21 unit; `make test-accounts` 121; `make e2e` 37;
+  `make e2e-accounts` 13; `make e2e-local` 42. `make lint` passes.
+
+Open:
+- **Deploy** (owner): `cd ~/neomortalsurv && git pull && sudo deploy/deploy.sh`.
+- `TODO(clinical-review)`: the two new texts `warnings.OUTSIDE_TRAINING_RANGE` and
+  `warnings.rangeItem` (EN, RU; KK draft). They were written after the co-authors'
+  review; both translation files say so, and the review packet lists them as unreviewed.
+- `TODO(owner)`: lower the form's minimums for heart rate and SpO2 to what occurred in
+  training (36 and 35)? Today the form refuses 36–59 bpm and 35–39 %.
+- `TODO(owner)`: the 1,500 g exclusion statement versus the training maximum of 1,803 g.
 
     cd tools && uv run python training_ranges.py --train-csv /path/to/training-file.csv
 

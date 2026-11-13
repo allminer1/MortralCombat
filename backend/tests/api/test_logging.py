@@ -58,6 +58,13 @@ def test_warning_codes_are_logged(client, valid_body, captured):
     assert "1777" not in text
 
 
+def test_range_warning_logs_the_code_not_the_field_or_value(client, valid_body, captured):
+    assert client.post(PREDICT, json={**valid_body, "gestational_age_weeks": 41}).status_code == 200
+    text = captured()
+    assert "warnings=OUTSIDE_TRAINING_RANGE" in text
+    assert "gestational_age_weeks" not in text
+
+
 def test_invalid_request_logs_codes_only(client, valid_body, captured):
     body = {**valid_body, "birth_weight_g": MARKER, f"field_{MARKER}": MARKER, "heart_rate_bpm": 9173}
     assert client.post(PREDICT, json=body).status_code == 422

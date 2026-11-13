@@ -2,17 +2,27 @@ import type { ReactNode, RefObject } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { fixed3, percent0, percent1 } from '../lib/format'
-import type { Prediction } from '../lib/spec'
+import type { ModelInfo, Prediction } from '../lib/spec'
 import { SurvivalCurve } from './SurvivalCurve'
+import { useWarningTexts } from './WarningTexts'
 
 const LIMITATIONS = ['cohort', 'validation', 'calibration', 'judgement'] as const
+const EMPTY: Prediction = {
+  model_version: '',
+  log_risk: 0,
+  survival: { day_7: 0, day_28: 0, day_100: 0 },
+  curve: [],
+  warnings: [],
+}
 
 export function ResultPanel({
+  model,
   prediction,
   stale,
   headingRef,
   extra,
 }: {
+  model: ModelInfo
   prediction: Prediction | null
   stale: boolean
   headingRef: RefObject<HTMLHeadingElement | null>
@@ -22,6 +32,7 @@ export function ResultPanel({
   const { t, i18n } = useTranslation()
   const lang = i18n.resolvedLanguage ?? 'en'
   const s = prediction?.survival
+  const warnings = useWarningTexts(model, prediction ?? EMPTY)
 
   return (
     <section aria-labelledby="result-title" className="min-w-0 lg:sticky lg:top-6 lg:self-start">
@@ -36,6 +47,22 @@ export function ResultPanel({
           <p role="status" className="mt-3 rounded-md border border-notice bg-notice-soft px-3 py-2 font-medium text-notice">
             {t('result.stale')}
           </p>
+        )}
+
+        {/* Warnings are about whether the inputs are within what the model knows, not about
+            the size of the estimate. They are shown before the numbers, not only in Details. */}
+        {prediction && !stale && warnings.length > 0 && (
+          <div
+            role="status"
+            data-testid="warning-notice"
+            className="mt-3 space-y-1.5 rounded-md border border-notice bg-notice-soft px-3 py-2 font-medium text-notice"
+          >
+            {warnings.map((text) => (
+              <p key={text} className="m-0 max-w-[68ch]">
+                {text}
+              </p>
+            ))}
+          </div>
         )}
 
         {prediction && s && (
@@ -90,11 +117,11 @@ export function ResultPanel({
                 <div className="col-span-2 grid grid-cols-subgrid">
                   <dt className="text-muted">{t('result.warnings')}</dt>
                   <dd className="m-0" data-testid="warnings">
-                    {prediction.warnings.length === 0
+                    {warnings.length === 0
                       ? t('result.noWarnings')
-                      : prediction.warnings.map((code) => (
-                          <p key={code} className="m-0 max-w-[60ch] font-medium text-notice">
-                            {t(`warnings.${code}`, { defaultValue: t('warnings.unknown', { code }) })}
+                      : warnings.map((text) => (
+                          <p key={text} className="m-0 max-w-[60ch] font-medium text-notice">
+                            {text}
                           </p>
                         ))}
                   </dd>

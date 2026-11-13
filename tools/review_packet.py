@@ -201,6 +201,12 @@ def main() -> int:
         if list(texts[lang]) != keys and set(texts[lang]) != set(keys):
             raise SystemExit(f"{lang}.json does not have the same keys as en.json")
 
+    # Text added after a language was reviewed (the file-level note says which keys).
+    pending = [
+        (name, load(lang)["_todo_clinical_review"].removeprefix("TODO(clinical-review): "))
+        for lang, name in LANGS[:2]
+        if "_todo_clinical_review" in load(lang)
+    ]
     used: set[str] = set()
     lines = [
         "# NeoMortalSurv — text for clinical review",
@@ -212,6 +218,7 @@ def main() -> int:
         "corrections (reported by the owner on 2026-11-13). These two columns are what",
         "https://neomortalsurv.net shows. Kazakh: an unreviewed draft (`TODO(clinical-review)`), not shown on",
         "the site. Text added or changed after 2026-11-13 is a draft again until reviewed.",
+        *[f"\n**Unreviewed, {name}:** {note}" for name, note in pending],
         "",
         "## How to review",
         "",

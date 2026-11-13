@@ -20,10 +20,10 @@ from sqlalchemy.orm import sessionmaker
 
 from app.accounts import service
 from app.accounts.security import PASSWORD_MAX, hash_password, needs_rehash, verify_password
-from app.api.v1 import warning_codes
 from app.core.client import client_ip
 from app.core.config import Settings
 from app.core.ratelimit import RateLimiter
+from app.core.warnings import WarningRules
 from app.db.models import CASE_CODE_MAX, Calculation, Session
 from app.inference import Predictor
 from app.schemas.predict import ErrorResponse, build_request_model
@@ -71,7 +71,7 @@ def item_json(row: Calculation, with_curve: bool) -> dict:
 
 
 def build_accounts_router(
-    predictor: Predictor, settings: Settings, session_factory: sessionmaker[Db]
+    predictor: Predictor, settings: Settings, session_factory: sessionmaker[Db], rules: WarningRules
 ) -> APIRouter:
     router = APIRouter(prefix="/api/v1", tags=["accounts"])
     cookie_name = "__Host-nms_session" if settings.cookie_secure else "nms_session"
@@ -186,8 +186,8 @@ def build_accounts_router(
     ) -> dict:  # type: ignore[valid-type]
         # The result is computed here from the inputs; a client cannot store its own numbers.
         inputs = body.inputs.model_dump()
-        warnings = warning_codes(inputs)
-        request.state.warning_codes = warnings
+        warnings = rules.check(inputs)
+        request.state.warning_codes = warnings.codes
         result = predictor.predict(inputs)
         points = result.survival_points
         row = Calculation(
@@ -200,7 +200,8 @@ def build_accounts_router(
                 "log_risk": result.log_risk,
                 "survival": {f"day_{day}": value for day, value in points.items()},
                 "curve": list(result.curve),
-                "warnings": warnings,
+                "warnings": warnings.codes,
+                "outside_training_range": warnings.outside_training_range,
             },
             model_version=result.model_version,
         )

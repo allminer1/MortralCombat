@@ -125,6 +125,7 @@ export function Calculator({ model }: { model: ModelInfo }) {
       </form>
 
       <ResultPanel
+        model={model}
         prediction={last?.prediction ?? null}
         stale={stale}
         headingRef={resultHeading}

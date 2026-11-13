@@ -16,12 +16,14 @@ describe('translations', () => {
     expect(textKeys(kk)).toEqual(textKeys(en))
   })
   it('record the review state of each language', () => {
-    // English and Russian: reviewed and approved on 2026-11-13 (docs/DECISIONS.md).
+    // English and Russian: reviewed and approved on 2026-11-13 (docs/DECISIONS.md) ...
     for (const file of [en, ru]) {
       expect(file._clinical_review).toContain('2026-11-13')
-      expect(JSON.stringify(file)).not.toContain('"_todo_clinical_review"')
+      // ... except text added afterwards, which must be named as an unreviewed draft.
+      expect(file._todo_clinical_review).toContain('TODO(clinical-review)')
+      expect(file._todo_clinical_review).toContain('warnings.OUTSIDE_TRAINING_RANGE')
     }
-    // Kazakh: still an unreviewed draft, and still behind its build flag.
+    // Kazakh: still an unreviewed draft as a whole, and still behind its build flag.
     expect(kk._todo_clinical_review).toContain('TODO(clinical-review)')
   })
   it('mark every Kazakh field label as a clinical term to review', () => {

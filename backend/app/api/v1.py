@@ -12,6 +12,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from app.core.client import client_ip
 from app.core.config import Settings
 from app.core.ratelimit import RateLimiter
+from app.core.warnings import WarningRules
 from app.inference import Predictor
 from app.inference.hazard import CURVE_DAYS
 from app.schemas.predict import (
@@ -23,19 +24,8 @@ from app.schemas.predict import (
     build_request_model,
 )
 
-WEIGHT_FIELD = "birth_weight_g"
-COHORT_MAX_WEIGHT_G = 1500  # infants above 1,500 g were excluded from model development (spec 5.3)
 
-
-def warning_codes(inputs: dict) -> list[str]:
-    codes = []
-    if inputs[WEIGHT_FIELD] > COHORT_MAX_WEIGHT_G:
-        codes.append("WEIGHT_ABOVE_COHORT")
-    # OUTSIDE_TRAINING_RANGE: not built until the owner provides the training ranges (spec 5.3).
-    return codes
-
-
-def build_router(predictor: Predictor, settings: Settings, model_dir: Path) -> APIRouter:
+def build_router(predictor: Predictor, settings: Settings, model_dir: Path, rules: WarningRules) -> APIRouter:
     router = APIRouter(prefix="/api/v1")
     PredictRequest = build_request_model(predictor.spec)
     limiter = RateLimiter(settings.rate_limit_per_minute)
@@ -45,6 +35,8 @@ def build_router(predictor: Predictor, settings: Settings, model_dir: Path) -> A
         "feature_spec": json.loads((model_dir / "feature_spec.json").read_text(encoding="utf-8")),
     }
     model_info["citation"] = model_info["model_card"]["citation"]
+    # Smallest and largest value of each continuous input in the training set.
+    model_info["training_ranges"] = rules.training_ranges
 
     def rate_limit(request: Request) -> None:
         retry_after = limiter.check(client_ip(request, settings.trusted_proxy))
@@ -74,8 +66,8 @@ def build_router(predictor: Predictor, settings: Settings, model_dir: Path) -> A
     )
     def predict(body: PredictRequest, request: Request) -> PredictResponse:  # type: ignore[valid-type]
         inputs = body.model_dump()
-        warnings = warning_codes(inputs)
-        request.state.warning_codes = warnings
+        warnings = rules.check(inputs)
+        request.state.warning_codes = warnings.codes
         result = predictor.predict(inputs)
         points = result.survival_points
         return PredictResponse(
@@ -83,7 +75,8 @@ def build_router(predictor: Predictor, settings: Settings, model_dir: Path) -> A
             log_risk=result.log_risk,
             survival=SurvivalPoints(**{f"day_{day}": value for day, value in points.items()}),
             curve=[CurvePoint(day=d, survival=s) for d, s in zip(CURVE_DAYS, result.curve, strict=True)],
-            warnings=warnings,
+            warnings=warnings.codes,
+            outside_training_range=warnings.outside_training_range,
             intended_use="research",
         )
 

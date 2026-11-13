@@ -6,6 +6,7 @@ import { dateTime, fixed3, percent1 } from '../lib/format'
 import { useSession, type LastCalculation } from '../lib/session'
 import { displayValue, type ModelInfo } from '../lib/spec'
 import { SurvivalCurve } from './SurvivalCurve'
+import { useWarningTexts } from './WarningTexts'
 
 const LIMITATIONS = ['cohort', 'validation', 'calibration', 'judgement'] as const
 
@@ -43,6 +44,7 @@ export function ReportView({
   const { t, i18n } = useTranslation()
   const lang = i18n.resolvedLanguage ?? 'en'
   const { prediction, values, at } = calculation
+  const warnings = useWarningTexts(model, prediction)
 
   const byName = new Map(model.feature_spec.features.map((f) => [f.api_field, f]))
   const c = model.citation
@@ -116,11 +118,11 @@ export function ReportView({
             </dl>
             <h3 className={`${h3} mt-3`}>{t('result.warnings')}</h3>
             <div data-testid="report-warnings">
-              {prediction.warnings.length === 0
+              {warnings.length === 0
                 ? t('result.noWarnings')
-                : prediction.warnings.map((code) => (
-                    <p key={code} className="m-0 font-medium">
-                      {t(`warnings.${code}`, { defaultValue: t('warnings.unknown', { code }) })}
+                : warnings.map((text) => (
+                    <p key={text} className="m-0 font-medium">
+                      {text}
                     </p>
                   ))}
             </div>

@@ -14,6 +14,7 @@ from app.api.errors import error_body, make_validation_handler
 from app.api.v1 import build_router
 from app.core.config import Settings
 from app.core.logging import AccessLogMiddleware, configure_logging
+from app.core.warnings import WarningRules
 from app.inference import Predictor, default_model_dir
 
 HTTP_ERROR_CODES = {
@@ -57,7 +58,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             headers=exc.headers,
         )
 
-    app.include_router(build_router(predictor, settings, model_dir))
+    rules = WarningRules(predictor.spec)
+    app.include_router(build_router(predictor, settings, model_dir, rules))
 
     # Accounts and saved history: nothing below exists unless the flag is on.
     if settings.enable_accounts:
@@ -68,7 +70,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
         engine = make_engine(settings.database_url)
         app.state.db_engine = engine
-        app.include_router(build_accounts_router(predictor, settings, make_session_factory(engine)))
+        app.include_router(build_accounts_router(predictor, settings, make_session_factory(engine), rules))
 
     @app.get("/api/v1/features", tags=["meta"], summary="Which optional features this server has switched on")
     def features() -> dict[str, bool]:

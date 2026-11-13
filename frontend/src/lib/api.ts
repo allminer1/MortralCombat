@@ -64,6 +64,7 @@ export interface SavedItem {
     survival: { day_7: number; day_28: number; day_100: number }
     curve?: number[]
     warnings: string[]
+    outside_training_range?: string[]
   }
 }
 

@@ -452,3 +452,28 @@ Russian**. The reviewer's name and the date of the review itself were not given;
   co-authors want any action on the model behaviour in Part B of the packet; the
   side-by-side case comparison of the old and new site (cases 4–10 in
   `docs/CUTOVER.md`), which was a separate item.
+
+## 2026-11-13 — OUTSIDE_TRAINING_RANGE: warn outside the training minimum–maximum
+
+Owner's decision (session of 2026-11-13) after running `tools/training_ranges.py`: warn
+when a continuous input is below the smallest or above the largest value in the
+training set. Not the 1st–99th percentile, which would also flag ordinary cohort-like
+values.
+
+- **Where the numbers live:** `backend/app/data/training_ranges.json`, not
+  `model/feature_spec.json`. The spec (5.1, 5.3) pictured them in the feature spec, but
+  `CLAUDE.md` rule 1 freezes `model/` and requires the export to be reproducible from
+  `legacy/` alone; these numbers come from the training data, which is not in the
+  repository. Keeping them outside leaves every file in `model/` byte-identical (same
+  hashes on `/health`). They are still in exactly one place and reach the frontend
+  through the API.
+- **Response shape:** the code appears once in `warnings`; the inputs concerned are
+  listed in a new field `outside_training_range`. Existing clients that ignore unknown
+  fields are unaffected.
+- **Hard limits unchanged:** the form still accepts 400–2000 g, Apgar 0–10, 20–42
+  weeks, 60–200 bpm, 40–100 %. Values outside the training range are warned about, not
+  refused. Lowering the heart-rate and SpO2 minimums is a separate open question.
+- **Placement:** warnings are shown above the headline numbers as well as in Details.
+  A warning about inputs the model has no data for should be read before the number,
+  and it says nothing about the size of the estimate, so it is not a risk category.
+- The warning text is new and unreviewed (`TODO(clinical-review)`).

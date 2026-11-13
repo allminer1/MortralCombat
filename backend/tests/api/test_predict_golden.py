@@ -30,7 +30,9 @@ def test_every_golden_case_through_http(client, golden, to_body):
 
 def test_figure_8_response_shape(client, valid_body):
     body = client.post(PREDICT, json=valid_body).json()
-    assert set(body) == {"model_version", "log_risk", "survival", "curve", "warnings", "intended_use"}
+    expected = {"model_version", "log_risk", "survival", "curve", "warnings", "intended_use"}
+    assert set(body) == expected | {"outside_training_range"}
+    assert body["outside_training_range"] == []
     assert body["model_version"] == "deepsurv-vlbw-1.0.0"
     assert round(body["log_risk"], 3) == 1.210
     assert [round(100 * body["survival"][k], 2) for k in ("day_7", "day_28", "day_100")] == [

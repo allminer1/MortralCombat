@@ -69,7 +69,10 @@ class PredictResponse(BaseModel):
     log_risk: float
     survival: SurvivalPoints = Field(description="Survival probability as a fraction 0-1")
     curve: list[CurvePoint] = Field(description="S(t) for integer days 0..100")
-    warnings: list[str] = Field(description="Warning codes, e.g. WEIGHT_ABOVE_COHORT")
+    warnings: list[str] = Field(description="Warning codes: WEIGHT_ABOVE_COHORT, OUTSIDE_TRAINING_RANGE")
+    outside_training_range: list[str] = Field(
+        description="Inputs whose value is outside what the training set contained; ranges are in /model"
+    )
     intended_use: Literal["research"]
 
 

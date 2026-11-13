@@ -8,6 +8,10 @@ corrections (reported by the owner on 2026-11-13). These two columns are what
 https://neomortalsurv.net shows. Kazakh: an unreviewed draft (`TODO(clinical-review)`), not shown on
 the site. Text added or changed after 2026-11-13 is a draft again until reviewed.
 
+**Unreviewed, English:** warnings.OUTSIDE_TRAINING_RANGE and warnings.rangeItem were added on 2026-11-13, after the review, and are unreviewed drafts.
+
+**Unreviewed, Russian:** warnings.OUTSIDE_TRAINING_RANGE и warnings.rangeItem добавлены 2026-11-13, после проверки; это непроверенные черновики.
+
 ## How to review
 
 - Read the English and Russian of each row as a clinician would read it on the ward.
@@ -93,6 +97,8 @@ Shown after a calculation: headings, the sentence under the curve, the details l
 | `result.noWarnings` | None | Нет | Жоқ | |
 | `result.print` | Print report | Печать отчёта | Есепті басып шығару | |
 | `warnings.WEIGHT_ABOVE_COHORT` | Birth weight is above 1,500 g. Infants above 1,500 g were not included when the model was developed. | Вес при рождении больше 1500 г. Дети с весом более 1500 г не входили в выборку, на которой разработана модель. | Туған кездегі салмақ 1500 г-нан жоғары. Салмағы 1500 г-нан асатын нәрестелер модель әзірленген іріктемеге енгізілмеген. | |
+| `warnings.OUTSIDE_TRAINING_RANGE` | Outside what the model was developed on: {{list}}. The model has no data for such values, so the estimate may be unreliable. | Вне диапазона данных, на которых разработана модель: {{list}}. Для таких значений у модели нет данных, поэтому оценка может быть ненадёжной. | Модель әзірленген деректер ауқымынан тыс: {{list}}. Мұндай мәндер бойынша модельде дерек жоқ, сондықтан болжам сенімсіз болуы мүмкін. | |
+| `warnings.rangeItem` | {{field}} (in the study: {{min}}–{{max}}{{unit}}) | {{field}} (в исследовании: {{min}}–{{max}}{{unit}}) | {{field}} (зерттеуде: {{min}}–{{max}}{{unit}}) | |
 | `warnings.unknown` | Warning code: {{code}} | Код предупреждения: {{code}} | Ескерту коды: {{code}} | |
 | `limitations.title` | Limitations | Ограничения | Шектеулер | |
 | `limitations.cohort` | The estimate comes from a single retrospective cohort. | Оценка получена на одной ретроспективной когорте. | Болжам бір ретроспективті когорта негізінде алынған. | |

@@ -76,6 +76,37 @@ test('weight above 1,500 g shows the cohort warning', async ({ page }) => {
   await expect(page.getByTestId('warnings')).toContainText('above 1,500 g')
 })
 
+test('value outside the study range gives a warning before the numbers, and on the report', async ({ page }) => {
+  await page.goto('/?lang=en')
+  await fillFigure8(page)
+  await expect(page.getByTestId('warning-notice')).toHaveCount(0)
+  await page.locator('#gestational_age_weeks').fill('40')
+  await page.locator('#apgar_5min').fill('10')
+  await calculate(page).click()
+  const notice = page.getByTestId('warning-notice')
+  await expect(notice).toContainText('Outside what the model was developed on')
+  await expect(notice).toContainText('Gestational age (in the study: 22–38 weeks)')
+  await expect(notice).toContainText('Apgar score at 5 minutes (in the study: 2–9)')
+  await expect(page.getByTestId('warnings')).toContainText('Gestational age (in the study: 22–38 weeks)')
+  await page.screenshot({ path: 'screenshots/en-warning.png' })
+  // a warning, not a refusal: the estimate is still shown
+  await expect(page.getByTestId('headline-day-28')).toBeVisible()
+  expect((await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze()).violations).toEqual([])
+
+  await page.locator('a[href="/report"]').click()
+  await expect(page.getByTestId('report-warnings')).toContainText('Gestational age (in the study: 22–38 weeks)')
+  const pdf = await page.pdf({ preferCSSPageSize: true, printBackground: true })
+  expect((pdf.toString('latin1').match(/\/Type\s*\/Page\b(?!s)/g) ?? []).length).toBe(1)
+
+  // back inside the range: no notice
+  await page.getByRole('link', { name: 'Back to the calculator' }).click()
+  await page.locator('#gestational_age_weeks').fill('27')
+  await page.locator('#apgar_5min').fill('3')
+  await calculate(page).click()
+  await expect(page.getByTestId('result')).toHaveAttribute('data-stale', 'false')
+  await expect(page.getByTestId('warning-notice')).toHaveCount(0)
+})
+
 test('curve can be read with the keyboard and as a table', async ({ page }) => {
   await page.goto('/?lang=en')
   await fillFigure8(page)

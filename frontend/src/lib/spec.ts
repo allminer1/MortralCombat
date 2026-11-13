@@ -36,6 +36,8 @@ export interface ModelInfo {
   model_version: string
   feature_spec: { features: Feature[] }
   model_card: ModelCard
+  /** Smallest and largest value of each continuous input in the training set. */
+  training_ranges?: Record<string, { min: number; max: number }>
   citation: Citation
 }
 
@@ -45,6 +47,8 @@ export interface Prediction {
   survival: { day_7: number; day_28: number; day_100: number }
   curve: { day: number; survival: number }[]
   warnings: string[]
+  /** Inputs outside the training range (goes with the OUTSIDE_TRAINING_RANGE warning). */
+  outside_training_range?: string[]
 }
 
 /** Form state: every field is a string; '' means "not answered yet". */

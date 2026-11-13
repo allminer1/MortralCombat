@@ -1,0 +1,11 @@
+{
+  "description": "Smallest and largest value of each continuous input in the training set (672 infants). Summary numbers printed by tools/training_ranges.py, run by the project owner on 2026-11-13; see docs/PROGRESS.md. Used only for the OUTSIDE_TRAINING_RANGE warning. Not part of the frozen model in model/.",
+  "rule": "warn when a value is below min or above max (owner's decision, docs/DECISIONS.md)",
+  "ranges": {
+    "birth_weight_g": { "min": 430, "max": 1803 },
+    "apgar_5min": { "min": 2, "max": 9 },
+    "gestational_age_weeks": { "min": 22, "max": 38 },
+    "heart_rate_bpm": { "min": 36, "max": 188 },
+    "spo2_percent": { "min": 35, "max": 98 }
+  }
+}

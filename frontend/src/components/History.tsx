@@ -172,6 +172,7 @@ export function HistoryItem({ model }: { model: ModelInfo }) {
               survival: item.outputs.survival,
               curve: (item.outputs.curve ?? []).map((survival, day) => ({ day, survival })),
               warnings: item.outputs.warnings,
+              outside_training_range: item.outputs.outside_training_range ?? [],
             },
           },
         })

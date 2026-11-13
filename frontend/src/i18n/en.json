@@ -1,5 +1,6 @@
 {
   "_clinical_review": "Reviewed by the clinical co-authors and approved without corrections (reported by the owner on 2026-11-13; reviewer name not recorded). Any new or changed clinical text is a draft again until reviewed: mark it TODO(clinical-review).",
+  "_todo_clinical_review": "TODO(clinical-review): warnings.OUTSIDE_TRAINING_RANGE and warnings.rangeItem were added on 2026-11-13, after the review, and are unreviewed drafts.",
   "app": {
     "name": "NeoMortalSurv",
     "tagline": "Survival estimate for very-low-birth-weight infants in the NICU",
@@ -88,6 +89,8 @@
   },
   "warnings": {
     "WEIGHT_ABOVE_COHORT": "Birth weight is above 1,500 g. Infants above 1,500 g were not included when the model was developed.",
+    "OUTSIDE_TRAINING_RANGE": "Outside what the model was developed on: {{list}}. The model has no data for such values, so the estimate may be unreliable.",
+    "rangeItem": "{{field}} (in the study: {{min}}–{{max}}{{unit}})",
     "unknown": "Warning code: {{code}}"
   },
   "limitations": {
