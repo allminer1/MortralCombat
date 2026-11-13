@@ -29,6 +29,22 @@ Still open after the review:
 - Erratum decision; server restart; Cloudflare access; uptime check; retiring the old
   app after 2026-12-13; institutional sign-off before accounts can be enabled.
 
+### After the phases: training-range script (2026-11-13)
+
+`tools/training_ranges.py` is ready for the owner to run on the training file (spec
+Section 11 item 3). It first confirms the file is the training set (672 rows, column
+means equal the scaler's) and then prints only n, minimum, 1st and 99th percentile and
+maximum of the five continuous inputs. Tested on random synthetic data, including the
+three refusal cases; **not yet run on the real file, so no ranges are known and the
+`OUTSIDE_TRAINING_RANGE` warning is still not built.**
+
+    cd tools && uv run python training_ranges.py --train-csv /path/to/training-file.csv
+
+Once the owner pastes the output and says where to warn (min / max, or 1st / 99th
+percentile), the ranges go into `model/feature_spec.json` through
+`tools/export_model.py`, and the API and the form show the warning. That adds new
+warning text, which needs clinical review.
+
 ### Done in Phase 6
 
 - Backend (`backend/app/api/accounts.py`, `app/accounts/`, `app/db/`, `app/cli.py`,
