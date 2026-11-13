@@ -1,10 +1,14 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router'
+import { About } from './components/About'
 import { Calculator } from './components/Calculator'
 import { Footer } from './components/Footer'
 import { Header } from './components/Header'
+import { Report } from './components/Report'
 import { getModel } from './lib/api'
 import { layoutMatches } from './lib/fields'
+import { SessionProvider } from './lib/session'
 import type { ModelInfo } from './lib/spec'
 
 type Load = { state: 'loading' } | { state: 'failed' } | { state: 'ready'; model: ModelInfo }
@@ -29,34 +33,45 @@ export default function App() {
   const usable = model !== null && layoutMatches(model.feature_spec.features)
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <Header />
-      <main className="mx-auto w-full max-w-[76rem] flex-1 px-4 pb-16 sm:px-8">
-        {load.state === 'loading' && (
-          <p role="status" className="py-16 text-muted">
-            {t('app.loading')}
-          </p>
-        )}
-        {load.state === 'failed' && (
-          <div role="alert" className="max-w-xl py-16">
-            <p>{t('app.loadFailed')}</p>
-            <button
-              type="button"
-              onClick={retry}
-              className="mt-4 rounded-md border border-accent px-4 py-2 font-medium text-accent hover:bg-accent-soft"
-            >
-              {t('app.retry')}
-            </button>
-          </div>
-        )}
-        {model !== null && !usable && (
-          <p role="alert" className="max-w-xl py-16">
-            {t('app.configMismatch')}
-          </p>
-        )}
-        {model !== null && usable && <Calculator model={model} />}
-      </main>
-      <Footer model={model} />
-    </div>
+    <BrowserRouter>
+      <SessionProvider>
+        <div className="flex min-h-screen flex-col print:min-h-0">
+          <Header />
+          <main className="mx-auto w-full max-w-[76rem] flex-1 px-4 pb-16 sm:px-8 print:max-w-none print:p-0">
+            {load.state === 'loading' && (
+              <p role="status" className="py-16 text-muted">
+                {t('app.loading')}
+              </p>
+            )}
+            {load.state === 'failed' && (
+              <div role="alert" className="max-w-xl py-16">
+                <p>{t('app.loadFailed')}</p>
+                <button
+                  type="button"
+                  onClick={retry}
+                  className="mt-4 rounded-md border border-accent px-4 py-2 font-medium text-accent hover:bg-accent-soft"
+                >
+                  {t('app.retry')}
+                </button>
+              </div>
+            )}
+            {model !== null && !usable && (
+              <p role="alert" className="max-w-xl py-16">
+                {t('app.configMismatch')}
+              </p>
+            )}
+            {model !== null && usable && (
+              <Routes>
+                <Route path="/" element={<Calculator model={model} />} />
+                <Route path="/about" element={<About model={model} />} />
+                <Route path="/report" element={<Report model={model} />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            )}
+          </main>
+          <Footer model={model} />
+        </div>
+      </SessionProvider>
+    </BrowserRouter>
   )
 }

@@ -1,5 +1,6 @@
 import type { RefObject } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router'
 import { fixed3, percent0, percent1 } from '../lib/format'
 import type { Prediction } from '../lib/spec'
 import { SurvivalCurve } from './SurvivalCurve'
@@ -97,6 +98,17 @@ export function ResultPanel({
                 </div>
               </dl>
             </section>
+
+            {!stale && (
+              <p className="mt-6 print:hidden">
+                <Link
+                  to="/report"
+                  className="inline-flex min-h-11 items-center rounded-md border border-accent px-5 font-medium text-accent hover:bg-accent-soft"
+                >
+                  {t('result.print')}
+                </Link>
+              </p>
+            )}
 
             <section aria-labelledby="limitations-title" className="mt-6 rounded-md border border-field bg-page px-4 py-3.5">
               <h3 id="limitations-title" className="font-semibold">

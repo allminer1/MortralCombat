@@ -252,3 +252,43 @@ it. Owner may ask to reverse this.
   `1.210` / `1,210`).
 - The chart is sized in container pixels (ResizeObserver) so axis labels stay
   readable on a phone, and sits out of the layout flow so it cannot widen the page.
+
+## 2026-11-13 — Phase 4 run in the same session
+
+At the owner's request, as for Phases 2–3. Plan approved before implementation.
+
+## 2026-11-13 — Phase 4: case code is a handwritten line
+
+Spec 7.4 allows an "optional free case code line"; `CLAUDE.md` rule 5 forbids free-text
+fields. The report prints a blank line labelled "Case code (optional; no names or
+record numbers)". Nothing is typed, so nothing identifying can enter the browser.
+Phase 6 (accounts) has its own stored `case_code`; that decision is separate.
+
+## 2026-11-13 — Phase 4: report data lives in memory only
+
+The last calculation is held in React state above the router. It is not put in the URL
+(URLs end up in history and logs) or in browser storage (shared ward PCs). Cost: a
+reload of `/report` loses it; the page then says to calculate first.
+
+## 2026-11-13 — Phase 4: About numbers come from the model card
+
+`/about` shows cohort and performance figures from `model/model_card.json` through the
+API instead of typing them into three translation files; an e2e test pins them to spec
+Section 1. Exclusion criteria and the calibration note are sentences and live in the
+translations (`TODO(clinical-review)`).
+
+## 2026-11-13 — Phase 4: Kazakh build flag
+
+`VITE_ENABLE_KK=true` at build time. The Kazakh file is loaded with a conditional
+dynamic import that the bundler removes when the flag is off, so unreviewed clinical
+wording is not shipped at all, not merely hidden. e2e builds the frontend twice to test
+both states. JSON has no comments, so review markers are data: `_todo_clinical_review`
+and `_clinical_terms` (keys starting with `TODO(clinical-review)`); keys starting with
+`_` are ignored by the key-parity test.
+
+## 2026-11-13 — Phase 4: number and date formats for Kazakh
+
+Numbers in Kazakh always use the Russian formatting rules (decimal comma, space before
+%), because some browsers claim Kazakh support and print English forms (seen in
+Playwright's Chromium). Dates use Kazakh month names when the browser really has them,
+else Russian.

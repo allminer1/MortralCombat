@@ -5,7 +5,7 @@ export function Footer({ model }: { model: ModelInfo | null }) {
   const { t } = useTranslation()
   const c = model?.citation
   return (
-    <footer className="border-t border-rule bg-surface">
+    <footer className="border-t border-rule bg-surface print:hidden">
       <div className="mx-auto grid w-full max-w-[76rem] gap-x-12 gap-y-5 px-4 py-8 text-[0.9rem] text-muted sm:px-8 lg:grid-cols-[minmax(0,26rem)_minmax(0,1fr)]">
         <div className="space-y-2">
           <p className="font-medium text-ink">{t('footer.intendedUse')}</p>

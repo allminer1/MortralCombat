@@ -1,9 +1,73 @@
 # Progress
 
-## Current phase: 3 — Frontend calculator (EN + RU) — complete, wording awaits review
+## Current phase: 4 — Report, About page, Kazakh — complete, wording awaits review
 
-Last session: 2026-11-13 (same session as Phases 1–2, at the owner's request). Next:
-Phase 4 (report, About page, Kazakh), in a new session.
+Last session: 2026-11-13 (same session as Phases 1–3, at the owner's request). Next:
+Phase 5 (deploy and cutover), in a new session. It needs Docker on the workstation,
+the owner for every step on the server, and the open items below.
+
+### Done in Phase 4
+
+- `react-router`: `/` (calculator), `/about`, `/report`; unknown paths go to `/`. Header
+  has links to the calculator and About.
+- **Report (`/report`)**: "Print report" appears on an up-to-date result. One A4 page
+  through print CSS (`@page` A4, 12 mm): date and time of the calculation, the 11
+  inputs, three estimates with one decimal, log-risk, model version, warnings, the
+  curve, limitations, intended-use line, citation. "Case code" is a blank line to fill
+  in by hand; the page has no input of any kind.
+- The last inputs and result are kept in memory only (`frontend/src/lib/session.tsx`):
+  not in the URL, not in localStorage or sessionStorage. Opening `/report` directly, or
+  reloading it, shows "calculate first". Going back to the calculator in the same tab
+  restores the form and result.
+- **About (`/about`)**: what the model is, cohort, reported performance, intended use,
+  limitations, citation. Every number is read from the model card served by
+  `GET /api/v1/model`.
+- **Kazakh**: `frontend/src/i18n/kk.json`, a full draft. Build flag
+  `VITE_ENABLE_KK=true`; without it Kazakh is not in the switch, `?lang=kk` falls back,
+  and the Kazakh text is not in the built files at all. Review markers: the file-level
+  `_todo_clinical_review` note and `_clinical_terms`, which lists every field label and
+  eight further clinical terms, each key prefixed `TODO(clinical-review)`.
+- Kazakh numbers use the Russian rules (decimal comma); dates use Kazakh month names
+  when the browser has them and Russian ones otherwise.
+- Tests: `make test` 65 backend + 19 frontend unit; `make e2e` 39 browser tests in two
+  builds (default, and one with the Kazakh flag). `make lint` passes.
+
+### Phase 4 acceptance
+
+| Check | Result |
+|---|---|
+| Report prints on one A4 page in all languages | pass — PDF rendered by Chromium has exactly 1 page in EN, RU and KK, also with the weight warning shown (EN, RU) |
+| `kk` exists behind its flag with review markers | pass — absent from the default build (checked in the built scripts), present and working in the flagged build |
+| `/about` numbers match spec Section 1 exactly | pass — 958; 4 centres; January 2021 – May 2025; 672 / 286; 11 predictors; C-index 0.86 (0.81–0.90); AUC 0.95 (0.91–0.98); IBS 0.071 |
+
+Also checked: accessibility scan (axe, WCAG 2.1 A + AA) of report and About in EN, RU
+and of the report in KK, zero violations; the nine Kazakh-specific letters, upper and
+lower case, are covered by the bundled font in all four weights; nothing is wider than
+the screen at 375, 768, 1366 px. Screenshots reviewed by Claude
+(`frontend/screenshots/`); **the owner has not looked yet**. Printing was checked as
+Chromium PDF output, not on a physical printer or in other browsers.
+
+### Open after Phase 4
+
+1. **`TODO(clinical-review)`**, added in this phase: report labels, all About-page text
+   (EN, RU), and the whole Kazakh file. The Kazakh draft was written by Claude, which
+   is not a native speaker; abbreviations in it (ЖЖЖ, ТШҚҰ, ТБС, ҚІҚҚ, НЭК) and the
+   term for "bad obstetric history" in particular need a clinician.
+2. `kk` stays off until the owner confirms the review (spec Section 11 item 8); then
+   build with `VITE_ENABLE_KK=true`.
+3. Spec 7.5 "fix the typo on the live site" ("Bad obestric history"): not done —
+   production is off limits. The rebuild spells it correctly. A patch on
+   `legacy-streamlit` can be prepared if the owner wants the old site fixed before
+   cutover.
+4. Phase 5: the web server must answer `/about` and `/report` with `index.html`
+   (single-page app fallback), and the Docker build of the frontend decides the
+   Kazakh flag.
+5. Still open from earlier phases: `docs/MODEL_BEHAVIOUR.md` to the co-authors;
+   training ranges (Section 11 item 3); the API image has never been built.
+
+## Phase 3 — Frontend calculator (EN + RU) — complete, wording awaits review
+
+Session of 2026-11-13.
 
 ### Done in Phase 3
 

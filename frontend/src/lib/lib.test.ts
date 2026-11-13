@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { dayAt, stepPath, xOf, yOf, type Frame } from './curve'
 import { layoutMatches } from './fields'
-import { fixed3, percent0, percent1 } from './format'
+import { fixed3, monthRange, percent0, percent1 } from './format'
 import { emptyValues, fieldError, isComplete, toRequest, type Feature } from './spec'
 
 const weight: Feature = { api_field: 'w', type: 'int', min: 400, max: 2000, unit: 'g' }
@@ -56,6 +56,17 @@ describe('formatting', () => {
     expect(percent1(0.3952, 'en')).toBe('39.5%')
     expect(fixed3(1.2099, 'en')).toBe('1.210')
     expect(fixed3(1.2099, 'ru')).toBe('1,210')
+  })
+})
+
+describe('Kazakh and dates', () => {
+  it('formats Kazakh numbers with a decimal comma', () => {
+    expect(fixed3(1.2099, 'kk')).toBe('1,210')
+    expect(percent1(0.3952, 'kk')).toBe(percent1(0.3952, 'ru'))
+  })
+  it('turns the model-card period into month names', () => {
+    expect(monthRange('2021-01 to 2025-05', 'en')).toBe('January 2021 – May 2025')
+    expect(monthRange('unexpected', 'en')).toBe('unexpected')
   })
 })
 

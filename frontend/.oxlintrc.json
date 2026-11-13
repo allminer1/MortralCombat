@@ -6,5 +6,5 @@
     "jsx-a11y/prefer-tag-over-role": "off",
     "jsx-a11y/no-noninteractive-tabindex": ["warn", { "roles": ["region"], "tags": ["h2"] }]
   },
-  "ignorePatterns": ["dist", "playwright-report", "test-results"]
+  "ignorePatterns": ["dist", "dist-kk", "playwright-report", "test-results"]
 }

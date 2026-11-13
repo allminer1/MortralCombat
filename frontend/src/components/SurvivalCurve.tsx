@@ -25,11 +25,23 @@ function useFrame(): [React.RefObject<HTMLDivElement | null>, Frame] {
 const X_TICKS = [0, 7, 28, LATE_FROM_DAY, 100]
 const Y_TICKS = [0, 0.25, 0.5, 0.75, 1]
 
-export function SurvivalCurve({ points, marked }: { points: Point[] | null; marked: number[] }) {
+const PRINT_FRAME: Frame = { ...MARGINS, width: 640, height: 250 }
+
+/** `printable`: a fixed drawing that scales with the paper, without slider, hint or table. */
+export function SurvivalCurve({
+  points,
+  marked,
+  printable = false,
+}: {
+  points: Point[] | null
+  marked: number[]
+  printable?: boolean
+}) {
   const { t, i18n } = useTranslation()
   const lang = i18n.resolvedLanguage ?? 'en'
   const [day, setDay] = useState(28)
-  const [frameRef, f] = useFrame()
+  const [frameRef, measured] = useFrame()
+  const f = printable ? PRINT_FRAME : measured
   const bottom = yOf(f, 0)
   const lateX = xOf(f, LATE_FROM_DAY)
   const early = points?.filter((p) => p.day <= LATE_FROM_DAY) ?? []
@@ -47,23 +59,27 @@ export function SurvivalCurve({ points, marked }: { points: Point[] | null; mark
     <figure className="m-0">
       <figcaption className="font-semibold">{t('result.curveTitle')}</figcaption>
       {/* The drawing is taken out of the flow so that it can never widen the page. */}
-      <div ref={frameRef} className="relative mt-2 w-full overflow-hidden" style={{ height: f.height }}>
+      <div
+        ref={frameRef}
+        className={printable ? 'mt-1' : 'relative mt-2 w-full overflow-hidden'}
+        style={printable ? undefined : { height: f.height }}
+      >
       <svg
-        width={f.width}
-        height={f.height}
+        width={printable ? undefined : f.width}
+        height={printable ? undefined : f.height}
         viewBox={`0 0 ${f.width} ${f.height}`}
-        className="absolute top-0 left-0 block touch-pan-y select-none"
+        className={printable ? 'block h-auto w-full' : 'absolute top-0 left-0 block touch-pan-y select-none'}
         role="img"
         aria-label={t('result.curveTitle')}
-        onPointerMove={points ? onPointer : undefined}
-        onPointerDown={points ? onPointer : undefined}
+        onPointerMove={points && !printable ? onPointer : undefined}
+        onPointerDown={points && !printable ? onPointer : undefined}
       >
         <defs>
-          <pattern id="late-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+          <pattern id={printable ? 'late-hatch-print' : 'late-hatch'} width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
             <line x1="0" y1="0" x2="0" y2="6" stroke="var(--color-rule)" strokeWidth="1.5" />
           </pattern>
         </defs>
-        <rect x={lateX} y={f.top} width={xOf(f, f.maxDay) - lateX} height={bottom - f.top} fill="url(#late-hatch)" opacity="0.55" />
+        <rect x={lateX} y={f.top} width={xOf(f, f.maxDay) - lateX} height={bottom - f.top} fill={`url(#${printable ? 'late-hatch-print' : 'late-hatch'})`} opacity="0.55" />
 
         {Y_TICKS.map((v) => (
           <g key={v}>
@@ -94,7 +110,7 @@ export function SurvivalCurve({ points, marked }: { points: Point[] | null; mark
               const p = points.find((q) => q.day === d)
               return p ? <circle key={d} cx={xOf(f, d)} cy={yOf(f, p.survival)} r="4.5" fill="var(--color-surface)" stroke="var(--color-accent)" strokeWidth="2.5" /> : null
             })}
-            {selected && (
+            {selected && !printable && (
               <g>
                 <line x1={xOf(f, day)} x2={xOf(f, day)} y1={f.top} y2={bottom} stroke="var(--color-ink)" strokeWidth="1" />
                 <circle cx={xOf(f, day)} cy={yOf(f, selected.survival)} r="5.5" fill="var(--color-ink)" />
@@ -105,7 +121,7 @@ export function SurvivalCurve({ points, marked }: { points: Point[] | null; mark
       </svg>
       </div>
 
-      {points && selected && (
+      {points && selected && !printable && (
         <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2">
           <input
             type="range"
@@ -124,11 +140,11 @@ export function SurvivalCurve({ points, marked }: { points: Point[] | null; mark
         </div>
       )}
       <p className="mt-2 max-w-[68ch] text-[0.9rem] text-muted">
-        {points && <>{t('result.curveHelp')} </>}
+        {points && !printable && <>{t('result.curveHelp')} </>}
         {t('result.lateNote', { day: LATE_FROM_DAY })}
       </p>
 
-      {points && (
+      {points && !printable && (
         <details className="mt-3">
           <summary className="cursor-pointer text-accent underline underline-offset-2">{t('result.tableToggle')}</summary>
           <div className="sr-only-table-scroll mt-2 rounded-md border border-rule" tabIndex={0} role="region" aria-label={t('result.tableCaption')}>

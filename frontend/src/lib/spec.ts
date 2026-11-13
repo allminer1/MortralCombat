@@ -17,9 +17,21 @@ export interface Citation {
   doi: string
 }
 
+interface Interval {
+  value: number
+  ci95: [number, number]
+}
+
+/** Parts of model/model_card.json that the About page shows (numbers from the article). */
+export interface ModelCard {
+  cohort: { n_total: number; n_train: number; n_test: number; centres: number; period: string }
+  reported_performance: { c_index: Interval; auc_overall: Interval; integrated_brier_score: number }
+}
+
 export interface ModelInfo {
   model_version: string
   feature_spec: { features: Feature[] }
+  model_card: ModelCard
   citation: Citation
 }
 
@@ -78,4 +90,11 @@ export function buildSchema(features: Feature[]) {
       ]),
     ),
   )
+}
+
+/** How an entered value is shown back to the reader: an i18n key or a plain number. */
+export function displayValue(feature: Feature, raw: string): { key: string } | { text: string } {
+  if (feature.type === 'bool') return { key: `choices.${raw}` }
+  if (feature.type === 'enum') return { key: `choices.grade_${raw}` }
+  return { text: raw.trim() }
 }

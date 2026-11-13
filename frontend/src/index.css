@@ -57,3 +57,18 @@
   max-height: 16rem;
   overflow-y: auto;
 }
+
+/* Print report: one A4 page. Header, footer and buttons are hidden with print:hidden. */
+@page {
+  size: A4;
+  margin: 12mm;
+}
+@media print {
+  html {
+    background: #fff;
+  }
+  * {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+}

@@ -5,7 +5,8 @@ import { useTranslation } from 'react-i18next'
 import { ApiError, predict } from '../lib/api'
 import { GROUPS } from '../lib/fields'
 import { buildSchema, emptyValues, isComplete, toRequest } from '../lib/spec'
-import type { FormValues, ModelInfo, Prediction } from '../lib/spec'
+import type { FormValues, ModelInfo } from '../lib/spec'
+import { useSession } from '../lib/session'
 import { ChoiceField } from './ChoiceField'
 import { NumberField } from './NumberField'
 import { ResultPanel } from './ResultPanel'
@@ -15,9 +16,10 @@ export function Calculator({ model }: { model: ModelInfo }) {
   const features = model.feature_spec.features
   const byName = useMemo(() => new Map(features.map((f) => [f.api_field, f])), [features])
   const schema = useMemo(() => buildSchema(features), [features])
+  const { last, setLast } = useSession()
   const { control, handleSubmit, reset, setError, setFocus } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: emptyValues(features),
+    defaultValues: last?.values ?? emptyValues(features),
     mode: 'onTouched',
   })
   const values = useWatch({ control }) as FormValues
@@ -25,16 +27,18 @@ export function Calculator({ model }: { model: ModelInfo }) {
 
   const [busy, setBusy] = useState(false)
   const [failure, setFailure] = useState<string | null>(null)
-  const [result, setResult] = useState<{ prediction: Prediction; inputs: string } | null>(null)
   const resultHeading = useRef<HTMLHeadingElement>(null)
-  const stale = result !== null && result.inputs !== JSON.stringify(toComparable(values))
+  // `last` lives above the router, so it survives a visit to /report or /about.
+  const stale = last !== null && JSON.stringify(toComparable(last.values)) !== JSON.stringify(toComparable(values))
 
   const onSubmit = handleSubmit(async (submitted) => {
     setBusy(true)
     setFailure(null)
     try {
       const prediction = await predict(toRequest(features, submitted))
-      setResult({ prediction, inputs: JSON.stringify(toComparable(submitted)) })
+      // Runs in the submit handler, not during render.
+      // oxlint-disable-next-line react/purity
+      setLast({ values: submitted, prediction, at: new Date() })
       requestAnimationFrame(() => {
         resultHeading.current?.focus({ preventScroll: true })
         resultHeading.current?.scrollIntoView({ block: 'nearest' })
@@ -53,7 +57,7 @@ export function Calculator({ model }: { model: ModelInfo }) {
 
   const onReset = () => {
     reset(emptyValues(features))
-    setResult(null)
+    setLast(null)
     setFailure(null)
     setFocus(GROUPS[0].fields[0])
   }
@@ -120,7 +124,7 @@ export function Calculator({ model }: { model: ModelInfo }) {
       </form>
 
       <ResultPanel
-        prediction={result?.prediction ?? null}
+        prediction={last?.prediction ?? null}
         stale={stale}
         headingRef={resultHeading}
       />

@@ -1,30 +1,20 @@
-import i18n from 'i18next'
+import i18n, { type Resource } from 'i18next'
 import { initReactI18next } from 'react-i18next'
 import en from './en.json'
+import { availableLanguages, pickLanguage } from './languages'
 import ru from './ru.json'
 
-// `kk` joins in Phase 4, behind a build flag until a clinician has reviewed it.
-export const LANGUAGES = [
-  { code: 'en', name: 'English' },
-  { code: 'ru', name: 'Русский' },
-] as const
-export type Language = (typeof LANGUAGES)[number]['code']
+// Build flag (spec 7.5): VITE_ENABLE_KK=true. Without it the Kazakh file is not even
+// part of the bundle, because the bundler drops the unreachable import below.
+const KK_ENABLED = import.meta.env.VITE_ENABLE_KK === 'true'
+export const LANGUAGES = availableLanguages(KK_ENABLED)
+
+const resources: Resource = { en: { translation: en }, ru: { translation: ru } }
+if (import.meta.env.VITE_ENABLE_KK === 'true') {
+  resources.kk = { translation: (await import('./kk.json')).default }
+}
 
 const STORAGE_KEY = 'neomortalsurv.lang'
-const isLanguage = (v: string | null | undefined): v is Language =>
-  LANGUAGES.some((l) => l.code === v)
-
-/** `?lang=` wins, then the remembered choice, then the browser language, then English. */
-export function pickLanguage(search: string, stored: string | null, browser: readonly string[]): Language {
-  const fromUrl = new URLSearchParams(search).get('lang')?.toLowerCase()
-  if (isLanguage(fromUrl)) return fromUrl
-  if (isLanguage(stored)) return stored
-  for (const tag of browser) {
-    const base = tag.toLowerCase().split('-')[0]
-    if (isLanguage(base)) return base
-  }
-  return 'en'
-}
 
 function readStored(): string | null {
   try {
@@ -34,7 +24,7 @@ function readStored(): string | null {
   }
 }
 
-export function rememberLanguage(lang: Language): void {
+export function rememberLanguage(lang: string): void {
   try {
     window.localStorage.setItem(STORAGE_KEY, lang)
   } catch {
@@ -42,10 +32,15 @@ export function rememberLanguage(lang: Language): void {
   }
 }
 
-const initial = pickLanguage(window.location.search, readStored(), window.navigator.languages ?? [])
+const initial = pickLanguage(
+  LANGUAGES.map((l) => l.code),
+  window.location.search,
+  readStored(),
+  window.navigator.languages ?? [],
+)
 
 void i18n.use(initReactI18next).init({
-  resources: { en: { translation: en }, ru: { translation: ru } },
+  resources,
   lng: initial,
   fallbackLng: 'en',
   interpolation: { escapeValue: false },

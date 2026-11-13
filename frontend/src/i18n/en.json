@@ -1,5 +1,5 @@
 {
-  "_todo_clinical_review": "TODO(clinical-review): every text under groups, fields, result, limitations, warnings and footer.intendedUse is a draft and needs clinical review.",
+  "_todo_clinical_review": "TODO(clinical-review): every text under groups, fields, result, limitations, warnings, report, about and footer.intendedUse is a draft and needs clinical review.",
   "app": {
     "name": "NeoMortalSurv",
     "tagline": "Survival estimate for very-low-birth-weight infants in the NICU",
@@ -32,8 +32,18 @@
     "dic": "DIC syndrome",
     "nec": "Necrotising enterocolitis (NEC)"
   },
-  "units": { "g": "g", "weeks": "weeks", "bpm": "bpm", "%": "%" },
-  "choices": { "yes": "Yes", "no": "No", "grade_2": "II", "grade_3": "III" },
+  "units": {
+    "g": "g",
+    "weeks": "weeks",
+    "bpm": "bpm",
+    "%": "%"
+  },
+  "choices": {
+    "yes": "Yes",
+    "no": "No",
+    "grade_2": "II",
+    "grade_3": "III"
+  },
   "form": {
     "range": "{{min}}–{{max}}",
     "rangeWithUnit": "{{min}}–{{max}} {{unit}}",
@@ -73,7 +83,8 @@
     "logRisk": "Log-risk",
     "modelVersion": "Model version",
     "warnings": "Warnings",
-    "noWarnings": "None"
+    "noWarnings": "None",
+    "print": "Print report"
   },
   "warnings": {
     "WEIGHT_ABOVE_COHORT": "Birth weight is above 1,500 g. Infants above 1,500 g were not included when the model was developed.",
@@ -91,5 +102,51 @@
     "modelVersion": "Model version {{version}}",
     "citation": "How to cite",
     "apiDocs": "API documentation"
+  },
+  "nav": {
+    "calculator": "Calculator",
+    "about": "About the model",
+    "main": "Main"
+  },
+  "report": {
+    "title": "Survival estimate report",
+    "generated": "Calculated {{when}}",
+    "caseCode": "Case code (optional; no names or record numbers)",
+    "inputs": "Inputs",
+    "estimates": "Estimated probability of survival",
+    "print": "Print",
+    "printHint": "Opens the browser's print dialog, where the report can also be saved as PDF.",
+    "back": "Back to the calculator",
+    "empty": "There is no estimate to print yet. Fill in the calculator first."
+  },
+  "about": {
+    "title": "About the model",
+    "what": {
+      "title": "What it is",
+      "body": "NeoMortalSurv estimates the probability of survival of very-low-birth-weight infants treated in the neonatal intensive care unit. It uses a DeepSurv model, a neural-network form of the Cox proportional-hazards model."
+    },
+    "cohort": {
+      "title": "Cohort",
+      "infants": "Very-low-birth-weight neonates",
+      "centres": "Perinatal centres in Kazakhstan",
+      "period": "Period",
+      "train": "Training set",
+      "test": "Test set",
+      "predictors": "Predictors (selected with Boruta)",
+      "exclusions": "Excluded",
+      "exclusionsText": "Infants above 1,500 g and infants with severe congenital malformations."
+    },
+    "performance": {
+      "title": "Reported performance on the test set",
+      "cIndex": "C-index",
+      "auc": "Overall AUC",
+      "ibs": "Integrated Brier score",
+      "ci": "95% CI {{low}}–{{high}}",
+      "note": "The model has not been validated externally. Calibration was weaker at day 7, mainly at low predicted risk."
+    },
+    "use": {
+      "title": "Intended use",
+      "body": "The estimate is intended at NICU admission and again whenever the status of RDS, IVH, NEC or DIC changes. A diagnosis is entered as Yes only when it is confirmed."
+    }
   }
 }
