@@ -21,7 +21,7 @@ https://neomortalsurv.net. We are rebuilding it from Streamlit into FastAPI + Re
 
 Keep these Makefile targets working and add new ones here when you create them.
 
-- `make dev` — backend + frontend with reload (stub until Phases 2–3)
+- `make dev` — backend with reload on 127.0.0.1:8000 (frontend joins in Phase 3)
 - `make test` — backend tests, including golden tests
 - `make lint` — ruff + frontend lint + type-check
 - `make e2e` — Playwright against the compose stack (stub until Phase 3)

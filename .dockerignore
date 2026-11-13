@@ -1,0 +1,7 @@
+# Allow-list: only what the API image needs.
+*
+!backend/pyproject.toml
+!backend/uv.lock
+!backend/app/
+!model/
+**/__pycache__/

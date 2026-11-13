@@ -161,3 +161,48 @@ regenerated; `make_golden.py` refuses to overwrite it without `--force`.
 A = article Figure 8; B / C = each input at its training mean rounded to a valid
 value (taken from `feature_spec.json`), with the four diagnoses all No / all Yes.
 No patient data. Continuous inputs are varied on at most 9 evenly spaced values.
+
+## 2026-11-13 — Phase 2 run in the same session as Phase 1
+
+The owner asked to start Phase 2 directly after Phase 1 ("one phase per session" is the
+default, not kept here at the owner's request). Plan was approved before implementation.
+
+## 2026-11-13 — Phase 2: request validation
+
+- The request model is generated with `pydantic.create_model` from the feature spec, so
+  the API cannot drift from `model/feature_spec.json`.
+- Strict types: `900.0`, `"900"` and `true` are not integers; `0` / `1` and `"yes"` are
+  not booleans. The form sends exact JSON types; lenient parsing would hide client bugs
+  in a clinical tool.
+- Error codes instead of messages (spec Section 6). Submitted values are never echoed
+  in a response.
+
+## 2026-11-13 — Phase 2: rate limit
+
+Own in-process sliding-window limiter instead of a library: the API is one uvicorn
+process, the rule is one line (60 / minute on one path), and it avoids a dependency and
+a shared store. Counters are lost on restart, which is acceptable. Invalid requests
+count towards the limit. Behind a reverse proxy the client address is the **last**
+`X-Forwarded-For` entry and only when `TRUSTED_PROXY` is on; earlier entries are
+client-supplied.
+
+## 2026-11-13 — Phase 2: logging
+
+Own ASGI access-log middleware; uvicorn's access log is switched off (`make dev`,
+Dockerfile) because it prints the query string. The client address is not logged
+either: it is not needed for operation and is personal data.
+
+## 2026-11-13 — Phase 2: API docs without a CDN
+
+FastAPI's default `/docs` loads Swagger UI from jsdelivr, which the spec forbids. The
+page is served from the `swagger-ui-bundle` Python package (Swagger UI 4.15.5) mounted
+at `/api/docs/assets`. That version cannot read OpenAPI 3.1, so the schema is emitted as
+3.0.3 (`app.openapi_version`); our schema uses nothing 3.1-specific and renders
+correctly. If Phase 3 brings Node, a current `swagger-ui-dist` from npm can replace the
+package and the version override can go.
+
+## 2026-11-13 — Phase 2: warnings
+
+`WEIGHT_ABOVE_COHORT` only (owner default: warn, not reject). The 1,500 g cohort limit
+is a constant in `app/api/v1.py` and in the model card's exclusion text; it is a cohort
+fact from the article, not a feature range.

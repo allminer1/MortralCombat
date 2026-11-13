@@ -1,8 +1,72 @@
 # Progress
 
-## Current phase: 1 — Model package — complete, report awaits the owner
+## Current phase: 2 — Backend API — complete apart from the image build
 
-Last session: 2026-11-13. Next: Phase 2 (backend API), in a new session.
+Last session: 2026-11-13 (same session as Phase 1, at the owner's request). Next:
+Phase 3 (frontend calculator, EN + RU), in a new session; it needs Node installed.
+
+### Done in Phase 2
+
+- `backend/` gained FastAPI 0.162, Pydantic 2.14, uvicorn 0.54 and `swagger-ui-bundle`
+  (exact versions in `backend/uv.lock`); tests use `httpx2`.
+- Endpoints under `/api/v1` (`backend/app/api/v1.py`, app factory in `app/main.py`):
+  `GET /health`, `GET /model`, `POST /predict`. OpenAPI at `/api/openapi.json`, Swagger
+  UI at `/api/docs` served from local files (checked in a browser: only requests to
+  the API host itself).
+- The `/predict` request model is generated from `model/feature_spec.json`
+  (`app/schemas/predict.py`): 11 required fields, unknown fields rejected, strict
+  integers and strict JSON booleans.
+- 422 responses are `{"errors": [{"field", "code", …}]}` with codes `missing`,
+  `unknown_field`, `not_integer`, `not_boolean`, `out_of_range` (+ `min`, `max`),
+  `not_allowed` (+ `allowed`), `invalid_json`, `invalid_body`. No English sentences, no
+  echo of submitted values. 404 / 405 / 429 use the same shape (`not_found`,
+  `method_not_allowed`, `rate_limited`).
+- Warning `WEIGHT_ABOVE_COHORT` above 1,500 g. `OUTSIDE_TRAINING_RANGE` not built
+  (training ranges still missing, spec Section 11 item 3).
+- Rate limit on `/predict`: 60 / minute per client address, in-process sliding window
+  (`app/core/ratelimit.py`), 429 with `Retry-After`. Settings by environment variable:
+  `RATE_LIMIT_PER_MINUTE` (0 = off), `TRUSTED_PROXY`, `MODEL_DIR`, `LOG_LEVEL`.
+- Access log (`app/core/logging.py`): one line per request with method, path, status,
+  latency, model version, warning codes, error codes. The middleware never reads the
+  body, query string, headers or client address.
+- `make dev` runs the API with reload on `127.0.0.1:8000`.
+- `backend/Dockerfile` and `.dockerignore` written (non-root, runtime dependencies
+  only). **Not built — no Docker on the workstation.**
+- Tests: 65 pass (`make test`); `make lint` passes.
+
+### Phase 2 acceptance
+
+| Check | Result |
+|---|---|
+| Golden tests pass through the HTTP layer | pass — 527 cases, max log-risk diff 4.4e-6, max S(t) diff 1.0e-6 |
+| 422 cases tested for every field | pass — missing, null, wrong type for all 11; below / above range for the 5 integer fields; disallowed values for the grade; unknown field |
+| A test proves request bodies do not reach the logs | pass — valid, invalid and malformed requests, all loggers and stdout / stderr captured |
+| Image has no torch | **partly** — `uv.lock` (what the image installs) is tested to contain no torch, pycox, scikit-learn, pandas, joblib; the image itself has not been built |
+
+### Open after Phase 2
+
+1. **Build the image once Docker is available** (Phase 5 or CI) and confirm
+   `pip list` in it shows no torch. Until then this acceptance item is not closed.
+2. Phase 5: when Caddy is in front, set `TRUSTED_PROXY=true`, otherwise every user
+   shares one rate-limit bucket (Caddy's address). Without Caddy leave it off.
+3. Phase 5: the strict CSP (`default-src 'self'`) will block the inline script of the
+   Swagger UI page at `/api/docs`; that path needs its own policy or a hash.
+4. Defaults in force, owner may override: warn (not reject) above 1,500 g; same-origin
+   only, no CORS; booleans must be JSON `true` / `false`.
+
+### Notes for Phase 3
+
+- The frontend gets names, types, ranges and units from `GET /api/v1/model`
+  (`feature_spec.features`), and translates error and warning codes itself.
+- `backend/app/api/v1.py` must not get `from __future__ import annotations`: FastAPI
+  then no longer recognises the generated request model as the JSON body.
+- The preview pane of the Claude desktop app could not start `make dev` from this
+  folder (sandbox, "getcwd: Operation not permitted"); the server was started from
+  the shell instead and opened in the built-in browser.
+
+## Phase 1 — Model package — complete, report awaits the owner
+
+Session of 2026-11-13.
 
 ### Done in Phase 1
 
