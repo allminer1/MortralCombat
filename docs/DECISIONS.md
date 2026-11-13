@@ -335,3 +335,17 @@ A registry can replace this later without changing the compose file's shape.
 `make e2e` tests the compose stack (spec Section 9). `make e2e-local` keeps the
 Docker-free mode because it is the only one that builds with the Kazakh flag. CI runs
 both.
+
+## 2026-11-13 — Phase 5: ports instead of subdomains
+
+The DNS zone is at Cloudflare and the owner cannot log in to that account, so
+`staging.` / `legacy.` records cannot be created. Staging and the legacy app use ports
+8443 / 8444 of `neomortalsurv.net` instead (spec Section 9 says "staging subdomain";
+the Phase 0 inventory already named another port as the alternative). One certificate
+covers all three addresses. Costs: less tidy addresses, two more open ports, and
+networks that block unusual ports cannot reach staging / legacy. Reversible by editing
+`deploy/.env` once DNS access is back. Tested locally with `localhost`: side by side,
+cutover swap, rollback.
+
+Open risk for the owner, separate from this project: whoever controls that Cloudflare
+account controls where the published address points.

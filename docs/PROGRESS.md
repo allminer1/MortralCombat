@@ -57,6 +57,17 @@ all happen on the server and are the owner's steps in `docs/CUTOVER.md`.
 5. Carried over: `docs/MODEL_BEHAVIOUR.md` to the co-authors; training ranges;
    clinical review of all wording; Kazakh review.
 
+### Part B log (owner on the server)
+
+- 2026-11-13: branch pushed, CI green. Certificate hooks checked: none.
+- 2026-11-13: an attempt to connect from the workstation at the owner's request was
+  refused (key not authorised); the owner logs in and Claude reads the terminal panel.
+  Read-only so far; nothing on the server has been changed for this project.
+- 2026-11-13: the owner cannot log in to Cloudflare (DNS), so staging and legacy use
+  ports 8443 / 8444 instead of subdomains (`docs/DECISIONS.md`, `docs/CUTOVER.md`).
+  Recovering the Cloudflare account is an open owner item.
+- Next: runbook step 1 (ports), step 2 (Docker, swap, clone).
+
 ### Notes for the next session
 
 - Part B needs the owner at the server. Claude can help read command output and adjust

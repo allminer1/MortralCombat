@@ -56,6 +56,11 @@ services:
       - "80:80"
       - "443:443"
       - "443:443/udp"
+      # Side-by-side addresses without extra DNS names (docs/CUTOVER.md): the stack that
+      # does not hold the main address is served on one of these ports of the same
+      # host name. Caddy listens on them only when a site in .env uses them.
+      - "8443:8443"
+      - "8444:8444"
     volumes:
       - caddy_data:/data
       - caddy_config:/config

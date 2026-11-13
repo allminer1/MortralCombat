@@ -4,8 +4,17 @@ Everything here is done **by the owner on the server**. Claude prepared the file
 tested the stack locally; it has not connected to the server, changed DNS or run
 `deploy/deploy.sh`. Nothing in this runbook has been executed yet.
 
-Names assumed: `staging.neomortalsurv.net` and `legacy.neomortalsurv.net`. Replace
-them everywhere if you choose others.
+**Addresses (decided 2026-11-13).** The owner cannot get into the Cloudflare account
+that holds the DNS zone, so no subdomains are used. Both stacks share the host name;
+the one that does not hold the main address sits on a port:
+
+| | new calculator | old Streamlit app |
+|---|---|---|
+| before cutover | `https://neomortalsurv.net:8443` | `https://neomortalsurv.net` |
+| after cutover | `https://neomortalsurv.net` | `https://neomortalsurv.net:8444` |
+
+If Cloudflare access comes back, `staging.` / `legacy.` names can replace the ports by
+editing `deploy/.env` only.
 
 What was tested locally (2026-11-13) and what was not:
 
@@ -14,7 +23,7 @@ What was tested locally (2026-11-13) and what was not:
 | Both images build; API image has no torch | Let's Encrypt certificates for the real names |
 | Stack starts, API healthy, 35 browser tests pass against it | Docker on the server's Ubuntu with 3.8 GiB RAM and no swap |
 | Security headers, strict CSP, single-page fallback | Streamlit behind Caddy (websocket, its own paths) |
-| Caddy proxies a second site to a process on the host | Streamlit listening on the Docker bridge address |
+| Caddy proxies a second site to a process on the host; port-based staging, cutover swap and rollback (with `localhost`) | Streamlit listening on the Docker bridge address; ports 8443 / 8444 reachable from outside |
 | Containers run as non-root, API file system read-only | Building the images on the server (memory) |
 
 ## 0. Before you start
@@ -26,12 +35,15 @@ What was tested locally (2026-11-13) and what was not:
 - The server reports "System restart required" and pending security updates. If you
   want to restart it, do it just before step 3, which interrupts the site anyway.
 
-## 1. DNS
+## 1. Open the two extra ports
 
-Create two records pointing to the server's address, like the main domain:
-`staging.neomortalsurv.net` and `legacy.neomortalsurv.net`. Wait until both resolve:
+No DNS change. Ports 8443 and 8444 must be reachable from outside, next to 80 and 443.
 
-    dig +short staging.neomortalsurv.net legacy.neomortalsurv.net
+    sudo ufw status                 # if "inactive", the server itself blocks nothing
+
+If ufw is active: `sudo ufw allow 8443/tcp && sudo ufw allow 8444/tcp`. If a firewall is
+switched on in the Hostinger control panel for this server, allow both ports there as
+well. (Reachability can only be confirmed in step 4, once Caddy listens.)
 
 ## 2. Docker and the repository
 
@@ -88,10 +100,11 @@ If the last command does answer, a firewall rule is needed before going on.
     cd ~/neomortalsurv && deploy/deploy.sh
 
 With the example `.env` this serves the new calculator on
-`https://staging.neomortalsurv.net` and the old app, unchanged, on
-`https://neomortalsurv.net`, both with fresh certificates from Caddy. Check:
+`https://neomortalsurv.net:8443` and the old app, unchanged, on
+`https://neomortalsurv.net`, with a fresh certificate from Caddy. Check, **from a
+computer outside the server** as well (this is the firewall test of step 1):
 
-    curl -s https://staging.neomortalsurv.net/api/v1/health
+    curl -s https://neomortalsurv.net:8443/api/v1/health
     curl -sI https://neomortalsurv.net | head -1
     curl -sI http://neomortalsurv.net | head -3       # now redirects to https
 
@@ -115,7 +128,7 @@ If certbot manages no other certificate on
 this server: `sudo systemctl disable --now certbot.timer` and remove
 `/etc/cron.d/certbot`.
 
-## 6. Compare cases on staging
+## 6. Compare cases on the staging address
 
 Owner and a clinical co-author enter the same cases on both sites. The old app (since
 the hot-fix of 2026-11-12) and the new one use the same model in the same order, so
@@ -129,7 +142,9 @@ log-risk and percentages must agree: old site two decimals, new site one decimal
 | 3 | same as 2, but **NEC yes only** | −0.681 | 93.76 / 86.93 / 64.78 |
 | 4–10 | `TODO(owner)` / `TODO(clinical-review)`: seven realistic cases chosen by the clinical co-author; write the old site's numbers here and compare | | |
 
-Also check on staging: both languages, the printed report, a phone, the ward PC.
+Also check on the staging address: both languages, the printed report, a phone, the
+ward PC. Some hospital networks block unusual ports; if `:8443` does not open there,
+compare from another network.
 Record the sign-off in `docs/DECISIONS.md` (who, when, which cases).
 
 ## 7. Cutover
@@ -137,30 +152,28 @@ Record the sign-off in `docs/DECISIONS.md` (who, when, which cases).
 In `deploy/.env`:
 
     SITE_NEW=neomortalsurv.net
-    SITE_LEGACY=legacy.neomortalsurv.net
+    SITE_LEGACY=neomortalsurv.net:8444
 
-then `deploy/deploy.sh`. The main domain now opens the new calculator; the old app is
-on `https://legacy.neomortalsurv.net`. `staging.` stops answering; delete its DNS
-record or keep it for later tests by listing both names:
-`SITE_NEW="neomortalsurv.net, staging.neomortalsurv.net"`.
+then `deploy/deploy.sh`. The main address now opens the new calculator; the old app is
+on `https://neomortalsurv.net:8444`. Port 8443 stops answering.
 
 Check `https://neomortalsurv.net/api/v1/health` and case 1 again.
 
 ## 8. Rollback (rehearse once, right after step 7)
 
-Swap the two lines back —
+Put the two lines back —
 
-    SITE_NEW=staging.neomortalsurv.net
+    SITE_NEW=neomortalsurv.net:8443
     SITE_LEGACY=neomortalsurv.net
 
-— and run `deploy/deploy.sh`. The main domain shows the old app again within a
-minute; no DNS change is involved, so there is nothing to wait for. Then repeat step
-7. Note the rehearsal in `docs/PROGRESS.md`.
+— and run `deploy/deploy.sh`. The main address shows the old app again within a
+minute; no DNS is involved, so there is nothing to wait for. Then repeat step 7. Note
+the rehearsal in `docs/PROGRESS.md`.
 
 ## 9. After 30 days
 
 Set `LEGACY=off` in `deploy/.env`, run `deploy/deploy.sh`, stop and disable
-`streamlit.service`, delete the `legacy.` DNS record. Keep the old directory or
+`streamlit.service`. Close ports 8443 and 8444 in the firewall again. Keep the old directory or
 archive it; the code is in git (`legacy-streamlit` branch).
 
 ## Later deploys
