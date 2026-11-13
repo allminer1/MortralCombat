@@ -47,7 +47,12 @@ all happen on the server and are the owner's steps in `docs/CUTOVER.md`.
    workflow ran for the first time and all three jobs passed (backend, frontend, e2e
    including the compose stack and the image check). The push needed a token with the
    `workflow` permission.
-4. `TODO(owner)`: certificate-hook question (runbook step 0), seven realistic
+4. Certificate-hook question answered 2026-11-13 (owner ran the check on the server):
+   `/etc/letsencrypt/renewal-hooks/deploy` is empty and the renewal file has no hook
+   lines. So nothing restarts Streamlit after a renewal; it serves a renewed certificate
+   only after its next restart. Nothing to remove in runbook step 5. The server also
+   reports "System restart required" and 97 pending updates (2 security).
+   Still `TODO(owner)`: seven realistic
    comparison cases (step 6), uptime check, erratum notice, ACME contact e-mail.
 5. Carried over: `docs/MODEL_BEHAVIOUR.md` to the co-authors; training ranges;
    clinical review of all wording; Kazakh review.

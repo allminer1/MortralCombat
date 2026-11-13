@@ -21,12 +21,10 @@ What was tested locally (2026-11-13) and what was not:
 
 - Pick a quiet time: steps 3–4 interrupt the live site for a few minutes.
 - Have a second SSH session open the whole time.
-- `TODO(owner)` still open from Phase 0: how does the renewed certificate reach
-  Streamlit today? Run and note the output; it tells you whether a deploy hook exists
-  that must be removed in step 5:
-
-      ls /etc/letsencrypt/renewal-hooks/deploy
-      grep -i hook /etc/letsencrypt/renewal/neomortalsurv.net.conf
+- Certificate hooks, checked on 2026-11-13: none exist (the deploy-hook directory is
+  empty, the renewal file has no hook lines). Step 5 has no hook to remove.
+- The server reports "System restart required" and pending security updates. If you
+  want to restart it, do it just before step 3, which interrupts the site anyway.
 
 ## 1. DNS
 
@@ -113,7 +111,7 @@ Caddy now renews the certificates. Two ACME clients for one name must not both r
     sudo certbot certificates                 # confirm what exists
     sudo certbot delete --cert-name neomortalsurv.net
 
-Remove any deploy hook found in step 0. If certbot manages no other certificate on
+If certbot manages no other certificate on
 this server: `sudo systemctl disable --now certbot.timer` and remove
 `/etc/cron.d/certbot`.
 
