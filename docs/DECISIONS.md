@@ -349,3 +349,17 @@ cutover swap, rollback.
 
 Open risk for the owner, separate from this project: whoever controls that Cloudflare
 account controls where the published address points.
+
+## 2026-11-13 — Phase 5: staging comparison, cases 1–3 (not a sign-off)
+
+Cases 1–3 of `docs/CUTOVER.md` step 6 were entered by hand on the old app and on the
+new calculator (`:8443`) by a Claude browser session for the owner; record in
+`docs/COMPARISON_2026-11-13.md`. Log-risk and all three percentages agree with the
+expected values and with each other at the displayed precision. The Russian interface
+and the report page were checked on screen.
+
+This does not meet the Phase 5 condition "owner signs off the case comparison", which
+the spec ties to the owner and a clinical co-author. Still open: cases 4–10, phone,
+ward PC, hospital network, printed output, and the sign-off itself —
+`TODO(clinical-review)` (name, date). The main domain is not switched until the owner
+records that sign-off here or explicitly decides to cut over without it.

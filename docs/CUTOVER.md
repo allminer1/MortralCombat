@@ -142,7 +142,7 @@ log-risk and percentages must agree: old site two decimals, new site one decimal
 | 1 | Article Figure 8: BOH yes, 900 g, Apgar 3, GA 27, RF III, HR 80, SpO2 55, all four diagnoses yes | 1.210 | 65.22 / 39.52 / 5.63 |
 | 2 | 400 g, Apgar 0, GA 20, HR 60, SpO2 40, BOH no, RF II, **RDS yes only** | 0.647 | 78.39 / 58.93 / 19.41 |
 | 3 | same as 2, but **NEC yes only** | −0.681 | 93.76 / 86.93 / 64.78 |
-| | *Cases 1–3 on the new calculator were checked through its API on staging on 2026-11-13 and match; the old app gave the same numbers on 2026-11-12 after the hot-fix. They still need entering by hand on both sites for the sign-off.* | | |
+| | *Cases 1–3 were entered by hand on both sites on 2026-11-13 and match (`docs/COMPARISON_2026-11-13.md`). Not done by the clinical co-author; not a sign-off.* | | |
 | 4–10 | `TODO(owner)` / `TODO(clinical-review)`: seven realistic cases chosen by the clinical co-author; write the old site's numbers here and compare | | |
 
 Also check on the staging address: both languages, the printed report, a phone, the

@@ -85,8 +85,12 @@ all happen on the server and are the owner's steps in `docs/CUTOVER.md`.
   certificate files are kept as the fallback for a full undo (deleted in step 9).
 - **State now: staging is live.** Old app on the main address, new calculator on
   `:8443`. The three reference cases give the expected numbers through the staging
-  API. Not yet done: step 6 (case comparison by the owner and a clinical co-author,
-  sign-off in `docs/DECISIONS.md`), step 7 (cutover), step 8 (rollback rehearsal).
+  API.
+- 2026-11-13, step 6 partly: cases 1–3 entered by hand on both sites (browser session
+  for the owner) and they match; record in `docs/COMPARISON_2026-11-13.md`.
+  **Not yet done:** cases 4–10 from the clinical co-author, phone / ward PC / hospital
+  network, printed output, and the sign-off; then step 7 (cutover) and step 8
+  (rollback rehearsal).
 - The server still reports "System restart required" (kernel, security updates).
 
 ### Notes for the next session
