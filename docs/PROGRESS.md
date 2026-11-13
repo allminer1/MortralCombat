@@ -1,5 +1,31 @@
 # Progress
 
+## State on 2026-11-13, end of session
+
+All six phases of `docs/REBUILD_SPEC.md` are built and tested. Live on
+https://neomortalsurv.net at commit `6279ec8`: calculator, report, About page, in
+English, Russian and Kazakh, with the out-of-range warning. Accounts and saved history
+are built and **off**. The old Streamlit app is on port 8444 as a fallback.
+
+**Open, and only these:**
+
+| Item | Waiting for |
+|---|---|
+| Accounts and saved history in production | institutional / ethics sign-off (owner); then `docs/ACCOUNTS.md` |
+| Retire the old app (`docs/CUTOVER.md` step 9) | 2026-12-13 (owner runs it) |
+| Reviewer names and dates for the EN / RU and KK reviews | owner, for the record in `docs/DECISIONS.md` |
+| Access to the Cloudflare account holding the DNS zone | owner |
+| First scheduled run of the uptime workflow | GitHub's scheduler; a manual run passed |
+| Case comparison of old and new site by a clinician (cases 4–10) | not planned; cutover was the owner's decision |
+
+**Closed by owner decision on 2026-11-13** (details in `docs/DECISIONS.md`): no site
+notice and no information to co-authors or journal about the feature-order error; the
+1,500 g statement stays as in the article; out-of-range warning wording accepted;
+gestational age and other out-of-range values are warned about, not refused; heart
+rate from 36 bpm and SpO2 from 35 %; no tooltip for bad obstetric history.
+
+Everything below is the history, newest first.
+
 ## Current phase: 6 — Accounts and history — built and tested; OFF in production
 
 Last session: 2026-11-13 (same session as Phases 1–5, at the owner's request).

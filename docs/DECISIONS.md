@@ -544,3 +544,16 @@ Given by the owner in the session of 2026-11-13, each answered as an explicit ch
    it to `false` and deploy.
 4. **Accounts stay off.** No institutional sign-off yet; `ENABLE_ACCOUNTS` remains
    false in production.
+
+## 2026-11-13 — Erratum and old app: owner decisions
+
+Given by the owner in the session of 2026-11-13, each as an explicit choice.
+
+- **No notice on the site** about the feature-order error that the old calculator had
+  until the hot-fix of 2026-11-12.
+- **The co-authors and the journal are not informed.** This closes spec Section 11
+  item 2 as the owner's decision. `docs/ERRATUM_feature_order.md` stays in the
+  repository as an unpublished draft and as the technical record of what was wrong;
+  the repository is public, so the draft itself is readable there.
+- **The old Streamlit app stays on port 8444 until 2026-12-13**, then is retired with
+  `docs/CUTOVER.md` step 9.
