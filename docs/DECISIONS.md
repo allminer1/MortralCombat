@@ -428,3 +428,27 @@ database is a separate override that `deploy.sh` adds only when the flag is on.
 JSONB, the check constraint and the migration itself are PostgreSQL-specific, so the
 accounts tests run against a throwaway container (`make test-accounts`) and are
 skipped by plain `make test`. All test data is synthetic.
+
+## 2026-11-13 — Clinical review of the interface wording: English and Russian approved
+
+Reported by the owner in the session of 2026-11-13: the clinical co-authors reviewed
+the packet (`docs/CLINICAL_REVIEW.md`, 144 texts, generated from the translation files
+at commit `80fec55`) and have **no corrections**. Languages covered: **English and
+Russian**. The reviewer's name and the date of the review itself were not given;
+`TODO(owner)` to add them here.
+
+- The English and Russian texts are no longer drafts. The file-level
+  `TODO(clinical-review)` marker in `en.json` and `ru.json` is replaced by a
+  `_clinical_review` note. Text added or changed later is a draft again until reviewed.
+- **Bad obstetric history** (packet question 1, spec Section 11 item 5): it is a
+  standard diagnostic criterion in Kazakhstan; no definition or tooltip, and no special
+  emphasis on the field. Item 5 is closed with "no tooltip".
+- The other packet questions (grouping, heart rate / SpO2 wording, day 56, rounding,
+  limitations box, intended-use line, input ranges) were not answered separately. The
+  wording and the current behaviour were approved as they are, so the defaults stay:
+  whole-percent headline, curve de-emphasised from day 56, accepted ranges unchanged,
+  warning only above 1,500 g.
+- **Not covered:** Kazakh (stays an unreviewed draft behind its build flag); whether the
+  co-authors want any action on the model behaviour in Part B of the packet; the
+  side-by-side case comparison of the old and new site (cases 4–10 in
+  `docs/CUTOVER.md`), which was a separate item.

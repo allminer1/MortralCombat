@@ -12,9 +12,22 @@ Nothing of this phase is deployed: the server runs commit `65dc7c3` with
 144 interface texts in EN / RU / KK side by side with a correction column, nine
 questions for the reviewer, the 19 Kazakh clinical terms, and the model-behaviour
 tables. A Word and an HTML copy go to `docs/out/` (not committed) for a reviewer who
-works in Word or on paper. Handed to the owner on 2026-11-13; **not yet sent to or
-returned by a clinician.** When corrections come back they are entered into
-`frontend/src/i18n/*.json`, the packet is regenerated, and the site redeployed.
+works in Word or on paper.
+
+**Result (2026-11-13, reported by the owner): the clinical co-authors have no
+corrections; English and Russian are approved as they are.** Recorded in
+`docs/DECISIONS.md`. No text changed, so nothing needs redeploying. This closes the
+`TODO(clinical-review)` items for English and Russian listed under Phases 3, 4 and 6
+below, and spec Section 11 item 5 (no tooltip for "bad obstetric history").
+
+Still open after the review:
+- Kazakh: unreviewed draft, stays hidden (spec Section 11 item 8).
+- `TODO(owner)`: reviewer's name and review date for the record.
+- Whether the co-authors want anything done about the model behaviour in Part B
+  (odd outputs far from the cohort), and the training ranges (item 3).
+- Case comparison of old and new site by a clinical co-author (cases 4–10).
+- Erratum decision; server restart; Cloudflare access; uptime check; retiring the old
+  app after 2026-12-13; institutional sign-off before accounts can be enabled.
 
 ### Done in Phase 6
 
