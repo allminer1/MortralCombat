@@ -206,3 +206,49 @@ package and the version override can go.
 `WEIGHT_ABOVE_COHORT` only (owner default: warn, not reject). The 1,500 g cohort limit
 is a constant in `app/api/v1.py` and in the model card's exclusion text; it is a cohort
 fact from the article, not a feature range.
+
+## 2026-11-13 — Phase 3 run in the same session
+
+At the owner's request, as for Phase 2. Plan approved before implementation, including
+installing Node and Playwright's Chromium.
+
+## 2026-11-13 — Phase 3: visual direction
+
+Cool near-white page, white result panel, blue-black text, one petrol accent
+(`#0e5a6b`) used for actions, selection and the curve; no gradients, images or shadows.
+One typeface, IBM Plex Sans (Latin, Cyrillic, Cyrillic Extended), light weight for the
+large numerals. The survival step curve is the one prominent element. Amber is used
+only for notices (out-of-date result, weight warning) and red only for input errors;
+neither is tied to the size of the estimate, so there is no colour-coded verdict.
+
+## 2026-11-13 — Phase 3: no shadcn/ui (deviation from the stack list)
+
+The page needs a button, a text input with steppers and a two-option choice. They are
+written as small components on native `<input>` / `<button>` elements with Tailwind,
+which gives keyboard and screen-reader behaviour for free and no extra dependencies.
+shadcn/ui (Radix) can still be added in Phase 4 or 6 if dialogs, menus or tables need
+it. Owner may ask to reverse this.
+
+## 2026-11-13 — Phase 3: tooling
+
+- Linter is oxlint (what the current Vite template ships) with its React, TypeScript
+  and jsx-a11y rules; warnings fail `make lint`.
+- e2e: Playwright starts uvicorn (port 8010, rate limit off) and `vite preview` of the
+  production build (port 4173) itself. Compose stack in Phase 5.
+- Browser review used Playwright screenshots and the Claude app's built-in browser; the
+  Playwright MCP named in `CLAUDE.md` is not available in this environment.
+
+## 2026-11-13 — Phase 3: form behaviour
+
+- Validation rules are generated from the served feature spec (zod schema built at
+  run time); error texts are i18n keys.
+- On-screen grouping and order are a presentation list of field names in
+  `frontend/src/lib/fields.ts`; the model order never reaches the frontend logic, and
+  requests are objects of named fields.
+- Steppers are disabled while a field is empty: "no pre-filled values" (spec 7.2)
+  would be undone by a "+" that jumps to the minimum.
+- A result whose inputs have since been edited is marked out of date (see PROGRESS).
+- Percent and decimal formatting follows the interface language (`65%` / `65 %`,
+  `1.210` / `1,210`).
+- The chart is sized in container pixels (ResizeObserver) so axis labels stay
+  readable on a phone, and sits out of the layout flow so it cannot widen the page.

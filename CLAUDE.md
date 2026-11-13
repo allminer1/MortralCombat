@@ -21,10 +21,10 @@ https://neomortalsurv.net. We are rebuilding it from Streamlit into FastAPI + Re
 
 Keep these Makefile targets working and add new ones here when you create them.
 
-- `make dev` — backend with reload on 127.0.0.1:8000 (frontend joins in Phase 3)
-- `make test` — backend tests, including golden tests
+- `make dev` — backend (127.0.0.1:8000) + frontend (127.0.0.1:5173) with reload
+- `make test` — backend tests, including golden tests, and frontend unit tests
 - `make lint` — ruff + frontend lint + type-check
-- `make e2e` — Playwright against the compose stack (stub until Phase 3)
+- `make e2e` — Playwright; starts API and built frontend itself (compose stack from Phase 5)
 - `make export-model` — regenerate `model/` from `legacy/` (needs `tools/` env)
 - `make sweep-report` — regenerate `docs/MODEL_BEHAVIOUR.md` (needs `tools/` env)
 

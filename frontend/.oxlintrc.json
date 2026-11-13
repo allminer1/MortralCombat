@@ -1,0 +1,10 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["react", "typescript", "jsx-a11y"],
+  "rules": {
+    "react/refs": "off",
+    "jsx-a11y/prefer-tag-over-role": "off",
+    "jsx-a11y/no-noninteractive-tabindex": ["warn", { "roles": ["region"], "tags": ["h2"] }]
+  },
+  "ignorePatterns": ["dist", "playwright-report", "test-results"]
+}

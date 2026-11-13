@@ -1,0 +1,95 @@
+{
+  "_todo_clinical_review": "TODO(clinical-review): every text under groups, fields, result, limitations, warnings and footer.intendedUse is a draft and needs clinical review.",
+  "app": {
+    "name": "NeoMortalSurv",
+    "tagline": "Survival estimate for very-low-birth-weight infants in the NICU",
+    "language": "Language",
+    "loading": "Loading the model description…",
+    "loadFailed": "The calculator could not load the model description from the server.",
+    "configMismatch": "The calculator and the server disagree about the input fields. The calculator is switched off until this is fixed.",
+    "retry": "Try again"
+  },
+  "groups": {
+    "admission": {
+      "title": "At birth / NICU admission",
+      "help": "Heart rate and SpO₂ are single values taken right after birth, at NICU admission."
+    },
+    "diagnoses": {
+      "title": "Confirmed diagnoses",
+      "help": "Select Yes only when the diagnosis is confirmed. Recalculate when a diagnosis changes."
+    }
+  },
+  "fields": {
+    "gestational_age_weeks": "Gestational age",
+    "birth_weight_g": "Birth weight",
+    "apgar_5min": "Apgar score at 5 minutes",
+    "heart_rate_bpm": "Heart rate",
+    "spo2_percent": "Oxygen saturation (SpO₂)",
+    "bad_obstetric_history": "Bad obstetric history",
+    "respiratory_failure_grade": "Respiratory failure grade",
+    "rds": "Respiratory distress syndrome (RDS)",
+    "ivh": "Intraventricular haemorrhage (IVH)",
+    "dic": "DIC syndrome",
+    "nec": "Necrotising enterocolitis (NEC)"
+  },
+  "units": { "g": "g", "weeks": "weeks", "bpm": "bpm", "%": "%" },
+  "choices": { "yes": "Yes", "no": "No", "grade_2": "II", "grade_3": "III" },
+  "form": {
+    "range": "{{min}}–{{max}}",
+    "rangeWithUnit": "{{min}}–{{max}} {{unit}}",
+    "decrease": "Decrease {{field}}",
+    "increase": "Increase {{field}}",
+    "calculate": "Calculate",
+    "calculating": "Calculating…",
+    "reset": "Reset",
+    "incomplete": "Fill in all {{count}} fields to calculate."
+  },
+  "errors": {
+    "required": "Enter a value.",
+    "choose": "Select an option.",
+    "not_integer": "Enter a whole number.",
+    "out_of_range": "Enter a value from {{min}} to {{max}}.",
+    "invalid": "The server did not accept this value.",
+    "rate_limited": "Too many requests. Try again in a minute.",
+    "network": "Could not reach the server. Check the connection and try again.",
+    "server": "The server could not calculate the estimate. Try again."
+  },
+  "result": {
+    "title": "Estimated survival",
+    "empty": "Fill in the form and select Calculate. The estimate appears here.",
+    "day": "Day {{day}}",
+    "probability": "Estimated probability of survival to day {{day}}",
+    "stale": "The inputs have changed since this estimate. Select Calculate to update it.",
+    "curveTitle": "Survival curve, days 0–100",
+    "curveHelp": "Move over the curve, tap it, or use the arrow keys to read a day.",
+    "curveSlider": "Day on the survival curve",
+    "readout": "Day {{day}}: {{value}}",
+    "axisDay": "Day",
+    "axisSurvival": "Survival",
+    "lateNote": "After day {{day}} few infants in the study were still under observation, so this part of the curve is less certain.",
+    "tableToggle": "Show the curve as a table",
+    "tableCaption": "Estimated survival by day",
+    "details": "Details",
+    "logRisk": "Log-risk",
+    "modelVersion": "Model version",
+    "warnings": "Warnings",
+    "noWarnings": "None"
+  },
+  "warnings": {
+    "WEIGHT_ABOVE_COHORT": "Birth weight is above 1,500 g. Infants above 1,500 g were not included when the model was developed.",
+    "unknown": "Warning code: {{code}}"
+  },
+  "limitations": {
+    "title": "Limitations",
+    "cohort": "The estimate comes from a single retrospective cohort.",
+    "validation": "The model has not been validated externally.",
+    "calibration": "Calibration is weaker at day 7, especially when the predicted risk is low.",
+    "judgement": "The estimate is not a substitute for clinical judgement."
+  },
+  "footer": {
+    "intendedUse": "For research use. Not a substitute for clinical judgement.",
+    "modelVersion": "Model version {{version}}",
+    "citation": "How to cite",
+    "apiDocs": "API documentation"
+  }
+}
