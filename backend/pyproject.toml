@@ -4,8 +4,11 @@ version = "0.1.0"
 description = "NeoMortalSurv API backend. Runtime has no torch, pycox, scikit-learn or pandas."
 requires-python = ">=3.12"
 dependencies = [
+    "fastapi>=0.162.5",
     "numpy>=2.5.4",
     "onnxruntime>=1.31.1",
+    "swagger-ui-bundle>=1.1.0",
+    "uvicorn>=0.54.0",
 ]
 
 [tool.uv]
@@ -17,6 +20,7 @@ pythonpath = ["."]
 
 [dependency-groups]
 dev = [
+    "httpx2>=2.16.0",
     "pytest>=9.2.0",
     "ruff>=0.17.5",
 ]
