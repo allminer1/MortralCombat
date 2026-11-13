@@ -43,7 +43,9 @@ workflows run only from the default branch; `main` is unchanged). GitHub then li
 the workflow as active. **No scheduled run had appeared 20 minutes later** (checked
 until 09:13 UTC); GitHub often starts a new schedule late. To be confirmed: a run with
 event `schedule` and conclusion `success` under Actions → uptime. It can be started by
-hand there with "Run workflow". `TODO(owner)`: check GitHub → Settings → Notifications
+hand there with "Run workflow". The owner did so at 09:17 UTC: that run **passed**, so
+the check itself works on GitHub's runners; only the first run started by the
+schedule is still to be seen. `TODO(owner)`: check GitHub → Settings → Notifications
 → Actions, so that failed runs are e-mailed.
 
 ### After the phases: server restart (2026-11-13)
