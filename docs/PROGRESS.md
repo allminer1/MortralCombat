@@ -30,6 +30,23 @@ Still open after the review:
 - Erratum decision; server restart; Cloudflare access; uptime check; retiring the old
   app after 2026-12-13; institutional sign-off before accounts can be enabled.
 
+### After the phases: uptime check (2026-11-13) — written, NOT RUNNING YET
+
+`.github/workflows/uptime.yml`: every 15 minutes it requests
+`https://neomortalsurv.net/api/v1/health` (three tries), checks `status` and the model
+version, and checks that the page loads. A failed run makes GitHub e-mail the owner.
+The same commands were run by hand against the live site and pass; a closed port makes
+them fail, as intended. It sends nothing but two plain GET requests.
+
+**It does not run on a schedule yet.** GitHub runs scheduled workflows only from the
+repository's default branch, which is `main`; the file is on `rebuild`. `TODO(owner)`,
+one of:
+- make `rebuild` the default branch (GitHub → Settings → General → Default branch), or
+- merge `rebuild` into `main`.
+Until then it can only be started by hand (Actions → uptime → Run workflow, choosing
+`rebuild`). Also check GitHub → Settings → Notifications → Actions, so that failed
+runs are e-mailed.
+
 ### After the phases: server restart (2026-11-13)
 
 The server had been reporting "System restart required" (kernel 6.8.0-149, security

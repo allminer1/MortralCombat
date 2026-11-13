@@ -1,0 +1,42 @@
+# External uptime check (spec Section 9): asks the live site for its health every 15
+# minutes and fails when it does not answer correctly. GitHub e-mails the repository
+# owner about a failed run (Settings -> Notifications -> Actions).
+#
+# Scheduled workflows run only from the repository's DEFAULT branch, and GitHub's
+# scheduler can be several minutes late, so this reports outages of roughly 20 minutes
+# or more, not brief blips. GitHub also pauses schedules in a repository with no
+# activity for 60 days; re-enable under Actions if that happens.
+name: uptime
+
+on:
+  schedule:
+    - cron: "7,22,37,52 * * * *"
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: uptime
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Health, page and model version
+        env:
+          SITE: https://neomortalsurv.net
+          MODEL_VERSION: deepsurv-vlbw-1.0.0
+        run: |
+          set -euo pipefail
+          # Three tries, 20 s apart: one slow answer is not an outage.
+          health=$(curl --silent --show-error --fail --max-time 20 --retry 3 --retry-delay 20 --retry-all-errors "$SITE/api/v1/health")
+          echo "$health" | python3 -c "
+          import json, os, sys
+          d = json.load(sys.stdin)
+          assert d['status'] == 'ok', d
+          assert d['model_version'] == os.environ['MODEL_VERSION'], d['model_version']
+          print('health ok,', d['model_version'])"
+          curl --silent --show-error --fail --max-time 20 --retry 3 --retry-delay 20 --retry-all-errors "$SITE/" | grep -q "<title>NeoMortalSurv</title>"
+          echo "page ok"

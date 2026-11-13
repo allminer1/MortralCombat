@@ -506,3 +506,13 @@ the behaviour is acceptable as it is. Values outside the training range stay all
 are warned about; nothing is refused beyond the form's hard limits. The decrease of
 estimated survival with higher gestational age inside the training range is the model's
 behaviour and is left for the co-authors (Part B of the review packet).
+
+## 2026-11-13 — Uptime check as a scheduled GitHub workflow
+
+Owner agreed to an external uptime check (spec Section 9). It is a scheduled workflow
+in this repository rather than a monitoring service: no new account, no secret, and
+the alert is GitHub's own e-mail about a failed run. Limits: GitHub's scheduler can be
+late by several minutes, so only outages of about 20 minutes or more are reliably
+reported; schedules pause after 60 days without repository activity; and scheduled
+workflows run only from the default branch (see `docs/PROGRESS.md` for the open step).
+The check reads `/api/v1/health` and the start page; it sends no data.
