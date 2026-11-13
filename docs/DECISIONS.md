@@ -363,3 +363,14 @@ the spec ties to the owner and a clinical co-author. Still open: cases 4–10, p
 ward PC, hospital network, printed output, and the sign-off itself —
 `TODO(clinical-review)` (name, date). The main domain is not switched until the owner
 records that sign-off here or explicitly decides to cut over without it.
+
+## 2026-11-13 — Phase 5: owner decides to cut over without the co-author's sign-off
+
+After the partial comparison above, the owner (Iskander Isgandarov) chose "Cut over
+now" in the session of 2026-11-13, knowing that cases 4–10, the device checks, printed
+output and the clinical co-author's sign-off are still open. This is the owner's
+decision and replaces the spec's "owner signs off the case comparison" condition for
+switching the main domain. Basis on record: cases 1–3 agree on both sites; both sites
+run the same model artifacts (hashes equal). The old app stays reachable on
+`https://neomortalsurv.net:8444`, and rollback is the two-line swap in
+`docs/CUTOVER.md` step 8. The open items above remain open after the cutover.
