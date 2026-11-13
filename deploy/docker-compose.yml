@@ -39,7 +39,7 @@ services:
       context: ..
       dockerfile: deploy/web.Dockerfile
       args:
-        VITE_ENABLE_KK: ${VITE_ENABLE_KK:-false}
+        VITE_ENABLE_KK: ${VITE_ENABLE_KK:-true}
     image: neomortalsurv-web
     restart: unless-stopped
     depends_on:

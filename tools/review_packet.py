@@ -28,7 +28,7 @@ I18N = REPO / "frontend" / "src" / "i18n"
 BEHAVIOUR = REPO / "docs" / "MODEL_BEHAVIOUR.md"
 OUT = REPO / "docs" / "CLINICAL_REVIEW.md"
 WORD_DIR = REPO / "docs" / "out"
-LANGS = (("en", "English"), ("ru", "Russian"), ("kk", "Kazakh (draft)"))
+LANGS = (("en", "English"), ("ru", "Russian"), ("kk", "Kazakh"))
 
 # (title, where the reader sees it, top-level keys or dotted keys). Review order: what a
 # clinician reads on the calculator first, interface-only text last.
@@ -89,8 +89,8 @@ QUESTIONS = [
     "heart rate 60–200, SpO₂ 40–100 (the limits of the old calculator), and warns only above 1,500 g. Part B "
     "shows what the model returns at the edges of these ranges. Should the accepted ranges be narrower, or "
     "should more warnings be shown?",
-    "**Kazakh.** The whole Kazakh column was drafted by an AI system that is not a native speaker. The clinical "
-    "terms and abbreviations listed in Part A, section 7 need a clinician who works in Kazakh.",
+    "**Kazakh.** The Kazakh column was drafted by an AI system. — *Answered 2026-11-13: reviewed by a "
+    "native-speaking clinician and accepted (reported by the owner).*",
 ]
 
 
@@ -204,7 +204,7 @@ def main() -> int:
     # Text added after a language was reviewed (the file-level note says which keys).
     pending = [
         (name, load(lang)["_todo_clinical_review"].removeprefix("TODO(clinical-review): "))
-        for lang, name in LANGS[:2]
+        for lang, name in LANGS
         if "_todo_clinical_review" in load(lang)
     ]
     used: set[str] = set()
@@ -215,9 +215,10 @@ def main() -> int:
         "     go into frontend/src/i18n/*.json, then regenerate. -->",
         "",
         "**Status.** English and Russian: reviewed by the clinical co-authors and approved without",
-        "corrections (reported by the owner on 2026-11-13). These two columns are what",
-        "https://neomortalsurv.net shows. Kazakh: an unreviewed draft (`TODO(clinical-review)`), not shown on",
-        "the site. Text added or changed after 2026-11-13 is a draft again until reviewed.",
+        "corrections. Kazakh: reviewed by a native-speaking clinician and accepted. Both as reported by the",
+        "owner on 2026-11-13. All three columns are what https://neomortalsurv.net shows. The out-of-range",
+        "warning was added after the English / Russian review and accepted by the owner (not a clinical",
+        "review). Text added or changed later is a draft again until reviewed.",
         *[f"\n**Unreviewed, {name}:** {note}" for name, note in pending],
         "",
         "## How to review",
@@ -260,11 +261,11 @@ def main() -> int:
 
     terms = load("kk").get("_clinical_terms", {})
     lines += [
-        "## 7. Kazakh clinical terms to confirm first",
+        "## 7. Kazakh clinical terms",
         "",
-        "The terms the Kazakh draft depends on. If one of these is wrong, it is wrong everywhere it is used.",
+        "The terms the Kazakh text depends on. If one of these is wrong, it is wrong everywhere it is used.",
         "",
-        "| Term | Kazakh used in the draft | Correction |",
+        "| Term | Kazakh used | Correction |",
         "|---|---|---|",
         *[f"| {cell(k.removeprefix('TODO(clinical-review) '))} | {cell(v)} | |" for k, v in terms.items()],
         "",

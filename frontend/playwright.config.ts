@@ -21,7 +21,9 @@ export default defineConfig({
     // accounts.spec.ts needs the stack with the database (make e2e-accounts sets E2E_ACCOUNTS).
     {
       name: 'default',
-      testIgnore: process.env.E2E_ACCOUNTS ? /kk\.spec\.ts/ : /(kk|accounts)\.spec\.ts/,
+      // Locally the default build has no Kazakh (kk.spec.ts runs in the kk-flag project).
+      // The compose stack is built with Kazakh on, so kk.spec.ts runs there too.
+      testIgnore: process.env.E2E_ACCOUNTS ? /kk\.spec\.ts/ : STACK_URL ? /accounts\.spec\.ts/ : /(kk|accounts)\.spec\.ts/,
       use: { baseURL: WEB_URL },
     },
     ...(STACK_URL ? [] : [{ name: 'kk-flag', testMatch: /kk\.spec\.ts/, use: { baseURL: `http://127.0.0.1:${KK_PORT}` } }]),

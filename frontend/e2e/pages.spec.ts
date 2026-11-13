@@ -99,7 +99,9 @@ test('/about numbers match spec Section 1 exactly', async ({ page }) => {
   await expect(page.getByRole('article')).toContainText('doi:10.3389/fped.2026.1801840')
 })
 
-test('Kazakh is hidden in the default build', async ({ page, request }) => {
+test('Kazakh is absent from a build made without the flag', async ({ page, request }) => {
+  // The deployed stack is built with the flag on; this is about the mechanism itself.
+  test.skip(!!process.env.E2E_BASE_URL, 'the compose stack is built with Kazakh enabled')
   await page.goto('/?lang=kk')
   await expect(page.locator('html')).toHaveAttribute('lang', 'en')
   await expect(page.getByRole('button', { name: 'Қазақша' })).toHaveCount(0)

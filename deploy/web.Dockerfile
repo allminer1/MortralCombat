@@ -2,8 +2,8 @@
 #
 #     docker build -f deploy/web.Dockerfile -t neomortalsurv-web .
 #
-# VITE_ENABLE_KK=true adds Kazakh; keep it false until the clinical review is confirmed
-# (docs/REBUILD_SPEC.md 7.5).
+# VITE_ENABLE_KK=true adds Kazakh (docs/REBUILD_SPEC.md 7.5). The compose file passes
+# true since the review reported on 2026-11-13; a bare `docker build` leaves it out.
 FROM node:26-alpine AS build
 WORKDIR /src
 COPY frontend/package.json frontend/package-lock.json ./

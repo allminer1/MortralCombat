@@ -30,6 +30,16 @@ Still open after the review:
 - Erratum decision; server restart; Cloudflare access; uptime check; retiring the old
   app after 2026-12-13; institutional sign-off before accounts can be enabled.
 
+### After the phases: owner decisions of 2026-11-13 (see `docs/DECISIONS.md`)
+
+- Out-of-range warning wording: accepted by the owner (not a clinical review). Closed.
+- 1,500 g statement: stays as in the article. Closed.
+- **Kazakh: reported reviewed by a native-speaking clinician; switched on.** The
+  compose default and `.env.example` are now `VITE_ENABLE_KK=true`; `make e2e` runs the
+  Kazakh tests against the stack. On the server the owner sets the same line in
+  `deploy/.env` and deploys. `TODO(owner)`: reviewer's name and date.
+- Accounts: stay off (no institutional sign-off).
+
 ### After the phases: uptime check (2026-11-13) — registered, first scheduled run not yet seen
 
 `.github/workflows/uptime.yml`: every 15 minutes it requests

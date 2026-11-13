@@ -4,13 +4,10 @@
      go into frontend/src/i18n/*.json, then regenerate. -->
 
 **Status.** English and Russian: reviewed by the clinical co-authors and approved without
-corrections (reported by the owner on 2026-11-13). These two columns are what
-https://neomortalsurv.net shows. Kazakh: an unreviewed draft (`TODO(clinical-review)`), not shown on
-the site. Text added or changed after 2026-11-13 is a draft again until reviewed.
-
-**Unreviewed, English:** warnings.OUTSIDE_TRAINING_RANGE and warnings.rangeItem were added on 2026-11-13, after the review, and are unreviewed drafts.
-
-**Unreviewed, Russian:** warnings.OUTSIDE_TRAINING_RANGE и warnings.rangeItem добавлены 2026-11-13, после проверки; это непроверенные черновики.
+corrections. Kazakh: reviewed by a native-speaking clinician and accepted. Both as reported by the
+owner on 2026-11-13. All three columns are what https://neomortalsurv.net shows. The out-of-range
+warning was added after the English / Russian review and accepted by the owner (not a clinical
+review). Text added or changed later is a draft again until reviewed.
 
 ## How to review
 
@@ -36,7 +33,7 @@ Reviewer: ____________________   Date: ____________   Languages reviewed: ______
 6. **Limitations box.** Are the four sentences correct and sufficient? Anything that must be added?
 7. **Intended-use line** in the footer and on the report: is "For research use. Not a substitute for clinical judgement." the right statement for this tool?
 8. **Input ranges.** The form accepts birth weight 400–2000 g, gestational age 20–42 weeks, Apgar 0–10, heart rate 60–200, SpO₂ 40–100 (the limits of the old calculator), and warns only above 1,500 g. Part B shows what the model returns at the edges of these ranges. Should the accepted ranges be narrower, or should more warnings be shown?
-9. **Kazakh.** The whole Kazakh column was drafted by an AI system that is not a native speaker. The clinical terms and abbreviations listed in Part A, section 7 need a clinician who works in Kazakh.
+9. **Kazakh.** The Kazakh column was drafted by an AI system. — *Answered 2026-11-13: reviewed by a native-speaking clinician and accepted (reported by the owner).*
 
 # Part A — interface text
 
@@ -44,7 +41,7 @@ Reviewer: ____________________   Date: ____________   Languages reviewed: ______
 
 Titles and help above the two groups of inputs, the label of each of the 11 inputs, units, and the answers offered.
 
-| Where (key) | English | Russian | Kazakh (draft) | Correction |
+| Where (key) | English | Russian | Kazakh | Correction |
 |---|---|---|---|---|
 | `groups.admission.title` | At birth / NICU admission | При рождении / поступлении в ОРИТН | Туған кезде / бөлімшеге түскенде | |
 | `groups.admission.help` | Heart rate and SpO₂ are single values taken right after birth, at NICU admission. | ЧСС и сатурация — однократные значения сразу после рождения, при поступлении в ОРИТН. | ЖЖЖ мен сатурация — туғаннан кейін бірден, қарқынды терапия бөлімшесіне түскен кезде бір рет өлшенген мәндер. | |
@@ -74,7 +71,7 @@ Titles and help above the two groups of inputs, the label of each of the 11 inpu
 
 Shown after a calculation: headings, the sentence under the curve, the details list, the warning for birth weight above 1,500 g, and the limitations box that is always shown with a result.
 
-| Where (key) | English | Russian | Kazakh (draft) | Correction |
+| Where (key) | English | Russian | Kazakh | Correction |
 |---|---|---|---|---|
 | `result.title` | Estimated survival | Оценка выживаемости | Өмір сүру болжамы | |
 | `result.empty` | Fill in the form and select Calculate. The estimate appears here. | Заполните форму и нажмите «Рассчитать». Оценка появится здесь. | Нысанды толтырып, «Есептеу» түймесін басыңыз. Болжам осы жерде көрсетіледі. | |
@@ -110,7 +107,7 @@ Shown after a calculation: headings, the sentence under the curve, the details l
 
 The one-page report (`/report`). It also repeats the input labels, the limitations and the intended-use line from the other sections.
 
-| Where (key) | English | Russian | Kazakh (draft) | Correction |
+| Where (key) | English | Russian | Kazakh | Correction |
 |---|---|---|---|---|
 | `footer.intendedUse` | For research use. Not a substitute for clinical judgement. | Для исследовательских целей. Не заменяет клиническое суждение. | Зерттеу мақсатында. Клиникалық шешімді алмастырмайды. | |
 | `report.title` | Survival estimate report | Отчёт об оценке выживаемости | Өмір сүру болжамы туралы есеп | |
@@ -127,7 +124,7 @@ The one-page report (`/report`). It also repeats the input labels, the limitatio
 
 `/about`. The numbers on that page (cohort sizes, C-index and so on) are not in this table: they are taken from the model card and were checked against the article.
 
-| Where (key) | English | Russian | Kazakh (draft) | Correction |
+| Where (key) | English | Russian | Kazakh | Correction |
 |---|---|---|---|---|
 | `about.title` | About the model | О модели | Модель туралы | |
 | `about.what.title` | What it is | Что это | Бұл не | |
@@ -154,7 +151,7 @@ The one-page report (`/report`). It also repeats the input labels, the limitatio
 
 Only visible when accounts are switched on, which they are not. Review together with the decision to enable accounts. The case-code warning is the important text here.
 
-| Where (key) | English | Russian | Kazakh (draft) | Correction |
+| Where (key) | English | Russian | Kazakh | Correction |
 |---|---|---|---|---|
 | `save.title` | Save this calculation | Сохранить расчёт | Есептеуді сақтау | |
 | `save.caseCode` | Case code (optional) | Код случая (необязательно) | Жағдай коды (міндетті емес) | |
@@ -185,7 +182,7 @@ Only visible when accounts are switched on, which they are not. Review together 
 
 Buttons, navigation, input-error messages, sign-in. No clinical content; listed so that the Russian and Kazakh can be checked by a native speaker.
 
-| Where (key) | English | Russian | Kazakh (draft) | Correction |
+| Where (key) | English | Russian | Kazakh | Correction |
 |---|---|---|---|---|
 | `app.name` | NeoMortalSurv | NeoMortalSurv | NeoMortalSurv | |
 | `app.tagline` | Survival estimate for very-low-birth-weight infants in the NICU | Оценка выживаемости детей с очень низкой массой тела при рождении в ОРИТН | Қарқынды терапия бөлімшесіндегі өте төмен салмақпен туған нәрестелердің өмір сүру болжамы | |
@@ -228,11 +225,11 @@ Buttons, navigation, input-error messages, sign-in. No clinical content; listed 
 | `auth.signedInAs` | Signed in as {{email}} | Вы вошли как {{email}} | {{email}} ретінде кірдіңіз | |
 | `auth.sessionEnded` | Your session has ended. Sign in again. | Сеанс завершён. Войдите снова. | Сеанс аяқталды. Қайта кіріңіз. | |
 
-## 7. Kazakh clinical terms to confirm first
+## 7. Kazakh clinical terms
 
-The terms the Kazakh draft depends on. If one of these is wrong, it is wrong everywhere it is used.
+The terms the Kazakh text depends on. If one of these is wrong, it is wrong everywhere it is used.
 
-| Term | Kazakh used in the draft | Correction |
+| Term | Kazakh used | Correction |
 |---|---|---|
 | fields.gestational_age_weeks | Гестациялық жас | |
 | fields.birth_weight_g | Салмақ | |

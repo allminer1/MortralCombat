@@ -16,21 +16,18 @@ describe('translations', () => {
     expect(textKeys(kk)).toEqual(textKeys(en))
   })
   it('record the review state of each language', () => {
-    // English and Russian: reviewed and approved on 2026-11-13 (docs/DECISIONS.md) ...
-    for (const file of [en, ru]) {
+    // All three languages were reported reviewed on 2026-11-13 (docs/DECISIONS.md).
+    for (const file of [en, ru, kk]) {
       expect(file._clinical_review).toContain('2026-11-13')
-      // ... except text added afterwards, which must be named as an unreviewed draft.
-      expect(file._todo_clinical_review).toContain('TODO(clinical-review)')
-      expect(file._todo_clinical_review).toContain('warnings.OUTSIDE_TRAINING_RANGE')
+      // No file-level draft marker is left; new text must bring one back.
+      expect(Object.keys(file)).not.toContain('_todo_clinical_review')
     }
-    // Kazakh: still an unreviewed draft as a whole, and still behind its build flag.
-    expect(kk._todo_clinical_review).toContain('TODO(clinical-review)')
+    // Text added after the EN / RU review was accepted by the owner, and says so.
+    for (const file of [en, ru]) expect(file._owner_accepted).toContain('warnings.OUTSIDE_TRAINING_RANGE')
   })
-  it('mark every Kazakh field label as a clinical term to review', () => {
-    const marked = Object.keys(kk._clinical_terms)
-    expect(marked.every((k) => k.startsWith('TODO(clinical-review) '))).toBe(true)
+  it('list the Kazakh clinical terms next to the labels they come from', () => {
     for (const [field, label] of Object.entries(kk.fields)) {
-      expect(kk._clinical_terms[`TODO(clinical-review) fields.${field}` as keyof typeof kk._clinical_terms]).toBe(label)
+      expect(kk._clinical_terms[`fields.${field}` as keyof typeof kk._clinical_terms]).toBe(label)
     }
   })
   it('spell the obstetric-history label correctly', () => {

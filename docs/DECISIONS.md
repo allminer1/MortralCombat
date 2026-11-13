@@ -523,3 +523,24 @@ Owner's decision, so that the scheduled uptime workflow runs and the repository'
 page shows the current project. `main` is unchanged (the original two commits) and is
 no longer the default. Merging `rebuild` into `main` was the alternative and was not
 chosen.
+
+## 2026-11-13 — Owner decisions to close open items
+
+Given by the owner in the session of 2026-11-13, each answered as an explicit choice.
+
+1. **Out-of-range warning text (EN, RU): accepted by the owner.** This is an owner
+   decision, not a clinical review; the translation files say so (`_owner_accepted`).
+2. **The 1,500 g statement stays as in the article.** The weight warning and the About
+   page keep saying that infants above 1,500 g were not included, although the training
+   set contains weights up to 1,803 g (99th percentile 1,498 g). The site follows the
+   published text; the discrepancy is recorded here and in `docs/PROGRESS.md`.
+3. **Kazakh is switched on.** The owner reports that a native-speaking clinician has
+   reviewed the Kazakh text and accepts it (spec Section 11 item 8). Reviewer's name
+   and date not given — `TODO(owner)` for the record. Note for the record: the Kazakh
+   text was drafted by Claude on 2026-11-13 and the same day's earlier review of the
+   packet was reported as covering English and Russian only; this entry rests on the
+   owner's later, explicit confirmation. The build flag remains; the compose file and
+   `.env.example` now default to `VITE_ENABLE_KK=true`. To hide the language again, set
+   it to `false` and deploy.
+4. **Accounts stay off.** No institutional sign-off yet; `ENABLE_ACCOUNTS` remains
+   false in production.

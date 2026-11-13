@@ -1,6 +1,6 @@
 {
   "_clinical_review": "Reviewed by the clinical co-authors and approved without corrections (reported by the owner on 2026-11-13; reviewer name not recorded). Any new or changed clinical text is a draft again until reviewed: mark it TODO(clinical-review).",
-  "_todo_clinical_review": "TODO(clinical-review): warnings.OUTSIDE_TRAINING_RANGE and warnings.rangeItem were added on 2026-11-13, after the review, and are unreviewed drafts.",
+  "_owner_accepted": "The out-of-range warning (warnings.OUTSIDE_TRAINING_RANGE, warnings.rangeItem) was added after that review and accepted by the owner on 2026-11-13; that acceptance is an owner decision, not a clinical review.",
   "app": {
     "name": "NeoMortalSurv",
     "tagline": "Survival estimate for very-low-birth-weight infants in the NICU",
